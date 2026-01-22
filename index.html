@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImgKit | Free Online Image Tools & Optimizer</title>
+    <meta name="description"
+        content="Free image toolkit - Convert images to perfect 1:1 square format without cropping or stretching. Extend canvas with custom backgrounds.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-crop-simple"></i>
+                </div>
+                <span class="logo-text">ImgKit</span>
+                <span class="logo-badge">Pro</span>
+            </div>
+            <div class="header-tagline">
+                Your All-in-One Image Toolkit
+            </div>
+        </header>
+
+        <!-- Tool Navigation -->
+        <nav class="tool-nav">
+            <button class="tool-tab active" data-tool="square">
+                <i class="fas fa-crop-simple"></i>
+                <span>Square Maker</span>
+            </button>
+            <button class="tool-tab" data-tool="converter">
+                <i class="fas fa-shuffle"></i>
+                <span>Format Converter</span>
+            </button>
+        </nav>
+
+        <!-- Square Maker Tool -->
+        <div class="tool-section active" id="squareTool">
+            <main class="main-content">
+                <!-- Hero Section -->
+                <section class="hero">
+                    <h1 class="hero-title">
+                        Convert Any Image to <span class="gradient-text">Perfect 1:1</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        No cropping. No stretching. No quality loss. Just perfectly squared images, instantly.
+                    </p>
+                </section>
+
+                <!-- Upload Area -->
+                <div class="upload-section">
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-arrow-up"></i>
+                        </div>
+                        <h3 class="upload-title">Drop your images here</h3>
+                        <p class="upload-text">or click to browse</p>
+                        <p class="upload-formats">Supports: JPG, PNG, WebP, GIF</p>
+                        <input type="file" id="fileInput" accept="image/*" multiple hidden>
+                    </div>
+                </div>
+
+                <!-- Settings Panel -->
+                <div class="settings-panel" id="settingsPanel">
+                    <h3 class="settings-title">
+                        <i class="fas fa-sliders"></i>
+                        Output Settings
+                    </h3>
+
+                    <div class="settings-grid">
+                        <!-- Background Type -->
+                        <div class="setting-group">
+                            <label class="setting-label">Background Type</label>
+                            <div class="toggle-buttons toggle-buttons-wrap" id="bgTypeToggle">
+                                <button class="toggle-btn active" data-value="color">
+                                    <i class="fas fa-palette"></i> Solid Color
+                                </button>
+                                <button class="toggle-btn" data-value="transparent">
+                                    <i class="fas fa-chess-board"></i> Transparent
+                                </button>
+                                <button class="toggle-btn" data-value="blur">
+                                    <i class="fas fa-droplet"></i> Blur Extend
+                                </button>
+                                <button class="toggle-btn toggle-btn-smart" data-value="smart">
+                                    <i class="fas fa-wand-magic-sparkles"></i> Smart Extend
+                                    <span class="smart-badge">AI</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Output Size -->
+                        <div class="setting-group">
+                            <label class="setting-label">Output Size</label>
+                            <div class="toggle-buttons" id="sizeTypeToggle">
+                                <button class="toggle-btn active" data-value="auto">
+                                    <i class="fas fa-square"></i> Auto (1:1)
+                                </button>
+                                <button class="toggle-btn" data-value="custom">
+                                    <i class="fas fa-ruler-combined"></i> Custom
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Custom Size Settings -->
+                        <div class="setting-group custom-size-settings" id="customSizeSettings">
+                            <label class="setting-label">
+                                <i class="fas fa-expand" style="color: #10B981;"></i>
+                                Custom Dimensions
+                            </label>
+                            <div class="dimension-inputs">
+                                <div class="dimension-field">
+                                    <label>Width</label>
+                                    <div class="input-with-unit">
+                                        <input type="number" id="customWidth" min="10" max="10000" value="1000"
+                                            placeholder="Width">
+                                        <span class="unit">px</span>
+                                    </div>
+                                </div>
+                                <button class="link-btn" id="linkDimensions" title="Link dimensions (maintain ratio)">
+                                    <i class="fas fa-link"></i>
+                                </button>
+                                <div class="dimension-field">
+                                    <label>Height</label>
+                                    <div class="input-with-unit">
+                                        <input type="number" id="customHeight" min="10" max="10000" value="1000"
+                                            placeholder="Height">
+                                        <span class="unit">px</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="slider-hint">Image will be centered without stretching. Background fills the rest.
+                            </p>
+                        </div>
+
+                        <!-- Background Color -->
+                        <div class="setting-group" id="colorSetting">
+                            <label class="setting-label">Background Color</label>
+                            <div class="color-options">
+                                <div class="color-presets">
+                                    <button class="color-preset active" data-color="#FFFFFF"
+                                        style="background: #FFFFFF;"></button>
+                                    <button class="color-preset" data-color="#000000"
+                                        style="background: #000000;"></button>
+                                    <button class="color-preset" data-color="#F5F5F5"
+                                        style="background: #F5F5F5;"></button>
+                                    <button class="color-preset" data-color="#E8E8E8"
+                                        style="background: #E8E8E8;"></button>
+                                    <button class="color-preset" data-color="#95BF47"
+                                        style="background: #95BF47;"></button>
+                                    <button class="color-preset" data-color="#96BF48"
+                                        style="background: linear-gradient(135deg, #95BF47, #5E8E3E);"></button>
+                                </div>
+                                <div class="custom-color">
+                                    <input type="color" id="customColor" value="#FFFFFF">
+                                    <span>Custom</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Output Format -->
+                        <div class="setting-group">
+                            <label class="setting-label">Output Format</label>
+                            <div class="toggle-buttons" id="formatToggle">
+                                <button class="toggle-btn active" data-value="png">PNG</button>
+                                <button class="toggle-btn" data-value="jpeg">JPG</button>
+                                <button class="toggle-btn" data-value="webp">WebP</button>
+                            </div>
+                        </div>
+
+                        <!-- Quality Slider -->
+                        <div class="setting-group" id="qualitySetting">
+                            <label class="setting-label">
+                                Quality: <span id="qualityValue">100</span>%
+                            </label>
+                            <input type="range" id="qualitySlider" min="10" max="100" value="100"
+                                class="quality-slider">
+                        </div>
+
+                        <!-- Smart Extend Settings -->
+                        <div class="setting-group smart-settings" id="smartSettings">
+                            <label class="setting-label">
+                                <i class="fas fa-wand-magic-sparkles" style="color: #8B5CF6;"></i>
+                                Smart Extend Settings
+                            </label>
+                            <div class="smart-sliders">
+                                <div class="slider-group">
+                                    <label class="slider-label">
+                                        Edge Blend: <span id="blendFeatherValue">30</span>px
+                                    </label>
+                                    <input type="range" id="blendFeatherSlider" min="-100" max="100" value="30"
+                                        class="quality-slider smart-slider">
+                                    <p class="slider-hint">Negative: AI extends into image | Positive: Image fades into
+                                        AI
+                                        background</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview Section -->
+                <div class="preview-section" id="previewSection">
+                    <div class="preview-header">
+                        <h3 class="preview-title">
+                            <i class="fas fa-images"></i>
+                            Preview & Download
+                        </h3>
+                        <div class="preview-actions">
+                            <button class="btn btn-secondary" id="clearAll">
+                                <i class="fas fa-trash"></i> Clear All
+                            </button>
+                            <button class="btn btn-primary" id="downloadAll">
+                                <i class="fas fa-download"></i> Download All
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="preview-grid" id="previewGrid">
+                        <!-- Preview items will be added here -->
+                    </div>
+                </div>
+
+                <!-- Stats Section -->
+                <div class="stats-section" id="statsSection">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="totalImages">0</span>
+                            <span class="stat-label">Images Processed</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="successCount">0</span>
+                            <span class="stat-label">Successfully Converted</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="avgTime">0ms</span>
+                            <span class="stat-label">Avg. Processing Time</span>
+                        </div>
+                    </div>
+            </main>
+        </div>
+        <!-- End Square Maker Tool -->
+
+        <!-- Format Converter Tool -->
+        <div class="tool-section" id="converterTool">
+            <main class="main-content">
+                <!-- Hero Section -->
+                <section class="hero">
+                    <h1 class="hero-title">
+                        Convert Images to <span class="gradient-text">Any Format</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        PNG, JPG, WebP, GIF, BMP - Convert instantly with zero quality loss.
+                    </p>
+                </section>
+
+                <!-- Upload Area -->
+                <div class="upload-section">
+                    <div class="upload-area" id="converterUploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-arrow-up"></i>
+                        </div>
+                        <h3 class="upload-title">Drop your images here</h3>
+                        <p class="upload-text">or click to browse</p>
+                        <p class="upload-formats">Supports: JPG, PNG, WebP, GIF, BMP, TIFF</p>
+                        <input type="file" id="converterFileInput" accept="image/*" multiple hidden>
+                    </div>
+                </div>
+
+                <!-- Converter Settings Panel -->
+                <div class="settings-panel" id="converterSettingsPanel">
+                    <h3 class="settings-title">
+                        <i class="fas fa-sliders"></i>
+                        Conversion Settings
+                    </h3>
+
+                    <div class="settings-grid">
+                        <!-- Output Format -->
+                        <div class="setting-group">
+                            <label class="setting-label">Output Format</label>
+                            <div class="toggle-buttons toggle-buttons-wrap" id="converterFormatToggle">
+                                <button class="toggle-btn" data-value="png">
+                                    <i class="fas fa-image"></i> PNG
+                                </button>
+                                <button class="toggle-btn" data-value="jpeg">
+                                    <i class="fas fa-image"></i> JPG
+                                </button>
+                                <button class="toggle-btn active" data-value="webp">
+                                    <i class="fas fa-image"></i> WebP
+                                    <span class="format-badge">Smaller</span>
+                                </button>
+                                <button class="toggle-btn" data-value="gif">
+                                    <i class="fas fa-image"></i> GIF
+                                </button>
+                                <button class="toggle-btn" data-value="bmp">
+                                    <i class="fas fa-image"></i> BMP
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Quality Slider -->
+                        <div class="setting-group" id="converterQualitySetting">
+                            <label class="setting-label">
+                                Quality: <span id="converterQualityValue">100</span>%
+                                <span class="quality-hint">(100% = Lossless)</span>
+                            </label>
+                            <input type="range" id="converterQualitySlider" min="10" max="100" value="100"
+                                class="quality-slider">
+                            <p class="slider-hint">Higher quality = larger file size. 100% preserves original quality.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview Section -->
+                <div class="preview-section" id="converterPreviewSection">
+                    <div class="preview-header">
+                        <h3 class="preview-title">
+                            <i class="fas fa-images"></i>
+                            Converted Images
+                        </h3>
+                        <div class="preview-actions">
+                            <button class="btn btn-secondary" id="converterClearAll">
+                                <i class="fas fa-trash"></i> Clear All
+                            </button>
+                            <button class="btn btn-primary" id="converterDownloadAll">
+                                <i class="fas fa-download"></i> Download All
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="preview-grid" id="converterPreviewGrid">
+                        <!-- Preview items will be added here -->
+                    </div>
+                </div>
+
+                <!-- Stats Section -->
+                <div class="stats-section" id="converterStatsSection">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="converterTotalImages">0</span>
+                            <span class="stat-label">Images Converted</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-compress"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="converterSizeSaved">0%</span>
+                            <span class="stat-label">Avg. Size Reduction</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="converterAvgTime">0ms</span>
+                            <span class="stat-label">Avg. Conversion Time</span>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+        <!-- End Format Converter Tool -->
+
+        <!-- Features Section -->
+        <section class="features">
+            <h2 class="features-title">Why Choose ImgKit?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-expand"></i>
+                    </div>
+                    <h3>Canvas Extension</h3>
+                    <p>We extend your image canvas to create perfect squares - no cropping or stretching ever.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-wand-magic-sparkles"></i>
+                    </div>
+                    <h3>Smart Backgrounds</h3>
+                    <p>Choose solid colors, transparent backgrounds, or smart blur extension for seamless results.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Lightning Fast</h3>
+                    <p>Process multiple images instantly in your browser. No uploads to servers required.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+                    <h3>100% Private</h3>
+                    <p>All processing happens locally in your browser. Your images never leave your device.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Made with <i class="fas fa-heart"></i> for Creators & Businesses</p>
+            <p class="footer-note">Process unlimited images for free. No watermarks. No sign-up required.</p>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>Processing your images...</p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
