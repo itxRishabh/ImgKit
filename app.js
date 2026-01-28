@@ -866,7 +866,7 @@ class ImageSquare {
         this.updateStats();
     }
 
-    downloadAll() {
+    async downloadAll() {
         if (!this.images.length) return;
 
         // If single image, just download directly
@@ -875,12 +875,40 @@ class ImageSquare {
             return;
         }
 
-        // For multiple images, download each with a small delay
-        this.images.forEach((imageData, index) => {
-            setTimeout(() => {
-                this.downloadSingle(imageData.id);
-            }, index * 300);
-        });
+        // For multiple images, create ZIP file
+        this.showLoading();
+
+        try {
+            const zip = new JSZip();
+            const imgFolder = zip.folder('imgkit-squares');
+
+            for (const imageData of this.images) {
+                const baseName = imageData.name.substring(0, imageData.name.lastIndexOf('.')) || imageData.name;
+                const fileName = `${baseName}_square.${this.getFileExtension()}`;
+
+                // Convert data URL to blob
+                const base64Data = imageData.squareDataUrl.split(',')[1];
+                imgFolder.file(fileName, base64Data, { base64: true });
+            }
+
+            // Generate ZIP and download
+            const content = await zip.generateAsync({ type: 'blob' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(content);
+            link.download = 'imgkit-squares.zip';
+            link.click();
+            URL.revokeObjectURL(link.href);
+        } catch (error) {
+            console.error('ZIP creation failed:', error);
+            // Fallback to individual downloads
+            this.images.forEach((imageData, index) => {
+                setTimeout(() => {
+                    this.downloadSingle(imageData.id);
+                }, index * 300);
+            });
+        }
+
+        this.hideLoading();
     }
 
     clearAll() {
@@ -1303,7 +1331,7 @@ class ImageConverter {
         this.updateStats();
     }
 
-    downloadAll() {
+    async downloadAll() {
         if (!this.images.length) return;
 
         // If single image, just download directly
@@ -1312,12 +1340,40 @@ class ImageConverter {
             return;
         }
 
-        // For multiple images, download each with a small delay
-        this.images.forEach((imageData, index) => {
-            setTimeout(() => {
-                this.downloadSingle(imageData.id);
-            }, index * 300);
-        });
+        // For multiple images, create ZIP file
+        this.showLoading();
+
+        try {
+            const zip = new JSZip();
+            const imgFolder = zip.folder('imgkit-converted');
+
+            for (const imageData of this.images) {
+                const baseName = imageData.name.substring(0, imageData.name.lastIndexOf('.')) || imageData.name;
+                const fileName = `${baseName}.${this.getFileExtension()}`;
+
+                // Convert data URL to blob
+                const base64Data = imageData.convertedDataUrl.split(',')[1];
+                imgFolder.file(fileName, base64Data, { base64: true });
+            }
+
+            // Generate ZIP and download
+            const content = await zip.generateAsync({ type: 'blob' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(content);
+            link.download = 'imgkit-converted.zip';
+            link.click();
+            URL.revokeObjectURL(link.href);
+        } catch (error) {
+            console.error('ZIP creation failed:', error);
+            // Fallback to individual downloads
+            this.images.forEach((imageData, index) => {
+                setTimeout(() => {
+                    this.downloadSingle(imageData.id);
+                }, index * 300);
+            });
+        }
+
+        this.hideLoading();
     }
 
     clearAll() {
