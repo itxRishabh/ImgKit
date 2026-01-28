@@ -965,7 +965,7 @@ class ImageConverter {
         this.images = [];
         this.settings = {
             format: 'webp',
-            quality: 1 // 100% quality for lossless
+            quality: 0.92 // 92% quality - visually lossless with good compression
         };
         this.stats = {
             total: 0,
