@@ -251,10 +251,23 @@ class ImageSquare {
         this.previewSection.classList.add('active');
         this.statsSection.classList.add('active');
 
-        const imageFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
+        // Separate ZIP files and image files
+        const allFiles = Array.from(files);
+        const zipFiles = allFiles.filter(file =>
+            file.type === 'application/zip' ||
+            file.type === 'application/x-zip-compressed' ||
+            file.name.toLowerCase().endsWith('.zip')
+        );
+        const imageFiles = allFiles.filter(file => file.type.startsWith('image/'));
 
+        // Process regular image files
         for (const file of imageFiles) {
             await this.processImage(file);
+        }
+
+        // Extract and process images from ZIP files
+        for (const zipFile of zipFiles) {
+            await this.processZipFile(zipFile);
         }
 
         this.hideLoading();
@@ -262,6 +275,75 @@ class ImageSquare {
 
         // Reset file input
         this.fileInput.value = '';
+    }
+
+    /**
+     * Extract and process images from a ZIP file
+     */
+    async processZipFile(zipFile) {
+        try {
+            const zip = await JSZip.loadAsync(zipFile);
+            const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.tiff', '.tif'];
+
+            // Get all image files from the ZIP
+            const imagePromises = [];
+
+            zip.forEach((relativePath, zipEntry) => {
+                // Skip directories and hidden files
+                if (zipEntry.dir || relativePath.startsWith('__MACOSX') || relativePath.startsWith('.')) {
+                    return;
+                }
+
+                // Check if it's an image file
+                const lowerPath = relativePath.toLowerCase();
+                const isImage = imageExtensions.some(ext => lowerPath.endsWith(ext));
+
+                if (isImage) {
+                    imagePromises.push(this.extractAndProcessImage(zipEntry, relativePath));
+                }
+            });
+
+            // Process all images from the ZIP
+            await Promise.all(imagePromises);
+        } catch (error) {
+            console.error('Error processing ZIP file:', error);
+            // Show error notification if needed
+        }
+    }
+
+    /**
+     * Extract a single image from ZIP and process it
+     */
+    async extractAndProcessImage(zipEntry, filename) {
+        try {
+            // Get the file data as blob
+            const blob = await zipEntry.async('blob');
+
+            // Determine MIME type from extension
+            const ext = filename.toLowerCase().split('.').pop();
+            const mimeTypes = {
+                'jpg': 'image/jpeg',
+                'jpeg': 'image/jpeg',
+                'png': 'image/png',
+                'gif': 'image/gif',
+                'webp': 'image/webp',
+                'bmp': 'image/bmp',
+                'tiff': 'image/tiff',
+                'tif': 'image/tiff'
+            };
+            const mimeType = mimeTypes[ext] || 'image/png';
+
+            // Extract just the filename without path
+            const cleanFilename = filename.split('/').pop();
+
+            // Create a File object from the blob
+            const file = new File([blob], cleanFilename, { type: mimeType });
+
+            // Process the image
+            await this.processImage(file);
+        } catch (error) {
+            console.error('Error extracting image from ZIP:', filename, error);
+        }
     }
 
     async processImage(file) {
@@ -1072,10 +1154,23 @@ class ImageConverter {
         this.previewSection.classList.add('active');
         this.statsSection.classList.add('active');
 
-        const imageFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
+        // Separate ZIP files and image files
+        const allFiles = Array.from(files);
+        const zipFiles = allFiles.filter(file =>
+            file.type === 'application/zip' ||
+            file.type === 'application/x-zip-compressed' ||
+            file.name.toLowerCase().endsWith('.zip')
+        );
+        const imageFiles = allFiles.filter(file => file.type.startsWith('image/'));
 
+        // Process regular image files
         for (const file of imageFiles) {
             await this.processImage(file);
+        }
+
+        // Extract and process images from ZIP files
+        for (const zipFile of zipFiles) {
+            await this.processZipFile(zipFile);
         }
 
         this.hideLoading();
@@ -1083,6 +1178,74 @@ class ImageConverter {
 
         // Reset file input
         this.fileInput.value = '';
+    }
+
+    /**
+     * Extract and process images from a ZIP file
+     */
+    async processZipFile(zipFile) {
+        try {
+            const zip = await JSZip.loadAsync(zipFile);
+            const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.tiff', '.tif'];
+
+            // Get all image files from the ZIP
+            const imagePromises = [];
+
+            zip.forEach((relativePath, zipEntry) => {
+                // Skip directories and hidden files
+                if (zipEntry.dir || relativePath.startsWith('__MACOSX') || relativePath.startsWith('.')) {
+                    return;
+                }
+
+                // Check if it's an image file
+                const lowerPath = relativePath.toLowerCase();
+                const isImage = imageExtensions.some(ext => lowerPath.endsWith(ext));
+
+                if (isImage) {
+                    imagePromises.push(this.extractAndProcessImage(zipEntry, relativePath));
+                }
+            });
+
+            // Process all images from the ZIP
+            await Promise.all(imagePromises);
+        } catch (error) {
+            console.error('Error processing ZIP file:', error);
+        }
+    }
+
+    /**
+     * Extract a single image from ZIP and process it
+     */
+    async extractAndProcessImage(zipEntry, filename) {
+        try {
+            // Get the file data as blob
+            const blob = await zipEntry.async('blob');
+
+            // Determine MIME type from extension
+            const ext = filename.toLowerCase().split('.').pop();
+            const mimeTypes = {
+                'jpg': 'image/jpeg',
+                'jpeg': 'image/jpeg',
+                'png': 'image/png',
+                'gif': 'image/gif',
+                'webp': 'image/webp',
+                'bmp': 'image/bmp',
+                'tiff': 'image/tiff',
+                'tif': 'image/tiff'
+            };
+            const mimeType = mimeTypes[ext] || 'image/png';
+
+            // Extract just the filename without path
+            const cleanFilename = filename.split('/').pop();
+
+            // Create a File object from the blob
+            const file = new File([blob], cleanFilename, { type: mimeType });
+
+            // Process the image
+            await this.processImage(file);
+        } catch (error) {
+            console.error('Error extracting image from ZIP:', filename, error);
+        }
     }
 
     async processImage(file) {
