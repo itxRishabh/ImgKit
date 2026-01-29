@@ -316,8 +316,8 @@ class ImageSquare {
      */
     async extractAndProcessImage(zipEntry, filename) {
         try {
-            // Get the file data as blob
-            const blob = await zipEntry.async('blob');
+            // Get the file data as base64
+            const base64Data = await zipEntry.async('base64');
 
             // Determine MIME type from extension
             const ext = filename.toLowerCase().split('.').pop();
@@ -336,14 +336,56 @@ class ImageSquare {
             // Extract just the filename without path
             const cleanFilename = filename.split('/').pop();
 
-            // Create a File object from the blob
-            const file = new File([blob], cleanFilename, { type: mimeType });
+            // Create data URL from base64
+            const dataUrl = `data:${mimeType};base64,${base64Data}`;
 
-            // Process the image
-            await this.processImage(file);
+            // Process the image directly from data URL
+            await this.processImageFromDataUrl(dataUrl, cleanFilename);
         } catch (error) {
             console.error('Error extracting image from ZIP:', filename, error);
         }
+    }
+
+    /**
+     * Process image from a data URL (for ZIP extracted images)
+     */
+    async processImageFromDataUrl(dataUrl, filename) {
+        return new Promise((resolve, reject) => {
+            const startTime = performance.now();
+            const img = new Image();
+
+            img.onload = async () => {
+                const imageData = {
+                    id: Date.now() + Math.random().toString(36).substr(2, 9),
+                    name: filename,
+                    originalWidth: img.width,
+                    originalHeight: img.height,
+                    originalImage: img,
+                    file: null // No file object for ZIP extracted images
+                };
+
+                // Process the image
+                const result = await this.convertToSquare(imageData);
+                imageData.squareDataUrl = result.dataUrl;
+                imageData.squareSize = result.size;
+                imageData.processingTime = performance.now() - startTime;
+
+                this.images.push(imageData);
+                this.stats.total++;
+                this.stats.success++;
+                this.stats.totalTime += imageData.processingTime;
+
+                this.addPreviewItem(imageData);
+                resolve();
+            };
+
+            img.onerror = (error) => {
+                console.error('Failed to load image:', filename, error);
+                resolve(); // Resolve anyway to continue with other images
+            };
+
+            img.src = dataUrl;
+        });
     }
 
     async processImage(file) {
@@ -1218,8 +1260,8 @@ class ImageConverter {
      */
     async extractAndProcessImage(zipEntry, filename) {
         try {
-            // Get the file data as blob
-            const blob = await zipEntry.async('blob');
+            // Get the file data as base64
+            const base64Data = await zipEntry.async('base64');
 
             // Determine MIME type from extension
             const ext = filename.toLowerCase().split('.').pop();
@@ -1238,14 +1280,63 @@ class ImageConverter {
             // Extract just the filename without path
             const cleanFilename = filename.split('/').pop();
 
-            // Create a File object from the blob
-            const file = new File([blob], cleanFilename, { type: mimeType });
+            // Create data URL from base64
+            const dataUrl = `data:${mimeType};base64,${base64Data}`;
 
-            // Process the image
-            await this.processImage(file);
+            // Estimate original file size from base64 (approximate)
+            const estimatedSize = Math.round((base64Data.length * 3) / 4);
+
+            // Process the image directly from data URL
+            await this.processImageFromDataUrl(dataUrl, cleanFilename, mimeType, estimatedSize);
         } catch (error) {
             console.error('Error extracting image from ZIP:', filename, error);
         }
+    }
+
+    /**
+     * Process image from a data URL (for ZIP extracted images)
+     */
+    async processImageFromDataUrl(dataUrl, filename, mimeType, originalSize) {
+        return new Promise((resolve) => {
+            const startTime = performance.now();
+            const img = new Image();
+
+            img.onload = async () => {
+                const imageData = {
+                    id: Date.now() + Math.random().toString(36).substr(2, 9),
+                    name: filename,
+                    originalFormat: this.getFormatFromMime(mimeType),
+                    originalSize: originalSize,
+                    width: img.width,
+                    height: img.height,
+                    originalImage: img,
+                    file: null
+                };
+
+                // Convert the image
+                const result = await this.convertImage(imageData);
+                imageData.convertedDataUrl = result.dataUrl;
+                imageData.convertedSize = result.size;
+                imageData.convertedFormat = this.settings.format;
+                imageData.processingTime = performance.now() - startTime;
+
+                this.images.push(imageData);
+                this.stats.total++;
+                this.stats.totalOriginalSize += imageData.originalSize;
+                this.stats.totalConvertedSize += imageData.convertedSize;
+                this.stats.totalTime += imageData.processingTime;
+
+                this.addPreviewItem(imageData);
+                resolve();
+            };
+
+            img.onerror = (error) => {
+                console.error('Failed to load image:', filename, error);
+                resolve(); // Resolve anyway to continue with other images
+            };
+
+            img.src = dataUrl;
+        });
     }
 
     async processImage(file) {
