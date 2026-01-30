@@ -93,6 +93,13 @@ class ImageSquare {
             this.handleFiles(e.dataTransfer.files);
         });
 
+        // Paste from clipboard (Ctrl+V / Cmd+V) - only when square tool is active
+        document.addEventListener('paste', (e) => {
+            if (document.getElementById('squareTool').classList.contains('active')) {
+                this.handlePaste(e);
+            }
+        });
+
         // Background type toggle
         this.bgTypeToggle.querySelectorAll('.toggle-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -241,6 +248,27 @@ class ImageSquare {
 
         // Download all
         this.downloadAllBtn.addEventListener('click', () => this.downloadAll());
+    }
+
+    /**
+     * Handle paste event for clipboard images
+     */
+    handlePaste(e) {
+        const items = e.clipboardData?.items;
+        if (!items) return;
+
+        const imageFiles = [];
+        for (const item of items) {
+            if (item.type.startsWith('image/')) {
+                const file = item.getAsFile();
+                if (file) imageFiles.push(file);
+            }
+        }
+
+        if (imageFiles.length > 0) {
+            e.preventDefault();
+            this.handleFiles(imageFiles);
+        }
     }
 
     async handleFiles(files) {
@@ -1153,6 +1181,13 @@ class ImageConverter {
             this.handleFiles(e.dataTransfer.files);
         });
 
+        // Paste from clipboard (Ctrl+V / Cmd+V) - only when converter tool is active
+        document.addEventListener('paste', (e) => {
+            if (document.getElementById('converterTool').classList.contains('active')) {
+                this.handlePaste(e);
+            }
+        });
+
         // Format toggle
         this.formatToggle.querySelectorAll('.toggle-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -1186,6 +1221,27 @@ class ImageConverter {
 
         // Download all
         this.downloadAllBtn.addEventListener('click', () => this.downloadAll());
+    }
+
+    /**
+     * Handle paste event for clipboard images
+     */
+    handlePaste(e) {
+        const items = e.clipboardData?.items;
+        if (!items) return;
+
+        const imageFiles = [];
+        for (const item of items) {
+            if (item.type.startsWith('image/')) {
+                const file = item.getAsFile();
+                if (file) imageFiles.push(file);
+            }
+        }
+
+        if (imageFiles.length > 0) {
+            e.preventDefault();
+            this.handleFiles(imageFiles);
+        }
     }
 
     async handleFiles(files) {
