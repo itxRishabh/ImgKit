@@ -1907,17 +1907,163 @@ class BackgroundRemover {
         this.updateStats();
     }
 
-    // Placeholder methods - will be implemented in next commits
+    /**
+     * Process a single image file
+     */
     async processImage(file) {
-        console.log('processImage will be implemented in next commit');
+        const startTime = performance.now();
+        const id = Date.now() + Math.random();
+
+        try {
+            // Show loading with model status
+            if (!this.modelLoaded) {
+                this.showLoading('Loading AI model (first time only)...');
+            } else {
+                this.showLoading('Removing background...');
+            }
+
+            // Load image
+            const originalDataUrl = await this.readFileAsDataUrl(file);
+            const originalImg = await this.loadImage(originalDataUrl);
+
+            // Remove background using AI
+            const removedBlob = await this.removeBackground(file);
+            const removedDataUrl = await this.blobToDataUrl(removedBlob);
+            const removedImg = await this.loadImage(removedDataUrl);
+
+            // Apply background color if needed
+            const finalDataUrl = await this.applyBackground(removedImg);
+
+            const endTime = performance.now();
+            const processingTime = endTime - startTime;
+
+            // Store image data
+            const imageData = {
+                id,
+                name: file.name,
+                originalDataUrl,
+                removedDataUrl,  // Transparent version (cached)
+                processedDataUrl: finalDataUrl,
+                width: originalImg.width,
+                height: originalImg.height,
+                processingTime
+            };
+
+            this.images.push(imageData);
+            this.stats.total++;
+            this.stats.totalTime += processingTime;
+
+            this.createPreviewItem(imageData);
+            this.updateStats();
+            this.hideLoading();
+
+        } catch (error) {
+            console.error('Error processing image:', error);
+            this.hideLoading();
+        }
     }
 
+    /**
+     * Remove background using AI
+     */
+    async removeBackground(file) {
+        // Lazy load the library
+        if (!window.imglyRemoveBackground) {
+            await window.loadBackgroundRemovalLib();
+            this.modelLoaded = true;
+        }
+
+        // Configure for speed
+        const config = {
+            model: 'small',  // Use small model for speed
+            output: {
+                format: 'image/png',
+                quality: 0.8
+            }
+        };
+
+        // Remove background
+        const blob = await window.imglyRemoveBackground(file, config);
+        return blob;
+    }
+
+    /**
+     * Apply background color/transparency to removed image
+     */
+    async applyBackground(img) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        // Fill background based on setting
+        if (this.settings.bgType === 'white') {
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        } else if (this.settings.bgType === 'color') {
+            ctx.fillStyle = this.settings.bgColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        // For 'transparent', we don't fill anything
+
+        // Draw the removed background image
+        ctx.drawImage(img, 0, 0);
+
+        return canvas.toDataURL('image/png');
+    }
+
+    /**
+     * Reprocess all images with new background settings (fast - uses cached removal)
+     */
     async reprocessAllImages() {
-        console.log('reprocessAllImages will be implemented in next commit');
+        for (const imageData of this.images) {
+            // Use cached removed version for speed
+            const removedImg = await this.loadImage(imageData.removedDataUrl);
+            imageData.processedDataUrl = await this.applyBackground(removedImg);
+
+            // Update preview
+            const previewImg = document.querySelector(`[data-id="${imageData.id}"] .preview-image img`);
+            if (previewImg) {
+                previewImg.src = imageData.processedDataUrl;
+            }
+        }
+    }
+
+    // Helper methods
+    readFileAsDataUrl(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
+    blobToDataUrl(blob) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    }
+
+    loadImage(src) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => resolve(img);
+            img.onerror = reject;
+            img.src = src;
+        });
+    }
+
+    // Placeholder - will be implemented in next commits
+    createPreviewItem(imageData) {
+        console.log('createPreviewItem will be implemented next');
     }
 
     async downloadAll() {
-        console.log('downloadAll will be implemented in next commit');
+        console.log('downloadAll will be implemented next');
     }
 }
 
