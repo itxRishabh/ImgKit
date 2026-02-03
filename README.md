@@ -67,12 +67,34 @@ Convert images between popular formats with zero quality loss. Optimized for fil
 
 ---
 
+### 3. AI Background Remover 🆕
+Remove image backgrounds instantly using AI. Works 100% locally in your browser.
+
+**Features:**
+
+| Feature | Description |
+|---------|-------------|
+| 🧠 **AI-Powered** | Uses machine learning for precise edge detection |
+| 🏃 **Fast Processing** | Model loads once, then processes images rapidly |
+| 🎨 **Background Options** | Transparent, white, or custom color |
+| 🔒 **100% Private** | AI runs locally - images never leave your device |
+| 📦 **Batch Support** | Process multiple images at once |
+
+**How it works:**
+1. Upload images (drag & drop, click, or paste)
+2. AI automatically detects and removes backgrounds
+3. Choose background type (transparent/white/color)
+4. Download individual images or all as ZIP
+
+---
+
 ## ✨ Features
 
 | Feature | Description |
 |---------|-------------|
 | ⚡ **Lightning Fast** | All processing happens locally in your browser |
 | 🔒 **100% Private** | Your images never leave your device - no server uploads |
+| 🧠 **AI Background Removal** | Remove backgrounds with machine learning |
 | 📦 **Batch Processing** | Process multiple images at once |
 | 💾 **Quality Control** | Full control over output quality (10-100%) |
 | 📐 **Custom Dimensions** | Set exact output sizes with linked aspect ratios |
@@ -107,6 +129,8 @@ open index.html
 - **CSS3** - Modern styling with animations & glassmorphism
 - **JavaScript (ES6+)** - Vanilla JS, zero dependencies
 - **Canvas API** - Client-side image processing
+- **@imgly/background-removal** - Browser-based AI for background removal
+- **JSZip** - ZIP file creation for batch downloads
 - **Font Awesome 6** - Beautiful iconography
 - **Google Fonts** - Inter typeface
 
@@ -118,7 +142,7 @@ open index.html
 ImgKit/
 ├── index.html      # Main application
 ├── style.css       # Styles & animations
-├── app.js          # Core logic (ImageSquare + ImageConverter classes)
+├── app.js          # Core logic (ImageSquare + ImageConverter + BackgroundRemover)
 ├── README.md       # Documentation
 └── LICENSE         # MIT License
 ```
