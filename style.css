@@ -1074,6 +1074,41 @@ body {
     line-height: 1.6;
 }
 
+/* AI Feature Card */
+.feature-card-ai {
+    position: relative;
+    border-color: rgba(139, 92, 246, 0.3);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(236, 72, 153, 0.08));
+}
+
+.feature-card-ai:hover {
+    border-color: rgba(139, 92, 246, 0.5);
+}
+
+.feature-card-ai .feature-icon {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2));
+    color: #EC4899;
+}
+
+.feature-card-ai:hover .feature-icon {
+    background: linear-gradient(135deg, #8B5CF6, #EC4899);
+    color: white;
+}
+
+.feature-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 10px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #8B5CF6, #EC4899);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
 /* ===== Footer ===== */
 .footer {
     text-align: center;
