@@ -2061,13 +2061,134 @@ class BackgroundRemover {
         });
     }
 
-    // Placeholder - will be implemented in next commits
+    /**
+     * Create preview item for processed image
+     */
     createPreviewItem(imageData) {
-        console.log('createPreviewItem will be implemented next');
+        const item = document.createElement('div');
+        item.className = 'preview-item';
+        item.dataset.id = imageData.id;
+
+        const processingTime = (imageData.processingTime / 1000).toFixed(1);
+
+        item.innerHTML = `
+            <div class="preview-image checkered-bg">
+                <img src="${imageData.processedDataUrl}" alt="${imageData.name}">
+            </div>
+            <div class="preview-info">
+                <h4 class="preview-name" title="${imageData.name}">${this.truncateFilename(imageData.name)}</h4>
+                <div class="preview-dimensions">
+                    <span><i class="fas fa-expand"></i> ${imageData.width} × ${imageData.height}</span>
+                    <span><i class="fas fa-bolt"></i> ${processingTime}s</span>
+                </div>
+                <div class="preview-actions-row">
+                    <button class="btn btn-primary btn-download" data-id="${imageData.id}">
+                        <i class="fas fa-download"></i>
+                        Download
+                    </button>
+                    <button class="btn btn-outline btn-remove" data-id="${imageData.id}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+
+        // Download button
+        item.querySelector('.btn-download').addEventListener('click', () => {
+            this.downloadSingle(imageData.id);
+        });
+
+        // Remove button
+        item.querySelector('.btn-remove').addEventListener('click', () => {
+            this.removeImage(imageData.id);
+        });
+
+        this.previewGrid.appendChild(item);
     }
 
+    truncateFilename(name, maxLength = 20) {
+        if (name.length <= maxLength) return name;
+        const ext = name.split('.').pop();
+        const base = name.substring(0, name.lastIndexOf('.'));
+        const truncated = base.substring(0, maxLength - ext.length - 4) + '...';
+        return truncated + '.' + ext;
+    }
+
+    /**
+     * Download a single image
+     */
+    downloadSingle(id) {
+        const imageData = this.images.find(img => img.id === id);
+        if (!imageData) return;
+
+        const link = document.createElement('a');
+        link.href = imageData.processedDataUrl;
+        const baseName = imageData.name.substring(0, imageData.name.lastIndexOf('.')) || imageData.name;
+        link.download = `${baseName}_nobg.png`;
+        link.click();
+    }
+
+    /**
+     * Remove a single image
+     */
+    removeImage(id) {
+        this.images = this.images.filter(img => img.id !== id);
+        const item = document.querySelector(`[data-id="${id}"]`);
+        if (item) item.remove();
+
+        if (this.images.length === 0) {
+            this.previewSection.classList.remove('active');
+            this.settingsPanel.classList.remove('active');
+            this.statsSection.classList.remove('active');
+        }
+    }
+
+    /**
+     * Download all images as ZIP
+     */
     async downloadAll() {
-        console.log('downloadAll will be implemented next');
+        if (!this.images.length) return;
+
+        // If single image, just download directly
+        if (this.images.length === 1) {
+            this.downloadSingle(this.images[0].id);
+            return;
+        }
+
+        // For multiple images, create ZIP file
+        this.showLoading('Creating ZIP file...', false);
+
+        try {
+            const zip = new JSZip();
+            const imgFolder = zip.folder('imgkit-nobg');
+
+            for (const imageData of this.images) {
+                const baseName = imageData.name.substring(0, imageData.name.lastIndexOf('.')) || imageData.name;
+                const fileName = `${baseName}_nobg.png`;
+
+                // Convert data URL to blob
+                const base64Data = imageData.processedDataUrl.split(',')[1];
+                imgFolder.file(fileName, base64Data, { base64: true });
+            }
+
+            // Generate ZIP and download
+            const content = await zip.generateAsync({ type: 'blob' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(content);
+            link.download = 'imgkit-nobg.zip';
+            link.click();
+            URL.revokeObjectURL(link.href);
+        } catch (error) {
+            console.error('ZIP creation failed:', error);
+            // Fallback to individual downloads
+            this.images.forEach((imageData, index) => {
+                setTimeout(() => {
+                    this.downloadSingle(imageData.id);
+                }, index * 300);
+            });
+        }
+
+        this.hideLoading();
     }
 }
 
