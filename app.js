@@ -1881,14 +1881,18 @@ class BackgroundRemover {
         this.fileInput.value = '';
     }
 
-    showLoading(message = 'Processing...') {
+    showLoading(message = 'Processing...', isAI = true) {
         const loadingText = this.loadingOverlay.querySelector('p');
         if (loadingText) loadingText.textContent = message;
         this.loadingOverlay.classList.add('active');
+        if (isAI) {
+            this.loadingOverlay.classList.add('ai-mode');
+        }
     }
 
     hideLoading() {
         this.loadingOverlay.classList.remove('active');
+        this.loadingOverlay.classList.remove('ai-mode');
     }
 
     updateStats() {
