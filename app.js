@@ -1964,6 +1964,13 @@ class BackgroundRemover {
         } catch (error) {
             console.error('Error processing image:', error);
             this.hideLoading();
+
+            // Show user-friendly error message
+            if (error.message.includes('local server') || error.message.includes('not available')) {
+                alert('⚠️ AI Background Removal requires a local server.\n\nTo use this feature:\n1. Open Terminal\n2. Navigate to ImgKit folder\n3. Run: npx serve\n4. Open the URL shown in terminal');
+            } else {
+                alert('Error processing image. Please try again.');
+            }
         }
     }
 
