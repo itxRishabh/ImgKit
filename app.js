@@ -1723,6 +1723,207 @@ class ImageConverter {
 // Initialize the converter
 const imageConverter = new ImageConverter();
 
+/**
+ * BackgroundRemover - AI-powered background removal
+ */
+class BackgroundRemover {
+    constructor() {
+        this.images = [];
+        this.settings = {
+            bgType: 'transparent',
+            bgColor: '#95BF47'
+        };
+        this.stats = {
+            total: 0,
+            totalTime: 0
+        };
+        this.modelLoaded = false;
+        this.isProcessing = false;
+
+        this.initElements();
+        this.initEventListeners();
+    }
+
+    initElements() {
+        // Upload elements
+        this.uploadArea = document.getElementById('removerUploadArea');
+        this.fileInput = document.getElementById('removerFileInput');
+
+        // Settings elements
+        this.settingsPanel = document.getElementById('removerSettingsPanel');
+        this.bgToggle = document.getElementById('removerBgToggle');
+        this.colorPicker = document.getElementById('removerColorPicker');
+        this.customColor = document.getElementById('removerCustomColor');
+
+        // Preview elements
+        this.previewSection = document.getElementById('removerPreviewSection');
+        this.previewGrid = document.getElementById('removerPreviewGrid');
+        this.clearAllBtn = document.getElementById('removerClearAll');
+        this.downloadAllBtn = document.getElementById('removerDownloadAll');
+
+        // Stats elements
+        this.statsSection = document.getElementById('removerStatsSection');
+        this.totalImagesEl = document.getElementById('removerTotalImages');
+        this.avgTimeEl = document.getElementById('removerAvgTime');
+
+        // Loading overlay (shared)
+        this.loadingOverlay = document.getElementById('loadingOverlay');
+    }
+
+    initEventListeners() {
+        // Upload area click
+        this.uploadArea.addEventListener('click', () => this.fileInput.click());
+
+        // File input change
+        this.fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
+
+        // Drag and drop
+        this.uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            this.uploadArea.classList.add('drag-over');
+        });
+
+        this.uploadArea.addEventListener('dragleave', () => {
+            this.uploadArea.classList.remove('drag-over');
+        });
+
+        this.uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            this.uploadArea.classList.remove('drag-over');
+            this.handleFiles(e.dataTransfer.files);
+        });
+
+        // Paste from clipboard
+        document.addEventListener('paste', (e) => {
+            if (document.getElementById('removerTool').classList.contains('active')) {
+                this.handlePaste(e);
+            }
+        });
+
+        // Background type toggle
+        this.bgToggle.querySelectorAll('.toggle-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.bgToggle.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                this.settings.bgType = btn.dataset.value;
+
+                // Show/hide color picker
+                this.colorPicker.style.display = this.settings.bgType === 'color' ? 'flex' : 'none';
+
+                // Reprocess if images exist
+                if (this.images.length > 0) {
+                    this.reprocessAllImages();
+                }
+            });
+        });
+
+        // Color presets
+        this.colorPicker.querySelectorAll('.color-preset').forEach(preset => {
+            preset.addEventListener('click', () => {
+                this.settings.bgColor = preset.dataset.color;
+                this.colorPicker.querySelectorAll('.color-preset').forEach(p => p.classList.remove('active'));
+                preset.classList.add('active');
+                this.customColor.value = preset.dataset.color;
+                if (this.images.length > 0) {
+                    this.reprocessAllImages();
+                }
+            });
+        });
+
+        // Custom color
+        this.customColor.addEventListener('input', (e) => {
+            this.settings.bgColor = e.target.value;
+            this.colorPicker.querySelectorAll('.color-preset').forEach(p => p.classList.remove('active'));
+            if (this.images.length > 0) {
+                this.reprocessAllImages();
+            }
+        });
+
+        // Clear all
+        this.clearAllBtn.addEventListener('click', () => this.clearAll());
+
+        // Download all
+        this.downloadAllBtn.addEventListener('click', () => this.downloadAll());
+    }
+
+    handlePaste(e) {
+        const items = e.clipboardData?.items;
+        if (!items) return;
+
+        const imageFiles = [];
+        for (const item of items) {
+            if (item.type.startsWith('image/')) {
+                const file = item.getAsFile();
+                if (file) imageFiles.push(file);
+            }
+        }
+
+        if (imageFiles.length > 0) {
+            e.preventDefault();
+            this.handleFiles(imageFiles);
+        }
+    }
+
+    async handleFiles(files) {
+        if (!files.length) return;
+
+        const imageFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
+        if (!imageFiles.length) return;
+
+        this.settingsPanel.classList.add('active');
+        this.previewSection.classList.add('active');
+        this.statsSection.classList.add('active');
+
+        for (const file of imageFiles) {
+            await this.processImage(file);
+        }
+
+        this.fileInput.value = '';
+    }
+
+    showLoading(message = 'Processing...') {
+        const loadingText = this.loadingOverlay.querySelector('p');
+        if (loadingText) loadingText.textContent = message;
+        this.loadingOverlay.classList.add('active');
+    }
+
+    hideLoading() {
+        this.loadingOverlay.classList.remove('active');
+    }
+
+    updateStats() {
+        this.totalImagesEl.textContent = this.stats.total;
+        const avgTime = this.stats.total > 0 ? (this.stats.totalTime / this.stats.total / 1000).toFixed(1) : 0;
+        this.avgTimeEl.textContent = `${avgTime}s`;
+    }
+
+    clearAll() {
+        this.images = [];
+        this.previewGrid.innerHTML = '';
+        this.previewSection.classList.remove('active');
+        this.settingsPanel.classList.remove('active');
+        this.statsSection.classList.remove('active');
+        this.stats = { total: 0, totalTime: 0 };
+        this.updateStats();
+    }
+
+    // Placeholder methods - will be implemented in next commits
+    async processImage(file) {
+        console.log('processImage will be implemented in next commit');
+    }
+
+    async reprocessAllImages() {
+        console.log('reprocessAllImages will be implemented in next commit');
+    }
+
+    async downloadAll() {
+        console.log('downloadAll will be implemented in next commit');
+    }
+}
+
+// Initialize the background remover
+const backgroundRemover = new BackgroundRemover();
+
 // Tool Navigation - Switch between tools
 document.querySelectorAll('.tool-tab').forEach(tab => {
     tab.addEventListener('click', () => {
@@ -1740,6 +1941,8 @@ document.querySelectorAll('.tool-tab').forEach(tab => {
             document.getElementById('squareTool').classList.add('active');
         } else if (tool === 'converter') {
             document.getElementById('converterTool').classList.add('active');
+        } else if (tool === 'remover') {
+            document.getElementById('removerTool').classList.add('active');
         }
     });
 });
