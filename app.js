@@ -1134,6 +1134,8 @@ class ImageConverter {
         // Upload elements
         this.uploadArea = document.getElementById('converterUploadArea');
         this.fileInput = document.getElementById('converterFileInput');
+        this.folderInput = document.getElementById('converterFolderInput');
+        this.folderBtn = document.getElementById('converterFolderBtn');
 
         // Settings elements
         this.settingsPanel = document.getElementById('converterSettingsPanel');
@@ -1164,6 +1166,21 @@ class ImageConverter {
 
         // File input change
         this.fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
+
+        // Folder button click
+        this.folderBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.folderInput.click();
+        });
+
+        // Folder input change - filter and process only image files
+        this.folderInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files).filter(file => file.type.startsWith('image/'));
+            if (files.length > 0) {
+                this.handleFiles(files);
+            }
+            this.folderInput.value = '';
+        });
 
         // Drag and drop
         this.uploadArea.addEventListener('dragover', (e) => {

@@ -240,6 +240,26 @@ body::before {
     border-radius: 20px;
 }
 
+/* Folder Upload Option */
+.folder-upload-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--border-color);
+}
+
+.folder-upload-option .btn {
+    padding: 10px 20px;
+}
+
+.folder-hint {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
 /* ===== Settings Panel ===== */
 .settings-panel {
     background: var(--bg-card);

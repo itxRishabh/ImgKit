@@ -304,6 +304,14 @@
                         <p class="upload-formats">Supports: JPG, PNG, WebP, GIF, BMP, TIFF, ZIP</p>
                         <input type="file" id="converterFileInput" accept="image/*,.zip,application/zip" multiple
                             hidden>
+                        <input type="file" id="converterFolderInput" webkitdirectory directory multiple hidden>
+                    </div>
+                    <div class="folder-upload-option">
+                        <button class="btn btn-secondary" id="converterFolderBtn">
+                            <i class="fas fa-folder-open"></i>
+                            Upload Folder
+                        </button>
+                        <span class="folder-hint">Select a folder to convert all images inside</span>
                     </div>
                 </div>
 
