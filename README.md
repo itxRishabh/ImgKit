@@ -88,6 +88,28 @@ Remove image backgrounds instantly using AI. Works 100% locally in your browser.
 
 ---
 
+### 4. Image Crop ✂️
+Precise image cropping with interactive selection and aspect ratio presets.
+
+**Features:**
+
+| Feature | Description |
+|---------|-------------|
+| 🖱️ **Interactive Crop** | Drag to move, handles to resize the crop area |
+| 📐 **Aspect Ratios** | Free, 1:1, 4:3, 3:2, 16:9, 9:16 presets |
+| 📏 **Live Dimensions** | Real-time pixel dimensions display |
+| 🎯 **Rule of Thirds** | Grid overlay for better composition |
+| 📱 **Touch Support** | Works on mobile and tablet devices |
+
+**How it works:**
+1. Upload an image (drag & drop, click, or paste)
+2. Adjust the crop selection by dragging corners/edges
+3. Choose an aspect ratio preset (optional)
+4. Select output format (PNG/JPG/WebP) and quality
+5. Click "Apply Crop & Download"
+
+---
+
 ## ✨ Features
 
 | Feature | Description |
@@ -95,6 +117,7 @@ Remove image backgrounds instantly using AI. Works 100% locally in your browser.
 | ⚡ **Lightning Fast** | All processing happens locally in your browser |
 | 🔒 **100% Private** | Your images never leave your device - no server uploads |
 | 🧠 **AI Background Removal** | Remove backgrounds with machine learning |
+| ✂️ **Image Crop** | Interactive cropping with aspect ratio presets |
 | 📦 **Batch Processing** | Process multiple images at once |
 | 💾 **Quality Control** | Full control over output quality (10-100%) |
 | 📐 **Custom Dimensions** | Set exact output sizes with linked aspect ratios |
@@ -116,7 +139,7 @@ open index.html
 ```
 
 ### How to Use
-1. **Select a tool** - Square Maker or Format Converter
+1. **Select a tool** - Square Maker, Format Converter, Remove BG, or Image Crop
 2. **Upload images** - Drag & drop or click to browse
 3. **Adjust settings** - Background, format, quality, dimensions
 4. **Download** - Individual files or all at once
@@ -142,7 +165,7 @@ open index.html
 ImgKit/
 ├── index.html      # Main application
 ├── style.css       # Styles & animations
-├── app.js          # Core logic (ImageSquare + ImageConverter + BackgroundRemover)
+├── app.js          # Core logic (ImageSquare + ImageConverter + BackgroundRemover + ImageCropper)
 ├── README.md       # Documentation
 └── LICENSE         # MIT License
 ```
