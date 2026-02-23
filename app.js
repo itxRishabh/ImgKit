@@ -1117,7 +1117,7 @@ class ImageConverter {
         this.images = [];
         this.settings = {
             format: 'webp',
-            quality: 0.92 // 92% quality - visually lossless with good compression
+            quality: 0.82 // 82% quality - visually lossless with optimal compression
         };
         this.stats = {
             total: 0,
@@ -2219,6 +2219,380 @@ class BackgroundRemover {
 // Initialize the background remover
 const backgroundRemover = new BackgroundRemover();
 
+/**
+ * ImageCropper - Image Crop Tool
+ * Interactive image cropping with aspect ratio presets
+ */
+class ImageCropper {
+    constructor() {
+        this.settings = {
+            aspectRatio: null, // null = free, or a number like 1, 4/3, 16/9
+            format: 'png',
+            quality: 0.92
+        };
+        this.originalImage = null;
+        this.fileName = '';
+        // Crop region in image-pixel coordinates
+        this.crop = { x: 0, y: 0, w: 0, h: 0 };
+        // Display metrics
+        this.imgRect = null; // bounding rect of the displayed image
+        this.scale = 1; // display pixels → real pixels
+
+        this.dragging = null; // null | 'move' | handle name
+        this.dragStart = { mx: 0, my: 0, crop: null };
+
+        this.initElements();
+        this.initEventListeners();
+    }
+
+    initElements() {
+        this.uploadSection = document.getElementById('cropperUploadSection');
+        this.uploadArea = document.getElementById('cropperUploadArea');
+        this.fileInput = document.getElementById('cropperFileInput');
+        this.workspace = document.getElementById('cropWorkspace');
+        this.canvasContainer = document.getElementById('cropCanvasContainer');
+        this.sourceImage = document.getElementById('cropSourceImage');
+        this.overlay = document.getElementById('cropOverlay');
+        this.selection = document.getElementById('cropSelection');
+        this.dimensionsEl = document.getElementById('cropDimensions');
+        this.resetBtn = document.getElementById('cropResetBtn');
+        this.newImageBtn = document.getElementById('cropNewImageBtn');
+        this.settingsPanel = document.getElementById('cropperSettingsPanel');
+        this.aspectToggle = document.getElementById('cropAspectToggle');
+        this.formatToggle = document.getElementById('cropFormatToggle');
+        this.qualitySetting = document.getElementById('cropQualitySetting');
+        this.qualitySlider = document.getElementById('cropQualitySlider');
+        this.qualityValue = document.getElementById('cropQualityValue');
+        this.applyBtn = document.getElementById('cropApplyBtn');
+    }
+
+    initEventListeners() {
+        // Upload
+        this.uploadArea.addEventListener('click', () => this.fileInput.click());
+        this.fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) this.loadImage(e.target.files[0]);
+        });
+
+        // Drag and drop
+        this.uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            this.uploadArea.classList.add('drag-over');
+        });
+        this.uploadArea.addEventListener('dragleave', () => {
+            this.uploadArea.classList.remove('drag-over');
+        });
+        this.uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            this.uploadArea.classList.remove('drag-over');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) this.loadImage(file);
+        });
+
+        // Paste
+        document.addEventListener('paste', (e) => {
+            if (!document.getElementById('cropperTool').classList.contains('active')) return;
+            const items = e.clipboardData?.items;
+            if (!items) return;
+            for (const item of items) {
+                if (item.type.startsWith('image/')) {
+                    e.preventDefault();
+                    this.loadImage(item.getAsFile());
+                    return;
+                }
+            }
+        });
+
+        // Crop interaction — mouse
+        this.selection.addEventListener('mousedown', (e) => this.onSelectionDown(e));
+        this.selection.querySelectorAll('.crop-handle').forEach(h => {
+            h.addEventListener('mousedown', (e) => {
+                e.stopPropagation();
+                this.onHandleDown(e, h.dataset.handle);
+            });
+        });
+        document.addEventListener('mousemove', (e) => this.onPointerMove(e));
+        document.addEventListener('mouseup', () => this.onPointerUp());
+
+        // Crop interaction — touch
+        this.selection.addEventListener('touchstart', (e) => this.onSelectionDown(e.touches[0], true), { passive: false });
+        this.selection.querySelectorAll('.crop-handle').forEach(h => {
+            h.addEventListener('touchstart', (e) => {
+                e.stopPropagation();
+                this.onHandleDown(e.touches[0], h.dataset.handle, true);
+            }, { passive: false });
+        });
+        document.addEventListener('touchmove', (e) => {
+            if (this.dragging) { e.preventDefault(); this.onPointerMove(e.touches[0]); }
+        }, { passive: false });
+        document.addEventListener('touchend', () => this.onPointerUp());
+
+        // Toolbar
+        this.resetBtn.addEventListener('click', () => this.resetCrop());
+        this.newImageBtn.addEventListener('click', () => this.showUpload());
+
+        // Aspect ratio
+        this.aspectToggle.querySelectorAll('.toggle-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.aspectToggle.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const v = btn.dataset.value;
+                if (v === 'free') {
+                    this.settings.aspectRatio = null;
+                } else {
+                    const [w, h] = v.split(':').map(Number);
+                    this.settings.aspectRatio = w / h;
+                }
+                if (this.originalImage) this.applyAspectRatio();
+            });
+        });
+
+        // Format
+        this.formatToggle.querySelectorAll('.toggle-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.formatToggle.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                this.settings.format = btn.dataset.value;
+                this.qualitySetting.style.display = (this.settings.format === 'png') ? 'none' : 'flex';
+            });
+        });
+
+        // Quality
+        this.qualitySlider.addEventListener('input', (e) => {
+            this.settings.quality = e.target.value / 100;
+            this.qualityValue.textContent = e.target.value;
+        });
+
+        // Apply
+        this.applyBtn.addEventListener('click', () => this.applyCropAndDownload());
+
+        // Re-calculate on resize
+        window.addEventListener('resize', () => {
+            if (this.originalImage) {
+                requestAnimationFrame(() => this.syncOverlay());
+            }
+        });
+    }
+
+    /* ─── Image Loading ─── */
+    loadImage(file) {
+        this.fileName = file.name;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                this.originalImage = img;
+                this.sourceImage.src = e.target.result;
+                this.sourceImage.onload = () => {
+                    this.uploadSection.style.display = 'none';
+                    this.workspace.classList.add('active');
+                    this.settingsPanel.classList.add('active');
+                    this.resetCrop();
+                };
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+        this.fileInput.value = '';
+    }
+
+    showUpload() {
+        this.workspace.classList.remove('active');
+        this.settingsPanel.classList.remove('active');
+        this.uploadSection.style.display = '';
+        this.originalImage = null;
+    }
+
+    /* ─── Geometry helpers ─── */
+    syncOverlay() {
+        // The image may be letter-boxed inside the container
+        const imgEl = this.sourceImage;
+        const containerRect = this.canvasContainer.getBoundingClientRect();
+        const imgNatW = this.originalImage.width;
+        const imgNatH = this.originalImage.height;
+
+        // Rendered size of the image (object-fit: contain)
+        const containerW = containerRect.width;
+        const containerH = containerRect.height;
+        const scaleX = containerW / imgNatW;
+        const scaleY = containerH / imgNatH;
+        const s = Math.min(scaleX, scaleY);
+        const renderedW = imgNatW * s;
+        const renderedH = imgNatH * s;
+        const offsetX = (containerW - renderedW) / 2;
+        const offsetY = (containerH - renderedH) / 2;
+
+        this.imgRect = { x: offsetX, y: offsetY, w: renderedW, h: renderedH };
+        this.scale = s;
+        this.renderSelection();
+    }
+
+    renderSelection() {
+        if (!this.imgRect) return;
+        const s = this.scale;
+        const ox = this.imgRect.x;
+        const oy = this.imgRect.y;
+        this.selection.style.left = (ox + this.crop.x * s) + 'px';
+        this.selection.style.top = (oy + this.crop.y * s) + 'px';
+        this.selection.style.width = (this.crop.w * s) + 'px';
+        this.selection.style.height = (this.crop.h * s) + 'px';
+
+        // Update dimensions display (real pixels)
+        this.dimensionsEl.textContent = `${Math.round(this.crop.w)} × ${Math.round(this.crop.h)}`;
+    }
+
+    resetCrop() {
+        if (!this.originalImage) return;
+        const ar = this.settings.aspectRatio;
+        const imgW = this.originalImage.width;
+        const imgH = this.originalImage.height;
+
+        if (!ar) {
+            this.crop = { x: 0, y: 0, w: imgW, h: imgH };
+        } else {
+            // Fit aspect ratio inside image
+            let w = imgW, h = imgW / ar;
+            if (h > imgH) { h = imgH; w = imgH * ar; }
+            this.crop = { x: (imgW - w) / 2, y: (imgH - h) / 2, w, h };
+        }
+        this.syncOverlay();
+    }
+
+    applyAspectRatio() {
+        const ar = this.settings.aspectRatio;
+        if (!ar) return;
+        const imgW = this.originalImage.width;
+        const imgH = this.originalImage.height;
+        // Shrink current crop to fit aspect ratio, keep centered on current center
+        let cx = this.crop.x + this.crop.w / 2;
+        let cy = this.crop.y + this.crop.h / 2;
+        let w = this.crop.w;
+        let h = w / ar;
+        if (h > this.crop.h) { h = this.crop.h; w = h * ar; }
+        // Clamp to image bounds
+        if (w > imgW) { w = imgW; h = w / ar; }
+        if (h > imgH) { h = imgH; w = h * ar; }
+        let x = cx - w / 2;
+        let y = cy - h / 2;
+        if (x < 0) x = 0;
+        if (y < 0) y = 0;
+        if (x + w > imgW) x = imgW - w;
+        if (y + h > imgH) y = imgH - h;
+        this.crop = { x, y, w, h };
+        this.renderSelection();
+    }
+
+    /* ─── Pointer interaction ─── */
+    onSelectionDown(e, isTouch) {
+        if (isTouch) e.preventDefault?.();
+        this.dragging = 'move';
+        this.dragStart = {
+            mx: e.clientX, my: e.clientY,
+            crop: { ...this.crop }
+        };
+    }
+
+    onHandleDown(e, handle, isTouch) {
+        if (isTouch) e.preventDefault?.();
+        this.dragging = handle;
+        this.dragStart = {
+            mx: e.clientX, my: e.clientY,
+            crop: { ...this.crop }
+        };
+    }
+
+    onPointerMove(e) {
+        if (!this.dragging || !this.imgRect) return;
+        const dx = (e.clientX - this.dragStart.mx) / this.scale;
+        const dy = (e.clientY - this.dragStart.my) / this.scale;
+        const oc = this.dragStart.crop;
+        const imgW = this.originalImage.width;
+        const imgH = this.originalImage.height;
+        const minSize = 20;
+
+        if (this.dragging === 'move') {
+            let nx = oc.x + dx;
+            let ny = oc.y + dy;
+            nx = Math.max(0, Math.min(imgW - oc.w, nx));
+            ny = Math.max(0, Math.min(imgH - oc.h, ny));
+            this.crop.x = nx;
+            this.crop.y = ny;
+        } else {
+            // Handle resize
+            let { x, y, w, h } = oc;
+            const handle = this.dragging;
+
+            // Adjust edges based on handle
+            if (handle.includes('e')) { w = Math.max(minSize, oc.w + dx); }
+            if (handle.includes('w')) { w = Math.max(minSize, oc.w - dx); x = oc.x + oc.w - w; }
+            if (handle.includes('s')) { h = Math.max(minSize, oc.h + dy); }
+            if (handle.includes('n')) { h = Math.max(minSize, oc.h - dy); y = oc.y + oc.h - h; }
+
+            // Aspect ratio constraint
+            const ar = this.settings.aspectRatio;
+            if (ar) {
+                if (handle === 'n' || handle === 's') {
+                    w = h * ar;
+                    x = oc.x + (oc.w - w) / 2;
+                } else if (handle === 'e' || handle === 'w') {
+                    h = w / ar;
+                    y = oc.y + (oc.h - h) / 2;
+                } else {
+                    // Corner — base on the axis with larger movement
+                    if (Math.abs(dx) > Math.abs(dy)) {
+                        h = w / ar;
+                        if (handle.includes('n')) y = oc.y + oc.h - h;
+                    } else {
+                        w = h * ar;
+                        if (handle.includes('w')) x = oc.x + oc.w - w;
+                    }
+                }
+            }
+
+            // Clamp to image bounds
+            if (x < 0) { w += x; x = 0; }
+            if (y < 0) { h += y; y = 0; }
+            if (x + w > imgW) w = imgW - x;
+            if (y + h > imgH) h = imgH - y;
+            if (w < minSize) w = minSize;
+            if (h < minSize) h = minSize;
+
+            this.crop = { x, y, w, h };
+        }
+
+        this.renderSelection();
+    }
+
+    onPointerUp() {
+        this.dragging = null;
+    }
+
+    /* ─── Export ─── */
+    applyCropAndDownload() {
+        if (!this.originalImage) return;
+        const { x, y, w, h } = this.crop;
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(w);
+        canvas.height = Math.round(h);
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(this.originalImage, Math.round(x), Math.round(y), Math.round(w), Math.round(h), 0, 0, Math.round(w), Math.round(h));
+
+        const mimeTypes = { png: 'image/png', jpeg: 'image/jpeg', webp: 'image/webp' };
+        const mime = mimeTypes[this.settings.format] || 'image/png';
+        const quality = this.settings.format === 'png' ? 1 : this.settings.quality;
+        const dataUrl = canvas.toDataURL(mime, quality);
+
+        const link = document.createElement('a');
+        const ext = this.settings.format === 'jpeg' ? 'jpg' : this.settings.format;
+        const baseName = this.fileName.substring(0, this.fileName.lastIndexOf('.')) || this.fileName;
+        link.download = `${baseName}_cropped.${ext}`;
+        link.href = dataUrl;
+        link.click();
+    }
+}
+
+// Initialize the cropper
+const imageCropper = new ImageCropper();
+
 // Tool Navigation - Switch between tools
 document.querySelectorAll('.tool-tab').forEach(tab => {
     tab.addEventListener('click', () => {
@@ -2238,6 +2612,8 @@ document.querySelectorAll('.tool-tab').forEach(tab => {
             document.getElementById('converterTool').classList.add('active');
         } else if (tool === 'remover') {
             document.getElementById('removerTool').classList.add('active');
+        } else if (tool === 'cropper') {
+            document.getElementById('cropperTool').classList.add('active');
         }
     });
 });
