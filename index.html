@@ -293,7 +293,7 @@
                         Convert Images to <span class="gradient-text">Any Format</span>
                     </h1>
                     <p class="hero-subtitle">
-                        PNG, JPG, WebP, GIF, BMP - Convert instantly with zero quality loss.
+                        PNG, JPG, WebP, GIF, BMP, HEIC — Convert instantly with zero quality loss.
                     </p>
                 </section>
 
@@ -305,8 +305,8 @@
                         </div>
                         <h3 class="upload-title">Drop your images here</h3>
                         <p class="upload-text">or click to browse</p>
-                        <p class="upload-formats">Supports: JPG, PNG, WebP, GIF, BMP, TIFF, ZIP</p>
-                        <input type="file" id="converterFileInput" accept="image/*,.zip,application/zip" multiple
+                        <p class="upload-formats">Supports: JPG, PNG, WebP, GIF, BMP, TIFF, HEIC, ZIP</p>
+                        <input type="file" id="converterFileInput" accept="image/*,.heic,.heif,application/zip,.zip" multiple
                             hidden>
                         <input type="file" id="converterFolderInput" webkitdirectory directory multiple hidden>
                     </div>
@@ -750,6 +750,7 @@
         };
     </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
     <script src="app.js"></script>
 </body>
 

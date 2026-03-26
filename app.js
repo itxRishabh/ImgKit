@@ -1276,7 +1276,13 @@ class ImageConverter {
             file.type === 'application/x-zip-compressed' ||
             file.name.toLowerCase().endsWith('.zip')
         );
-        const imageFiles = allFiles.filter(file => file.type.startsWith('image/'));
+        // Include standard image/* types AND HEIC/HEIF (which may have empty/unknown MIME in some browsers)
+        const imageFiles = allFiles.filter(file => {
+            if (zipFiles.includes(file)) return false;
+            if (file.type.startsWith('image/')) return true;
+            const lower = file.name.toLowerCase();
+            return lower.endsWith('.heic') || lower.endsWith('.heif');
+        });
 
         // Process regular image files
         for (const file of imageFiles) {
@@ -1301,7 +1307,7 @@ class ImageConverter {
     async processZipFile(zipFile) {
         try {
             const zip = await JSZip.loadAsync(zipFile);
-            const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.tiff', '.tif'];
+            const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.tiff', '.tif', '.heic', '.heif'];
 
             // Get all image files from the ZIP
             const imagePromises = [];
@@ -1413,8 +1419,67 @@ class ImageConverter {
     }
 
     async processImage(file) {
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             const startTime = performance.now();
+
+            // HEIC/HEIF: convert to JPEG blob first using heic2any
+            const isHeic = file.type === 'image/heic' || file.type === 'image/heif' ||
+                file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
+
+            if (isHeic) {
+                try {
+                    this.showLoading(`Converting HEIC: ${file.name}...`);
+                    const convertedBlob = await heic2any({
+                        blob: file,
+                        toType: 'image/jpeg',
+                        quality: 0.95
+                    });
+                    // Replace file reference with converted blob for the rest of the pipeline
+                    const convertedFile = new File(
+                        [convertedBlob],
+                        file.name.replace(/\.(heic|heif)$/i, '.jpg'),
+                        { type: 'image/jpeg' }
+                    );
+                    // Process the converted file normally
+                    const reader = new FileReader();
+                    reader.onload = async (e) => {
+                        const img = new Image();
+                        img.onload = async () => {
+                            const imageData = {
+                                id: Date.now() + Math.random().toString(36).substr(2, 9),
+                                name: file.name, // keep original HEIC name for display
+                                originalFormat: 'heic',
+                                originalSize: file.size,
+                                width: img.width,
+                                height: img.height,
+                                originalImage: img,
+                                file: convertedFile
+                            };
+                            const result = await this.convertImage(imageData);
+                            imageData.convertedDataUrl = result.dataUrl;
+                            imageData.convertedSize = result.size;
+                            imageData.convertedFormat = this.settings.format;
+                            imageData.processingTime = performance.now() - startTime;
+                            this.images.push(imageData);
+                            this.stats.total++;
+                            this.stats.totalOriginalSize += imageData.originalSize;
+                            this.stats.totalConvertedSize += imageData.convertedSize;
+                            this.stats.totalTime += imageData.processingTime;
+                            this.addPreviewItem(imageData);
+                            resolve();
+                        };
+                        img.onerror = () => { console.error('Failed to load converted HEIC:', file.name); resolve(); };
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(convertedFile);
+                } catch (err) {
+                    console.error('HEIC conversion failed:', file.name, err);
+                    resolve();
+                }
+                return;
+            }
+
+            // Standard image processing
             const reader = new FileReader();
 
             reader.onload = async (e) => {
@@ -1492,7 +1557,9 @@ class ImageConverter {
             'image/webp': 'webp',
             'image/gif': 'gif',
             'image/bmp': 'bmp',
-            'image/tiff': 'tiff'
+            'image/tiff': 'tiff',
+            'image/heic': 'heic',
+            'image/heif': 'heic'
         };
         return formats[mimeType] || 'unknown';
     }
