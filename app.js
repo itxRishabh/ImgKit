@@ -2660,6 +2660,381 @@ class ImageCropper {
 // Initialize the cropper
 const imageCropper = new ImageCropper();
 
+/**
+ * FaviconGenerator - Tool to generate favicons for all platforms
+ */
+class FaviconGenerator {
+    constructor() {
+        this.originalImage = null;
+        this.fileName = '';
+        this.generatedAssets = [];
+        this.sizes = [
+            { size: 16, name: 'favicon-16x16.png', label: 'Standard' },
+            { size: 32, name: 'favicon-32x32.png', label: 'Standard' },
+            { size: 48, name: 'favicon-48x48.png', label: 'Legacy' },
+            { size: 180, name: 'apple-touch-icon.png', label: 'Apple Touch' },
+            { size: 192, name: 'android-chrome-192x192.png', label: 'Android' },
+            { size: 512, name: 'android-chrome-512x512.png', label: 'Android' }
+        ];
+
+        this.initElements();
+        this.initEventListeners();
+    }
+
+    initElements() {
+        this.uploadArea = document.getElementById('faviconUploadArea');
+        this.fileInput = document.getElementById('faviconFileInput');
+        this.settingsPanel = document.getElementById('faviconSettingsPanel');
+        this.baseNameInput = document.getElementById('faviconBaseName');
+        this.codeBlock = document.getElementById('faviconCodeBlock');
+        this.previewSection = document.getElementById('faviconPreviewSection');
+        this.previewGrid = document.getElementById('faviconPreviewGrid');
+        this.clearAllBtn = document.getElementById('faviconClearAll');
+        this.downloadAllBtn = document.getElementById('faviconDownloadAll');
+        this.copyHtmlBtn = document.getElementById('copyHtmlBtn');
+        this.loadingOverlay = document.getElementById('loadingOverlay');
+    }
+
+    initEventListeners() {
+        this.uploadArea.addEventListener('click', () => this.fileInput.click());
+        this.fileInput.addEventListener('change', (e) => this.handleFile(e.target.files[0]));
+        
+        this.uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            this.uploadArea.classList.add('drag-over');
+        });
+        this.uploadArea.addEventListener('dragleave', () => this.uploadArea.classList.remove('drag-over'));
+        this.uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            this.uploadArea.classList.remove('drag-over');
+            this.handleFile(e.dataTransfer.files[0]);
+        });
+
+        this.baseNameInput.addEventListener('input', () => this.updateHtmlSnippet());
+        this.clearAllBtn.addEventListener('click', () => this.clearAll());
+        this.downloadAllBtn.addEventListener('click', () => this.downloadZip());
+        this.copyHtmlBtn.addEventListener('click', () => this.copyHtml());
+    }
+
+    async handleFile(file) {
+        if (!file || !file.type.startsWith('image/')) return;
+        this.fileName = file.name;
+        
+        this.showLoading();
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = async () => {
+                this.originalImage = img;
+                await this.generateAll();
+                this.settingsPanel.classList.add('active');
+                this.previewSection.classList.add('active');
+                this.updateHtmlSnippet();
+                this.hideLoading();
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    async generateAll() {
+        this.generatedAssets = [];
+        this.previewGrid.innerHTML = '';
+        
+        for (const item of this.sizes) {
+            const dataUrl = await this.resizeImage(item.size);
+            const asset = { ...item, dataUrl };
+            this.generatedAssets.push(asset);
+            this.addPreviewItem(asset);
+        }
+    }
+
+    resizeImage(size) {
+        return new Promise((resolve) => {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            
+            // Draw image with high quality
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            
+            // If image is not square, center and cover
+            const img = this.originalImage;
+            const ar = img.width / img.height;
+            let dw, dh, dx, dy;
+            
+            if (ar > 1) {
+                dh = size;
+                dw = size * ar;
+                dx = (size - dw) / 2;
+                dy = 0;
+            } else {
+                dw = size;
+                dh = size / ar;
+                dx = 0;
+                dy = (size - dh) / 2;
+            }
+            
+            ctx.drawImage(img, dx, dy, dw, dh);
+            resolve(canvas.toDataURL('image/png'));
+        });
+    }
+
+    addPreviewItem(asset) {
+        const item = document.createElement('div');
+        item.className = 'favicon-item';
+        item.innerHTML = `
+            <div class="favicon-icon-wrapper">
+                <img src="${asset.dataUrl}" alt="${asset.name}">
+            </div>
+            <div class="favicon-size-label">${asset.size}x${asset.size}</div>
+            <div class="favicon-name-label">${asset.name}</div>
+        `;
+        this.previewGrid.appendChild(item);
+    }
+
+    updateHtmlSnippet() {
+        const base = this.baseNameInput.value || 'favicon';
+        const snippet = `<!-- Favicon configuration -->
+<link rel="icon" type="image/png" sizes="16x16" href="/${base}-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/${base}-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">`;
+        
+        this.codeBlock.querySelector('code').textContent = snippet;
+    }
+
+    async downloadZip() {
+        const zip = new JSZip();
+        const base = this.baseNameInput.value || 'favicon';
+        
+        this.generatedAssets.forEach(asset => {
+            let finalName = asset.name;
+            if (asset.name.includes('favicon-')) {
+                finalName = asset.name.replace('favicon', base);
+            }
+            const base64 = asset.dataUrl.split(',')[1];
+            zip.file(finalName, base64, { base64: true });
+        });
+
+        // Add manifest.json
+        const manifest = {
+            name: "ImgKit Generated App",
+            short_name: "ImgKit",
+            icons: [
+                { src: "/android-chrome-192x192.png", sizes: "192x192", type: "image/png" },
+                { src: "/android-chrome-512x512.png", sizes: "512x512", type: "image/png" }
+            ],
+            theme_color: "#ffffff",
+            background_color: "#ffffff",
+            display: "standalone"
+        };
+        zip.file('site.webmanifest', JSON.stringify(manifest, null, 2));
+
+        // Add index.html snippet
+        zip.file('favicon-instructions.html', `<!-- Paste this into your <head> tag -->\n\n${this.codeBlock.querySelector('code').textContent}`);
+
+        const content = await zip.generateAsync({ type: 'blob' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(content);
+        link.download = 'favicon_bundle.zip';
+        link.click();
+    }
+
+    async copyHtml() {
+        try {
+            await navigator.clipboard.writeText(this.codeBlock.querySelector('code').textContent);
+            const btn = this.copyHtmlBtn;
+            const originalIcon = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i>';
+            setTimeout(() => btn.innerHTML = originalIcon, 2000);
+        } catch (err) {
+            console.error('Failed to copy code');
+        }
+    }
+
+    clearAll() {
+        this.originalImage = null;
+        this.previewGrid.innerHTML = '';
+        this.settingsPanel.classList.remove('active');
+        this.previewSection.classList.remove('active');
+        this.fileInput.value = '';
+    }
+
+    showLoading() { this.loadingOverlay.classList.add('active'); }
+    hideLoading() { this.loadingOverlay.classList.remove('active'); }
+}
+
+/**
+ * ImageTrimmer - Auto-trim transparent/solid borders
+ */
+class ImageTrimmer {
+    constructor() {
+        this.originalImage = null;
+        this.fileName = '';
+        this.trimmedDataUrl = null;
+        
+        this.initElements();
+        this.initEventListeners();
+    }
+
+    initElements() {
+        this.uploadArea = document.getElementById('trimmerUploadArea');
+        this.fileInput = document.getElementById('trimmerFileInput');
+        this.settingsPanel = document.getElementById('trimmerSettingsPanel');
+        this.previewSection = document.getElementById('trimmerPreviewSection');
+        this.canvas = document.getElementById('trimPreviewCanvas');
+        this.toleranceSlider = document.getElementById('trimToleranceSlider');
+        this.toleranceValue = document.getElementById('trimToleranceValue');
+        this.colorTypeToggle = document.getElementById('trimColorTypeToggle');
+        this.applyBtn = document.getElementById('trimApplyBtn');
+        this.loadingOverlay = document.getElementById('loadingOverlay');
+        this.ctx = this.canvas.getContext('2d');
+    }
+
+    initEventListeners() {
+        this.uploadArea.addEventListener('click', () => this.fileInput.click());
+        this.fileInput.addEventListener('change', (e) => this.handleFile(e.target.files[0]));
+        
+        this.uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            this.uploadArea.classList.add('drag-over');
+        });
+        this.uploadArea.addEventListener('dragleave', () => this.uploadArea.classList.remove('drag-over'));
+        this.uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            this.uploadArea.classList.remove('drag-over');
+            this.handleFile(e.dataTransfer.files[0]);
+        });
+
+        this.toleranceSlider.addEventListener('input', (e) => {
+            this.toleranceValue.textContent = e.target.value;
+        });
+        this.toleranceSlider.addEventListener('change', () => this.processTrim());
+        
+        this.colorTypeToggle.querySelectorAll('.toggle-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.colorTypeToggle.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                this.processTrim();
+            });
+        });
+
+        this.applyBtn.addEventListener('click', () => this.downloadResult());
+    }
+
+    async handleFile(file) {
+        if (!file || !file.type.startsWith('image/')) return;
+        this.fileName = file.name;
+        
+        this.showLoading();
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                this.originalImage = img;
+                this.settingsPanel.classList.add('active');
+                this.previewSection.classList.add('active');
+                this.processTrim();
+                this.hideLoading();
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    async processTrim() {
+        if (!this.originalImage) return;
+        
+        const img = this.originalImage;
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = img.width;
+        tempCanvas.height = img.height;
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCtx.drawImage(img, 0, 0);
+        
+        const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+        const data = imageData.data;
+        const tolerance = parseInt(this.toleranceSlider.value);
+        const mode = this.colorTypeToggle.querySelector('.active').dataset.value;
+        
+        // Pick reference color (top-left pixel)
+        const ref = { r: data[0], g: data[1], b: data[2], a: data[3] };
+        
+        const isMatch = (index) => {
+            if (mode === 'transparent') return data[index + 3] <= tolerance;
+            
+            const r = data[index], g = data[index+1], b = data[index+2], a = data[index+3];
+            // If reference is transparent, match transparency
+            if (ref.a <= 10) return a <= tolerance;
+            
+            // Color matching with tolerance
+            return Math.abs(r - ref.r) <= tolerance &&
+                   Math.abs(g - ref.g) <= tolerance &&
+                   Math.abs(b - ref.b) <= tolerance;
+        };
+
+        let minX = tempCanvas.width, minY = tempCanvas.height, maxX = 0, maxY = 0;
+        let found = false;
+
+        for (let y = 0; y < tempCanvas.height; y++) {
+            for (let x = 0; x < tempCanvas.width; x++) {
+                const i = (y * tempCanvas.width + x) * 4;
+                if (!isMatch(i)) {
+                    if (x < minX) minX = x;
+                    if (x > maxX) maxX = x;
+                    if (y < minY) minY = y;
+                    if (y > maxY) maxY = y;
+                    found = true;
+                }
+            }
+        }
+
+        if (!found) {
+            // Nothing to trim or everything matches
+            this.renderTrim(img, 0, 0, img.width, img.height);
+            return;
+        }
+
+        // Add 1px padding
+        minX = Math.max(0, minX - 1);
+        minY = Math.max(0, minY - 1);
+        maxX = Math.min(tempCanvas.width - 1, maxX + 1);
+        maxY = Math.min(tempCanvas.height - 1, maxY + 1);
+
+        const trimW = maxX - minX + 1;
+        const trimH = maxY - minY + 1;
+        
+        this.renderTrim(img, minX, minY, trimW, trimH);
+    }
+
+    renderTrim(img, x, y, w, h) {
+        this.canvas.width = w;
+        this.canvas.height = h;
+        this.ctx.clearRect(0, 0, w, h);
+        this.ctx.drawImage(img, x, y, w, h, 0, 0, w, h);
+        this.trimmedDataUrl = this.canvas.toDataURL('image/png');
+    }
+
+    downloadResult() {
+        if (!this.trimmedDataUrl) return;
+        const link = document.createElement('a');
+        const baseName = this.fileName.substring(0, this.fileName.lastIndexOf('.')) || this.fileName;
+        link.download = `${baseName}_trimmed.png`;
+        link.href = this.trimmedDataUrl;
+        link.click();
+    }
+
+    showLoading() { this.loadingOverlay.classList.add('active'); }
+    hideLoading() { this.loadingOverlay.classList.remove('active'); }
+}
+
+// Initialize tools
+const faviconGen = new FaviconGenerator();
+const imageTrimmer = new ImageTrimmer();
+
 // Tool Navigation - Switch between tools
 document.querySelectorAll('.tool-tab').forEach(tab => {
     tab.addEventListener('click', () => {
@@ -2681,6 +3056,10 @@ document.querySelectorAll('.tool-tab').forEach(tab => {
             document.getElementById('removerTool').classList.add('active');
         } else if (tool === 'cropper') {
             document.getElementById('cropperTool').classList.add('active');
+        } else if (tool === 'favicon') {
+            document.getElementById('faviconTool').classList.add('active');
+        } else if (tool === 'trimmer') {
+            document.getElementById('trimmerTool').classList.add('active');
         }
     });
 });

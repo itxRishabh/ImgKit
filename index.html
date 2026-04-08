@@ -63,6 +63,14 @@
                 <i class="fas fa-crop-alt"></i>
                 <span>Image Crop</span>
             </button>
+            <button class="tool-tab" data-tool="favicon">
+                <i class="fas fa-icons"></i>
+                <span>Favicon Gen</span>
+            </button>
+            <button class="tool-tab" data-tool="trimmer">
+                <i class="fas fa-compress-arrows-alt"></i>
+                <span>Image Trim</span>
+            </button>
         </nav>
 
         <!-- Square Maker Tool -->
@@ -660,6 +668,176 @@
             </main>
         </div>
         <!-- End Image Crop Tool -->
+
+        <!-- Favicon Generator Tool -->
+        <div class="tool-section" id="faviconTool">
+            <main class="main-content">
+                <!-- Hero Section -->
+                <section class="hero">
+                    <h1 class="hero-title">
+                        <span class="gradient-text">Favicon</span> Generator
+                    </h1>
+                    <p class="hero-subtitle">
+                        Generate a complete set of favicons for all platforms. Fast, free, and privacy-focused.
+                    </p>
+                </section>
+
+                <!-- Upload Area -->
+                <div class="upload-section">
+                    <div class="upload-area" id="faviconUploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-icons"></i>
+                        </div>
+                        <h3 class="upload-title">Drop your icon source here</h3>
+                        <p class="upload-text">Square source (512x512+) recommended</p>
+                        <p class="upload-formats">Supports: PNG, JPG, WebP, SVG</p>
+                        <input type="file" id="faviconFileInput" accept="image/*" hidden>
+                    </div>
+                </div>
+
+                <!-- Favicon Settings Panel -->
+                <div class="settings-panel" id="faviconSettingsPanel">
+                    <h3 class="settings-title">
+                        <i class="fas fa-sliders"></i>
+                        Generation Settings
+                    </h3>
+                    <div class="settings-grid">
+                        <div class="setting-group">
+                            <label class="setting-label">Platforms</label>
+                            <div class="favicon-platform-checks">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" checked disabled>
+                                    <span class="checkmark"></span>
+                                    <span>Standard (16, 32, 48)</span>
+                                </label>
+                                <label class="checkbox-container">
+                                    <input type="checkbox" checked disabled>
+                                    <span class="checkmark"></span>
+                                    <span>Apple Touch (180)</span>
+                                </label>
+                                <label class="checkbox-container">
+                                    <input type="checkbox" checked disabled>
+                                    <span class="checkmark"></span>
+                                    <span>Android (192, 512)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-group">
+                            <label class="setting-label">Base Name</label>
+                            <input type="text" id="faviconBaseName" value="favicon" class="text-input">
+                        </div>
+                    </div>
+
+                    <div class="favicon-html-preview" id="faviconHtmlPreview">
+                        <div class="html-preview-header">
+                            <span>HTML Snippet</span>
+                            <button class="btn btn-secondary btn-sm" id="copyHtmlBtn">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        <pre class="html-code-block" id="faviconCodeBlock"><code>&lt;!-- Favicon code will appear here --&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Preview Section -->
+                <div class="preview-section" id="faviconPreviewSection">
+                    <div class="preview-header">
+                        <h3 class="preview-title">
+                            <i class="fas fa-images"></i>
+                            Generated Assets
+                        </h3>
+                        <div class="preview-actions">
+                            <button class="btn btn-outline" id="faviconClearAll">
+                                <i class="fas fa-trash"></i> Clear
+                            </button>
+                            <button class="btn btn-primary" id="faviconDownloadAll">
+                                <i class="fas fa-download"></i> Download Bundle (ZIP)
+                            </button>
+                        </div>
+                    </div>
+                    <div class="preview-grid favicon-preview-grid" id="faviconPreviewGrid"></div>
+                </div>
+            </main>
+        </div>
+        <!-- End Favicon Generator Tool -->
+
+        <!-- Image Trim Tool -->
+        <div class="tool-section" id="trimmerTool">
+            <main class="main-content">
+                <!-- Hero Section -->
+                <section class="hero">
+                    <h1 class="hero-title">
+                        <span class="gradient-text">Trim</span> All Sides
+                    </h1>
+                    <p class="hero-subtitle">
+                        Automatically remove transparent or solid color borders. Perfect for assets and logos.
+                    </p>
+                </section>
+
+                <!-- Upload Area -->
+                <div class="upload-section">
+                    <div class="upload-area" id="trimmerUploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-compress-arrows-alt"></i>
+                        </div>
+                        <h3 class="upload-title">Drop image to trim</h3>
+                        <p class="upload-text">or click to browse • Ctrl+V to paste</p>
+                        <p class="upload-formats">Supports: PNG, JPG, WebP</p>
+                        <input type="file" id="trimmerFileInput" accept="image/*" hidden>
+                    </div>
+                </div>
+
+                <!-- Trimmer Settings Panel -->
+                <div class="settings-panel" id="trimmerSettingsPanel">
+                    <h3 class="settings-title">
+                        <i class="fas fa-sliders"></i>
+                        Trim Settings
+                    </h3>
+                    <div class="settings-grid">
+                        <div class="setting-group">
+                            <label class="setting-label">
+                                Trim Tolerance: <span id="trimToleranceValue">5</span>
+                            </label>
+                            <input type="range" id="trimToleranceSlider" min="0" max="100" value="5" class="quality-slider">
+                            <p class="slider-hint">Increase if background has slight noise.</p>
+                        </div>
+
+                        <div class="setting-group">
+                            <label class="setting-label">Background Color</label>
+                            <div class="toggle-buttons" id="trimColorTypeToggle">
+                                <button class="toggle-btn active" data-value="auto">
+                                    Auto Detect
+                                </button>
+                                <button class="toggle-btn" data-value="transparent">
+                                    Transparent
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="crop-apply-row">
+                        <button class="btn btn-primary" id="trimApplyBtn">
+                            <i class="fas fa-compress-arrows-alt"></i> Trim & Download
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Trim Preview Workspace -->
+                <div class="preview-section" id="trimmerPreviewSection">
+                    <div class="preview-header">
+                        <h3 class="preview-title">
+                            <i class="fas fa-image"></i>
+                            Preview Trimmed Image
+                        </h3>
+                    </div>
+                    <div class="trim-preview-container">
+                        <canvas id="trimPreviewCanvas"></canvas>
+                    </div>
+                </div>
+            </main>
+        </div>
+        <!-- End Image Trim Tool -->
 
         <!-- Features Section -->
         <section class="features">
