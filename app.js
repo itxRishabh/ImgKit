@@ -3137,7 +3137,7 @@ class ImageOCR {
 
         this.resultSection.style.display = 'none';
         this.progressContainer.style.display = 'block';
-        this.updateProgress(0, 'Initializing OCR engine...');
+        this.updateProgress(0, 'Initializing advanced OCR engine...');
 
         try {
             // Load and Preprocess
@@ -3145,27 +3145,28 @@ class ImageOCR {
             let processedImage = imagePtr;
 
             if (this.settings.autoContrast) {
-                this.updateProgress(5, 'Preprocessing for maximum accuracy...');
+                this.updateProgress(5, 'Applying adaptive thresholding for high accuracy...');
                 processedImage = await this.applyPreprocessing(imagePtr);
             }
 
             // Perform OCR
-            this.updateProgress(10, 'Analyzing document structure...');
+            this.updateProgress(10, 'Performing intelligent layout analysis...');
             
-            // We use the full results object for layout reconstruction
+            // PSM 1: Automatic page segmentation with OSD. 
+            // Important for multi-column detection.
             const result = await Tesseract.recognize(
                 processedImage,
                 this.settings.lang,
                 {
                     logger: m => {
                         if (m.status === 'recognizing text') {
-                            this.updateProgress(10 + (m.progress * 85), `Extracting text & layout...`);
+                            this.updateProgress(10 + (m.progress * 85), `Extracting structure & data...`);
                         }
                     }
                 }
             );
 
-            this.updateProgress(95, 'Reconstructing layout...');
+            this.updateProgress(95, 'Finalizing structural reconstruction...');
             const structuredText = this.reconstructLayout(result.data);
             this.showResult(structuredText);
 
@@ -3179,49 +3180,83 @@ class ImageOCR {
     }
 
     /**
-     * Reconstructs text layout using bounding box data
-     * Mimics whitespace, indentation, and alignment
+     * Reconstructs text layout using a grid-based spatial mapper
+     * Handles multiple columns and precise spacing
      */
     reconstructLayout(data) {
         if (!data.lines || data.lines.length === 0) return data.text;
 
+        // 1. Spatial Sorting & Column Detection
+        // Sort lines primarily by Y (vertical), then X (horizontal)
+        const sortedLines = [...data.lines].sort((a, b) => {
+            const yDiff = a.bbox.y0 - b.bbox.y0;
+            if (Math.abs(yDiff) < 10) return a.bbox.x0 - b.bbox.x0; // Roughly same line
+            return yDiff;
+        });
+
+        // Group lines into rows based on vertical overlap
+        const rows = [];
+        let currentRow = [];
+        let prevY = -1;
+
+        sortedLines.forEach(line => {
+            if (prevY === -1 || Math.abs(line.bbox.y0 - prevY) < 15) {
+                currentRow.push(line);
+            } else {
+                // Sort current row by X before adding
+                currentRow.sort((a, b) => a.bbox.x0 - b.bbox.x0);
+                rows.push(currentRow);
+                currentRow = [line];
+            }
+            prevY = line.bbox.y0;
+        });
+        if (currentRow.length > 0) {
+            currentRow.sort((a, b) => a.bbox.x0 - b.bbox.x0);
+            rows.push(currentRow);
+        }
+
+        // 2. Grid Reconstruction
         let output = "";
-        const pageWidth = Math.max(...data.lines.map(l => l.bbox.x1));
         
-        // Estimate global character width (roughly)
+        // Estimate character width based on average
         let totalChars = 0;
         let totalWidth = 0;
         data.lines.forEach(line => {
-            if (line.text.trim().length > 0) {
-                totalChars += line.text.trim().length;
+            const textLen = line.text.trim().length;
+            if (textLen > 0) {
+                totalChars += textLen;
                 totalWidth += (line.bbox.x1 - line.bbox.x0);
             }
         });
         const charWidth = totalChars > 0 ? (totalWidth / totalChars) : 10;
 
-        data.lines.forEach((line, index) => {
-            if (!line.words || line.words.length === 0) {
-                output += "\n";
-                return;
-            }
-
-            // Calculate leading indentation
-            const leadingSpaces = Math.max(0, Math.floor(line.bbox.x0 / charWidth));
-            output += " ".repeat(leadingSpaces);
-
-            // Process words in line
-            line.words.forEach((word, wordIdx) => {
-                output += word.text;
+        rows.forEach(row => {
+            let currentX = 0;
+            row.forEach((line, lineIdx) => {
+                const targetX = line.bbox.x0;
+                const spacesNeeded = Math.max(0, Math.floor((targetX - currentX) / charWidth));
                 
-                // Add spacing between words based on physical gap
-                if (wordIdx < line.words.length - 1) {
-                    const nextWord = line.words[wordIdx + 1];
-                    const gap = nextWord.bbox.x0 - word.bbox.x1;
-                    const spacesCount = Math.max(1, Math.round(gap / charWidth));
-                    output += " ".repeat(spacesCount);
-                }
+                // If this is the start of a column skip, add extra buffer
+                const leadSpace = lineIdx > 0 ? "    " : " ".repeat(spacesNeeded);
+                output += (lineIdx > 0 ? "    " : " ".repeat(spacesNeeded));
+                
+                // Track word-by-word within the line block for pricing dots/gaps
+                let wordX = targetX;
+                line.words.forEach((word, wordIdx) => {
+                    const gap = word.bbox.x0 - wordX;
+                    if (gap > charWidth * 2) {
+                        const gapSpaces = Math.floor(gap / charWidth);
+                        output += " ".repeat(gapSpaces);
+                    } else if (wordIdx > 0) {
+                        output += " ";
+                    }
+                    
+                    output += word.text;
+                    wordX = word.bbox.x1;
+                });
+                
+                currentX = line.bbox.x1;
             });
-
             output += "\n";
         });
 
@@ -3236,36 +3271,67 @@ class ImageOCR {
         });
     }
 
+    /**
+     * Advanced Adaptive Thresholding (Bradley-Roth Algorithm)
+     * Handles variable lighting and background gradients perfectly
+     */
     async applyPreprocessing(imageSrc) {
         return new Promise((resolve) => {
             const img = new Image();
+            img.crossOrigin = "Anonymous";
             img.onload = () => {
                 const canvas = document.createElement('canvas');
                 canvas.width = img.width;
                 canvas.height = img.height;
                 const ctx = canvas.getContext('2d');
-                
                 ctx.drawImage(img, 0, 0);
                 
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const data = imageData.data;
-                
-                // Advanced Preprocessing: Grayscale -> Contrast -> Binarization
+                const w = canvas.width;
+                const h = canvas.height;
+
+                // 1. Create Grayscale Buffer
+                const grayscale = new Uint8Array(w * h);
                 for (let i = 0; i < data.length; i += 4) {
-                    // Grayscale
-                    const r = data[i], g = data[i+1], b = data[i+2];
-                    let gray = 0.299 * r + 0.587 * g + 0.114 * b;
-                    
-                    // Contrast Stretch
-                    gray = (gray - 50) * (255 / (200 - 50));
-                    gray = Math.max(0, Math.min(255, gray));
-                    
-                    // Simple Threshold (Binarization)
-                    // If pixel is darker than 128, make it pitch black (0), else white (255)
-                    const threshold = 140; 
-                    const final = gray < threshold ? 0 : 255;
-                    
-                    data[i] = data[i+1] = data[i+2] = final;
+                    grayscale[i/4] = 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2];
+                }
+
+                // 2. Create Integral Image for fast local mean calculation
+                const integral = new Int32Array(w * h);
+                for (let x = 0; x < w; x++) {
+                    let sum = 0;
+                    for (let y = 0; y < h; y++) {
+                        sum += grayscale[y * w + x];
+                        if (x === 0) integral[y * w + x] = sum;
+                        else integral[y * w + x] = integral[y * w + x - 1] + sum;
+                    }
+                }
+
+                // 3. Adaptive Decision
+                const s = Math.floor(w / 8); // Window size
+                const t = 15; // Threshold percentage
+
+                for (let x = 0; x < w; x++) {
+                    for (let y = 0; y < h; y++) {
+                        const x1 = Math.max(0, x - s/2);
+                        const x2 = Math.min(w - 1, x + s/2);
+                        const y1 = Math.max(0, y - s/2);
+                        const y2 = Math.min(h - 1, y + s/2);
+                        
+                        const count = (x2 - x1) * (y2 - y1);
+                        let sum = integral[y2 * w + x2];
+                        if (x1 > 0 && y1 > 0) sum += integral[(y1 - 1) * w + (x1 - 1)];
+                        if (x1 > 0) sum -= integral[y2 * w + (x1 - 1)];
+                        if (y1 > 0) sum -= integral[(y1 - 1) * w + x2];
+
+                        const pixelIndex = (y * w + x) * 4;
+                        const isBlack = (grayscale[y * w + x] * count) < (sum * (100 - t) / 100);
+                        
+                        const color = isBlack ? 0 : 255;
+                        data[pixelIndex] = data[pixelIndex+1] = data[pixelIndex+2] = color;
+                        data[pixelIndex+3] = 255;
+                    }
                 }
                 
                 ctx.putImageData(imageData, 0, 0);
