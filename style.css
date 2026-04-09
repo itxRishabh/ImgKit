@@ -1978,14 +1978,16 @@ body {
 
 .ocr-textarea {
     width: 100%;
-    min-height: 300px;
+    min-height: 400px;
     background: var(--bg-card);
     border: none;
     color: var(--text-primary);
     padding: 24px;
-    font-family: 'Inter', sans-serif;
-    font-size: 15px;
-    line-height: 1.6;
+    font-family: 'ui-monospace', 'Cascadia Code', 'Source Code Pro', Menlo, Monaco, Consolas, monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre;
+    overflow-x: auto;
     resize: vertical;
     outline: none;
 }

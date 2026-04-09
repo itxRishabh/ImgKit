@@ -3140,32 +3140,35 @@ class ImageOCR {
         this.updateProgress(0, 'Initializing OCR engine...');
 
         try {
-            // Load image
+            // Load and Preprocess
             const imagePtr = await this.loadImage(this.currentImage);
             let processedImage = imagePtr;
 
-            // Apply auto-contrast if enabled
             if (this.settings.autoContrast) {
-                this.updateProgress(5, 'Preprocessing image...');
+                this.updateProgress(5, 'Preprocessing for maximum accuracy...');
                 processedImage = await this.applyPreprocessing(imagePtr);
             }
 
             // Perform OCR
-            this.updateProgress(10, 'Loading language data...');
+            this.updateProgress(10, 'Analyzing document structure...');
             
-            const { data: { text } } = await Tesseract.recognize(
+            // We use the full results object for layout reconstruction
+            const result = await Tesseract.recognize(
                 processedImage,
                 this.settings.lang,
                 {
-                    logger: (m) => {
+                    logger: m => {
                         if (m.status === 'recognizing text') {
-                            this.updateProgress(10 + (m.progress * 90), `Recognizing text...`);
+                            this.updateProgress(10 + (m.progress * 85), `Extracting text & layout...`);
                         }
                     }
                 }
             );
 
-            this.showResult(text);
+            this.updateProgress(95, 'Reconstructing layout...');
+            const structuredText = this.reconstructLayout(result.data);
+            this.showResult(structuredText);
+
         } catch (error) {
             console.error('OCR Error:', error);
             this.statusText.textContent = 'Error: ' + error.message;
@@ -3173,6 +3176,56 @@ class ImageOCR {
         } finally {
             this.isProcessing = false;
         }
+    }
+
+    /**
+     * Reconstructs text layout using bounding box data
+     * Mimics whitespace, indentation, and alignment
+     */
+    reconstructLayout(data) {
+        if (!data.lines || data.lines.length === 0) return data.text;
+
+        let output = "";
+        const pageWidth = Math.max(...data.lines.map(l => l.bbox.x1));
+        
+        // Estimate global character width (roughly)
+        let totalChars = 0;
+        let totalWidth = 0;
+        data.lines.forEach(line => {
+            if (line.text.trim().length > 0) {
+                totalChars += line.text.trim().length;
+                totalWidth += (line.bbox.x1 - line.bbox.x0);
+            }
+        });
+        const charWidth = totalChars > 0 ? (totalWidth / totalChars) : 10;
+
+        data.lines.forEach((line, index) => {
+            if (!line.words || line.words.length === 0) {
+                output += "\n";
+                return;
+            }
+
+            // Calculate leading indentation
+            const leadingSpaces = Math.max(0, Math.floor(line.bbox.x0 / charWidth));
+            output += " ".repeat(leadingSpaces);
+
+            // Process words in line
+            line.words.forEach((word, wordIdx) => {
+                output += word.text;
+                
+                // Add spacing between words based on physical gap
+                if (wordIdx < line.words.length - 1) {
+                    const nextWord = line.words[wordIdx + 1];
+                    const gap = nextWord.bbox.x0 - word.bbox.x1;
+                    const spacesCount = Math.max(1, Math.round(gap / charWidth));
+                    output += " ".repeat(spacesCount);
+                }
+            });
+
+            output += "\n";
+        });
+
+        return output;
     }
 
     loadImage(file) {
@@ -3192,21 +3245,27 @@ class ImageOCR {
                 canvas.height = img.height;
                 const ctx = canvas.getContext('2d');
                 
-                // Draw image
                 ctx.drawImage(img, 0, 0);
                 
-                // Get image data
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const data = imageData.data;
                 
-                // Simple auto-contrast/grayscale/thresholding for OCR
+                // Advanced Preprocessing: Grayscale -> Contrast -> Binarization
                 for (let i = 0; i < data.length; i += 4) {
-                    const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                    let val = avg;
-                    if (val > 128) val = Math.min(255, val * 1.1);
-                    else val = val * 0.9;
+                    // Grayscale
+                    const r = data[i], g = data[i+1], b = data[i+2];
+                    let gray = 0.299 * r + 0.587 * g + 0.114 * b;
                     
-                    data[i] = data[i+1] = data[i+2] = val;
+                    // Contrast Stretch
+                    gray = (gray - 50) * (255 / (200 - 50));
+                    gray = Math.max(0, Math.min(255, gray));
+                    
+                    // Simple Threshold (Binarization)
+                    // If pixel is darker than 128, make it pitch black (0), else white (255)
+                    const threshold = 140; 
+                    const final = gray < threshold ? 0 : 255;
+                    
+                    data[i] = data[i+1] = data[i+2] = final;
                 }
                 
                 ctx.putImageData(imageData, 0, 0);
