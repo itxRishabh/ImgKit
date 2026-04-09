@@ -1925,3 +1925,75 @@ body {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     }
 }
+/* ===== Image to OCR Tool ===== */
+.ocr-progress-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-bottom: 32px;
+    animation: slideUp 0.4s ease;
+}
+
+.ocr-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+#ocrStatusText {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+#ocrProgressValue {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.ocr-progress-bar {
+    height: 8px;
+    background: var(--bg-input);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.ocr-progress-fill {
+    height: 100%;
+    background: var(--primary-gradient);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.ocr-result-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-top: 16px;
+}
+
+.ocr-textarea {
+    width: 100%;
+    min-height: 300px;
+    background: var(--bg-card);
+    border: none;
+    color: var(--text-primary);
+    padding: 24px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+}
+
+.ocr-textarea::placeholder {
+    color: var(--text-muted);
+}
+
+.ocr-textarea:focus {
+    background: var(--bg-card-hover);
+}

@@ -71,6 +71,11 @@
                 <i class="fas fa-compress-arrows-alt"></i>
                 <span>Image Trim</span>
             </button>
+            <button class="tool-tab" data-tool="ocr">
+                <i class="fas fa-file-invoice"></i>
+                <span>Image to OCR</span>
+                <span class="ai-badge">AI</span>
+            </button>
         </nav>
 
         <!-- Square Maker Tool -->
@@ -838,6 +843,99 @@
             </main>
         </div>
         <!-- End Image Trim Tool -->
+        
+        <!-- Image to OCR Tool -->
+        <div class="tool-section" id="ocrTool">
+            <main class="main-content">
+                <!-- Hero Section -->
+                <section class="hero">
+                    <h1 class="hero-title">
+                        <span class="gradient-text">Image to OCR</span> Converter
+                    </h1>
+                    <p class="hero-subtitle">
+                        Extract text from images with AI. 100% private, accurate, and runs entirely in your browser.
+                    </p>
+                </section>
+
+                <!-- Upload Area -->
+                <div class="upload-section" id="ocrUploadSection">
+                    <div class="upload-area" id="ocrUploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-file-invoice"></i>
+                        </div>
+                        <h3 class="upload-title">Drop image to extract text</h3>
+                        <p class="upload-text">or click to browse • Ctrl+V to paste</p>
+                        <p class="upload-formats">Supports: PNG, JPG, WebP, BMP</p>
+                        <input type="file" id="ocrFileInput" accept="image/*" hidden>
+                    </div>
+                </div>
+
+                <!-- OCR Settings Panel -->
+                <div class="settings-panel" id="ocrSettingsPanel">
+                    <h3 class="settings-title">
+                        <i class="fas fa-sliders"></i>
+                        OCR Settings
+                    </h3>
+                    <div class="settings-grid">
+                        <div class="setting-group">
+                            <label class="setting-label">Language</label>
+                            <select id="ocrLanguage" class="text-input">
+                                <option value="eng">English</option>
+                                <option value="spa">Spanish</option>
+                                <option value="fra">French</option>
+                                <option value="deu">German</option>
+                                <option value="hin">Hindi</option>
+                                <option value="ara">Arabic</option>
+                                <option value="chi_sim">Chinese Simplified</option>
+                                <option value="jpn">Japanese</option>
+                                <option value="rus">Russian</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Processing</label>
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="ocrAutoContrast" checked>
+                                <span class="checkmark"></span>
+                                <span>Auto Contrast (Better Accuracy)</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Processing Progress -->
+                <div class="ocr-progress-container" id="ocrProgressContainer" style="display: none;">
+                    <div class="ocr-progress-header">
+                        <span id="ocrStatusText">Initializing OCR...</span>
+                        <span id="ocrProgressValue">0%</span>
+                    </div>
+                    <div class="ocr-progress-bar">
+                        <div class="ocr-progress-fill" id="ocrProgressFill"></div>
+                    </div>
+                </div>
+
+                <!-- OCR Result Workspace -->
+                <div class="preview-section" id="ocrResultSection" style="display: none;">
+                    <div class="preview-header">
+                        <h3 class="preview-title">
+                            <i class="fas fa-file-lines"></i>
+                            Extracted Text
+                        </h3>
+                        <div class="preview-actions">
+                            <button class="btn btn-secondary btn-sm" id="copyOcrText">
+                                <i class="fas fa-copy"></i> Copy Text
+                            </button>
+                            <button class="btn btn-primary btn-sm" id="downloadOcrText">
+                                <i class="fas fa-download"></i> Download .txt
+                            </button>
+                        </div>
+                    </div>
+                    <div class="ocr-result-container">
+                        <textarea id="ocrResultText" class="ocr-textarea" readonly placeholder="Extracted text will appear here..."></textarea>
+                    </div>
+                </div>
+            </main>
+        </div>
+        <!-- End Image to OCR Tool -->
 
         <!-- Features Section -->
         <section class="features">
@@ -929,6 +1027,7 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="app.js"></script>
 </body>
 

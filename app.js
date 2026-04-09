@@ -3031,9 +3031,240 @@ class ImageTrimmer {
     hideLoading() { this.loadingOverlay.classList.remove('active'); }
 }
 
+/**
+ * ImageOCR - Optical Character Recognition
+ * Extracts text from images using Tesseract.js
+ */
+class ImageOCR {
+    constructor() {
+        this.worker = null;
+        this.isProcessing = false;
+        this.currentImage = null;
+        this.settings = {
+            lang: 'eng',
+            autoContrast: true
+        };
+
+        this.initElements();
+        this.initEventListeners();
+    }
+
+    initElements() {
+        this.uploadArea = document.getElementById('ocrUploadArea');
+        this.fileInput = document.getElementById('ocrFileInput');
+        this.langSelect = document.getElementById('ocrLanguage');
+        this.autoContrastCheck = document.getElementById('ocrAutoContrast');
+        
+        this.progressContainer = document.getElementById('ocrProgressContainer');
+        this.statusText = document.getElementById('ocrStatusText');
+        this.progressValue = document.getElementById('ocrProgressValue');
+        this.progressFill = document.getElementById('ocrProgressFill');
+        
+        this.resultSection = document.getElementById('ocrResultSection');
+        this.resultText = document.getElementById('ocrResultText');
+        this.copyBtn = document.getElementById('copyOcrText');
+        this.downloadBtn = document.getElementById('downloadOcrText');
+        
+        this.loadingOverlay = document.getElementById('loadingOverlay');
+    }
+
+    initEventListeners() {
+        // Upload
+        this.uploadArea.addEventListener('click', () => this.fileInput.click());
+        this.fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
+
+        // Drag and drop
+        this.uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            this.uploadArea.classList.add('drag-over');
+        });
+        this.uploadArea.addEventListener('dragleave', () => this.uploadArea.classList.remove('drag-over'));
+        this.uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            this.uploadArea.classList.remove('drag-over');
+            this.handleFiles(e.dataTransfer.files);
+        });
+
+        // Paste
+        document.addEventListener('paste', (e) => {
+            const ocrTool = document.getElementById('ocrTool');
+            if (ocrTool && ocrTool.classList.contains('active')) {
+                this.handlePaste(e);
+            }
+        });
+
+        // Language change
+        this.langSelect.addEventListener('change', (e) => {
+            this.settings.lang = e.target.value;
+            if (this.currentImage) this.processOCR();
+        });
+
+        // Auto contrast change
+        this.autoContrastCheck.addEventListener('change', (e) => {
+            this.settings.autoContrast = e.target.checked;
+            if (this.currentImage) this.processOCR();
+        });
+
+        // Actions
+        this.copyBtn.addEventListener('click', () => this.copyResult());
+        this.downloadBtn.addEventListener('click', () => this.downloadResult());
+    }
+
+    handlePaste(e) {
+        const items = e.clipboardData?.items;
+        if (!items) return;
+        for (const item of items) {
+            if (item.type.startsWith('image/')) {
+                const file = item.getAsFile();
+                if (file) this.handleFiles([file]);
+                break;
+            }
+        }
+    }
+
+    async handleFiles(files) {
+        if (!files.length) return;
+        const file = files[0];
+        if (!file.type.startsWith('image/')) return;
+
+        this.currentImage = file;
+        this.processOCR();
+    }
+
+    async processOCR() {
+        if (this.isProcessing || !this.currentImage) return;
+        this.isProcessing = true;
+
+        this.resultSection.style.display = 'none';
+        this.progressContainer.style.display = 'block';
+        this.updateProgress(0, 'Initializing OCR engine...');
+
+        try {
+            // Load image
+            const imagePtr = await this.loadImage(this.currentImage);
+            let processedImage = imagePtr;
+
+            // Apply auto-contrast if enabled
+            if (this.settings.autoContrast) {
+                this.updateProgress(5, 'Preprocessing image...');
+                processedImage = await this.applyPreprocessing(imagePtr);
+            }
+
+            // Perform OCR
+            this.updateProgress(10, 'Loading language data...');
+            
+            const { data: { text } } = await Tesseract.recognize(
+                processedImage,
+                this.settings.lang,
+                {
+                    logger: (m) => {
+                        if (m.status === 'recognizing text') {
+                            this.updateProgress(10 + (m.progress * 90), `Recognizing text...`);
+                        }
+                    }
+                }
+            );
+
+            this.showResult(text);
+        } catch (error) {
+            console.error('OCR Error:', error);
+            this.statusText.textContent = 'Error: ' + error.message;
+            this.statusText.style.color = 'var(--error-color)';
+        } finally {
+            this.isProcessing = false;
+        }
+    }
+
+    loadImage(file) {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.readAsDataURL(file);
+        });
+    }
+
+    async applyPreprocessing(imageSrc) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                
+                // Draw image
+                ctx.drawImage(img, 0, 0);
+                
+                // Get image data
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+                
+                // Simple auto-contrast/grayscale/thresholding for OCR
+                for (let i = 0; i < data.length; i += 4) {
+                    const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                    let val = avg;
+                    if (val > 128) val = Math.min(255, val * 1.1);
+                    else val = val * 0.9;
+                    
+                    data[i] = data[i+1] = data[i+2] = val;
+                }
+                
+                ctx.putImageData(imageData, 0, 0);
+                resolve(canvas.toDataURL('image/png'));
+            };
+            img.src = imageSrc;
+        });
+    }
+
+    updateProgress(percent, status) {
+        const p = Math.round(percent);
+        this.progressFill.style.width = `${p}%`;
+        this.progressValue.textContent = `${p}%`;
+        this.statusText.textContent = status;
+    }
+
+    showResult(text) {
+        this.progressContainer.style.display = 'none';
+        this.resultSection.style.display = 'block';
+        this.resultText.value = text.trim();
+        this.resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    copyResult() {
+        const text = this.resultText.value;
+        if (!text) return;
+
+        navigator.clipboard.writeText(text).then(() => {
+            const originalText = this.copyBtn.innerHTML;
+            this.copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            this.copyBtn.classList.add('btn-success');
+            setTimeout(() => {
+                this.copyBtn.innerHTML = originalText;
+                this.copyBtn.classList.remove('btn-success');
+            }, 2000);
+        });
+    }
+
+    downloadResult() {
+        const text = this.resultText.value;
+        if (!text) return;
+
+        const blob = new Blob([text], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        const fileName = this.currentImage ? this.currentImage.name.split('.')[0] : 'extracted_text';
+        link.download = `${fileName}_ocr.txt`;
+        link.href = url;
+        link.click();
+        URL.revokeObjectURL(url);
+    }
+}
+
+
 // Initialize tools
 const faviconGen = new FaviconGenerator();
 const imageTrimmer = new ImageTrimmer();
+const imageOCR = new ImageOCR();
 
 // Tool Navigation - Switch between tools
 document.querySelectorAll('.tool-tab').forEach(tab => {
@@ -3060,6 +3291,8 @@ document.querySelectorAll('.tool-tab').forEach(tab => {
             document.getElementById('faviconTool').classList.add('active');
         } else if (tool === 'trimmer') {
             document.getElementById('trimmerTool').classList.add('active');
+        } else if (tool === 'ocr') {
+            document.getElementById('ocrTool').classList.add('active');
         }
     });
 });
