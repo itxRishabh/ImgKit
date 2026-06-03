@@ -378,23 +378,27 @@ class ImageSquare {
      * Process image from a data URL (for ZIP extracted images)
      */
     async processImageFromDataUrl(dataUrl, filename) {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             const startTime = performance.now();
-            const img = new Image();
+            try {
+                const response = await fetch(dataUrl);
+                const blob = await response.blob();
+                const file = new File([blob], filename, { type: blob.type });
 
-            img.onload = async () => {
+                const img = await this.loadImage(file);
                 const imageData = {
                     id: Date.now() + Math.random().toString(36).substr(2, 9),
                     name: filename,
                     originalWidth: img.width,
                     originalHeight: img.height,
-                    originalImage: img,
-                    file: null // No file object for ZIP extracted images
+                    file: file
                 };
+                img.src = ''; // immediately free memory
 
                 // Process the image
                 const result = await this.convertToSquare(imageData);
-                imageData.squareDataUrl = result.dataUrl;
+                imageData.squareObjectURL = result.objectUrl;
+                imageData.squareBlob = result.blob;
                 imageData.squareSize = result.size;
                 imageData.processingTime = performance.now() - startTime;
 
@@ -405,56 +409,66 @@ class ImageSquare {
 
                 this.addPreviewItem(imageData);
                 resolve();
-            };
-
-            img.onerror = (error) => {
-                console.error('Failed to load image:', filename, error);
-                resolve(); // Resolve anyway to continue with other images
-            };
-
-            img.src = dataUrl;
+            } catch (error) {
+                console.error('Failed to process image from data URL:', filename, error);
+                resolve();
+            }
         });
     }
 
     async processImage(file) {
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             const startTime = performance.now();
-            const reader = new FileReader();
-
-            reader.onload = async (e) => {
-                const img = new Image();
-                img.onload = async () => {
-                    const imageData = {
-                        id: Date.now() + Math.random().toString(36).substr(2, 9),
-                        name: file.name,
-                        originalWidth: img.width,
-                        originalHeight: img.height,
-                        originalImage: img,
-                        file: file
-                    };
-
-                    // Process the image
-                    const result = await this.convertToSquare(imageData);
-                    imageData.squareDataUrl = result.dataUrl;
-                    imageData.squareSize = result.size;
-                    imageData.processingTime = performance.now() - startTime;
-
-                    this.images.push(imageData);
-                    this.stats.total++;
-                    this.stats.success++;
-                    this.stats.totalTime += imageData.processingTime;
-
-                    this.addPreviewItem(imageData);
-                    resolve();
+            try {
+                const img = await this.loadImage(file);
+                const imageData = {
+                    id: Date.now() + Math.random().toString(36).substr(2, 9),
+                    name: file.name,
+                    originalWidth: img.width,
+                    originalHeight: img.height,
+                    file: file
                 };
-                img.src = e.target.result;
+                img.src = ''; // immediately free memory
+
+                // Process the image
+                const result = await this.convertToSquare(imageData);
+                imageData.squareObjectURL = result.objectUrl;
+                imageData.squareBlob = result.blob;
+                imageData.squareSize = result.size;
+                imageData.processingTime = performance.now() - startTime;
+
+                this.images.push(imageData);
+                this.stats.total++;
+                this.stats.success++;
+                this.stats.totalTime += imageData.processingTime;
+
+                this.addPreviewItem(imageData);
+                resolve();
+            } catch (err) {
+                console.error('Failed to load image:', file.name, err);
+                resolve();
+            }
+        });
+    }
+
+    loadImage(file) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            const objectUrl = URL.createObjectURL(file);
+            img.onload = () => {
+                URL.revokeObjectURL(objectUrl);
+                resolve(img);
             };
-            reader.readAsDataURL(file);
+            img.onerror = (e) => {
+                URL.revokeObjectURL(objectUrl);
+                reject(e);
+            };
+            img.src = objectUrl;
         });
     }
 
     async convertToSquare(imageData) {
-        const img = imageData.originalImage;
+        const img = await this.loadImage(imageData.file);
 
         // Determine canvas dimensions based on size type
         let canvasWidth, canvasHeight;
@@ -524,14 +538,27 @@ class ImageSquare {
             ctx.drawImage(img, x, y, drawWidth, drawHeight);
         }
 
+        // Immediately free decoded image
+        img.src = '';
+
         // Get the format mime type
         const mimeType = this.getMimeType();
         const quality = this.settings.format === 'png' ? 1 : this.settings.quality;
 
-        return {
-            dataUrl: canvas.toDataURL(mimeType, quality),
-            size: `${canvasWidth}x${canvasHeight}`
-        };
+        return new Promise((resolve) => {
+            canvas.toBlob((blob) => {
+                // Free canvas buffer
+                canvas.width = 0;
+                canvas.height = 0;
+
+                const objectUrl = URL.createObjectURL(blob);
+                resolve({
+                    objectUrl: objectUrl,
+                    blob: blob,
+                    size: canvasWidth
+                });
+            }, mimeType, quality);
+        });
     }
 
     /**
@@ -933,7 +960,7 @@ class ImageSquare {
 
         item.innerHTML = `
             <div class="preview-image-container">
-                <img src="${imageData.squareDataUrl}" alt="${imageData.name}" class="preview-image">
+                <img src="${imageData.squareObjectURL}" alt="${imageData.name}" class="preview-image">
                 <span class="preview-badge">1:1</span>
             </div>
             <div class="preview-info">
@@ -971,15 +998,20 @@ class ImageSquare {
         this.showLoading();
 
         for (const imageData of this.images) {
+            if (imageData.squareObjectURL) {
+                URL.revokeObjectURL(imageData.squareObjectURL);
+            }
+
             const result = await this.convertToSquare(imageData);
-            imageData.squareDataUrl = result.dataUrl;
+            imageData.squareObjectURL = result.objectUrl;
+            imageData.squareBlob = result.blob;
             imageData.squareSize = result.size;
 
             // Update preview
             const item = document.querySelector(`.preview-item[data-id="${imageData.id}"]`);
             if (item) {
                 const img = item.querySelector('.preview-image');
-                img.src = imageData.squareDataUrl;
+                img.src = imageData.squareObjectURL;
 
                 const dims = item.querySelector('.preview-dimensions');
                 const newDim = `${imageData.squareSize}×${imageData.squareSize}`;
@@ -997,11 +1029,15 @@ class ImageSquare {
         const link = document.createElement('a');
         const baseName = imageData.name.substring(0, imageData.name.lastIndexOf('.')) || imageData.name;
         link.download = `${baseName}_square.${this.getFileExtension()}`;
-        link.href = imageData.squareDataUrl;
+        link.href = imageData.squareObjectURL;
         link.click();
     }
 
     removeSingle(id) {
+        const imageData = this.images.find(img => img.id === id);
+        if (imageData && imageData.squareObjectURL) {
+            URL.revokeObjectURL(imageData.squareObjectURL);
+        }
         this.images = this.images.filter(img => img.id !== id);
         const item = document.querySelector(`.preview-item[data-id="${id}"]`);
         if (item) {
@@ -1038,9 +1074,8 @@ class ImageSquare {
                 const baseName = imageData.name.substring(0, imageData.name.lastIndexOf('.')) || imageData.name;
                 const fileName = `${baseName}_square.${this.getFileExtension()}`;
 
-                // Convert data URL to blob
-                const base64Data = imageData.squareDataUrl.split(',')[1];
-                imgFolder.file(fileName, base64Data, { base64: true });
+                // Add blob directly
+                imgFolder.file(fileName, imageData.squareBlob);
             }
 
             // Generate ZIP and download
@@ -1064,6 +1099,11 @@ class ImageSquare {
     }
 
     clearAll() {
+        this.images.forEach(imageData => {
+            if (imageData.squareObjectURL) {
+                URL.revokeObjectURL(imageData.squareObjectURL);
+            }
+        });
         this.images = [];
         this.previewGrid.innerHTML = '';
         this.settingsPanel.classList.remove('active');
@@ -1376,25 +1416,29 @@ class ImageConverter {
      * Process image from a data URL (for ZIP extracted images)
      */
     async processImageFromDataUrl(dataUrl, filename, mimeType, originalSize) {
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             const startTime = performance.now();
-            const img = new Image();
+            try {
+                const response = await fetch(dataUrl);
+                const blob = await response.blob();
+                const file = new File([blob], filename, { type: mimeType });
 
-            img.onload = async () => {
+                const img = await this.loadImage(file);
                 const imageData = {
                     id: Date.now() + Math.random().toString(36).substr(2, 9),
                     name: filename,
-                    originalFormat: this.getFormatFromMime(mimeType),
+                    originalFormat: this.getFormatFromMime(mimeType, filename),
                     originalSize: originalSize,
                     width: img.width,
                     height: img.height,
-                    originalImage: img,
-                    file: null
+                    file: file
                 };
+                img.src = ''; // immediately release decoded image memory
 
                 // Convert the image
                 const result = await this.convertImage(imageData);
-                imageData.convertedDataUrl = result.dataUrl;
+                imageData.convertedObjectURL = result.objectUrl;
+                imageData.convertedBlob = result.blob;
                 imageData.convertedSize = result.size;
                 imageData.convertedFormat = this.settings.format;
                 imageData.processingTime = performance.now() - startTime;
@@ -1407,14 +1451,10 @@ class ImageConverter {
 
                 this.addPreviewItem(imageData);
                 resolve();
-            };
-
-            img.onerror = (error) => {
-                console.error('Failed to load image:', filename, error);
-                resolve(); // Resolve anyway to continue with other images
-            };
-
-            img.src = dataUrl;
+            } catch (error) {
+                console.error('Failed to process image from data URL:', filename, error);
+                resolve();
+            }
         });
     }
 
@@ -1428,50 +1468,49 @@ class ImageConverter {
 
             if (isHeic) {
                 try {
-                    this.showLoading(`Converting HEIC: ${file.name}...`);
+                    this.showLoading();
                     const convertedBlob = await heic2any({
                         blob: file,
                         toType: 'image/jpeg',
                         quality: 0.95
                     });
+                    
+                    const actualBlob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+                    
                     // Replace file reference with converted blob for the rest of the pipeline
                     const convertedFile = new File(
-                        [convertedBlob],
+                        [actualBlob],
                         file.name.replace(/\.(heic|heif)$/i, '.jpg'),
                         { type: 'image/jpeg' }
                     );
+                    
                     // Process the converted file normally
-                    const reader = new FileReader();
-                    reader.onload = async (e) => {
-                        const img = new Image();
-                        img.onload = async () => {
-                            const imageData = {
-                                id: Date.now() + Math.random().toString(36).substr(2, 9),
-                                name: file.name, // keep original HEIC name for display
-                                originalFormat: 'heic',
-                                originalSize: file.size,
-                                width: img.width,
-                                height: img.height,
-                                originalImage: img,
-                                file: convertedFile
-                            };
-                            const result = await this.convertImage(imageData);
-                            imageData.convertedDataUrl = result.dataUrl;
-                            imageData.convertedSize = result.size;
-                            imageData.convertedFormat = this.settings.format;
-                            imageData.processingTime = performance.now() - startTime;
-                            this.images.push(imageData);
-                            this.stats.total++;
-                            this.stats.totalOriginalSize += imageData.originalSize;
-                            this.stats.totalConvertedSize += imageData.convertedSize;
-                            this.stats.totalTime += imageData.processingTime;
-                            this.addPreviewItem(imageData);
-                            resolve();
-                        };
-                        img.onerror = () => { console.error('Failed to load converted HEIC:', file.name); resolve(); };
-                        img.src = e.target.result;
+                    const img = await this.loadImage(convertedFile);
+                    const imageData = {
+                        id: Date.now() + Math.random().toString(36).substr(2, 9),
+                        name: file.name, // keep original HEIC name for display
+                        originalFormat: 'heic',
+                        originalSize: file.size,
+                        width: img.width,
+                        height: img.height,
+                        file: convertedFile
                     };
-                    reader.readAsDataURL(convertedFile);
+                    img.src = ''; // Release memory
+
+                    const result = await this.convertImage(imageData);
+                    imageData.convertedObjectURL = result.objectUrl;
+                    imageData.convertedBlob = result.blob;
+                    imageData.convertedSize = result.size;
+                    imageData.convertedFormat = this.settings.format;
+                    imageData.processingTime = performance.now() - startTime;
+                    
+                    this.images.push(imageData);
+                    this.stats.total++;
+                    this.stats.totalOriginalSize += imageData.originalSize;
+                    this.stats.totalConvertedSize += imageData.convertedSize;
+                    this.stats.totalTime += imageData.processingTime;
+                    this.addPreviewItem(imageData);
+                    resolve();
                 } catch (err) {
                     console.error('HEIC conversion failed:', file.name, err);
                     resolve();
@@ -1480,46 +1519,60 @@ class ImageConverter {
             }
 
             // Standard image processing
-            const reader = new FileReader();
-
-            reader.onload = async (e) => {
-                const img = new Image();
-                img.onload = async () => {
-                    const imageData = {
-                        id: Date.now() + Math.random().toString(36).substr(2, 9),
-                        name: file.name,
-                        originalFormat: this.getFormatFromMime(file.type),
-                        originalSize: file.size,
-                        width: img.width,
-                        height: img.height,
-                        originalImage: img,
-                        file: file
-                    };
-
-                    // Convert the image
-                    const result = await this.convertImage(imageData);
-                    imageData.convertedDataUrl = result.dataUrl;
-                    imageData.convertedSize = result.size;
-                    imageData.convertedFormat = this.settings.format;
-                    imageData.processingTime = performance.now() - startTime;
-
-                    this.images.push(imageData);
-                    this.stats.total++;
-                    this.stats.totalOriginalSize += imageData.originalSize;
-                    this.stats.totalConvertedSize += imageData.convertedSize;
-                    this.stats.totalTime += imageData.processingTime;
-
-                    this.addPreviewItem(imageData);
-                    resolve();
+            try {
+                const img = await this.loadImage(file);
+                const imageData = {
+                    id: Date.now() + Math.random().toString(36).substr(2, 9),
+                    name: file.name,
+                    originalFormat: this.getFormatFromMime(file.type, file.name),
+                    originalSize: file.size,
+                    width: img.width,
+                    height: img.height,
+                    file: file
                 };
-                img.src = e.target.result;
+                img.src = ''; // Release memory
+
+                // Convert the image
+                const result = await this.convertImage(imageData);
+                imageData.convertedObjectURL = result.objectUrl;
+                imageData.convertedBlob = result.blob;
+                imageData.convertedSize = result.size;
+                imageData.convertedFormat = this.settings.format;
+                imageData.processingTime = performance.now() - startTime;
+
+                this.images.push(imageData);
+                this.stats.total++;
+                this.stats.totalOriginalSize += imageData.originalSize;
+                this.stats.totalConvertedSize += imageData.convertedSize;
+                this.stats.totalTime += imageData.processingTime;
+
+                this.addPreviewItem(imageData);
+                resolve();
+            } catch (err) {
+                console.error('Failed to load image:', file.name, err);
+                resolve();
+            }
+        });
+    }
+
+    loadImage(file) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            const objectUrl = URL.createObjectURL(file);
+            img.onload = () => {
+                URL.revokeObjectURL(objectUrl);
+                resolve(img);
             };
-            reader.readAsDataURL(file);
+            img.onerror = (e) => {
+                URL.revokeObjectURL(objectUrl);
+                reject(e);
+            };
+            img.src = objectUrl;
         });
     }
 
     async convertImage(imageData) {
-        const img = imageData.originalImage;
+        const img = await this.loadImage(imageData.file);
 
         // Create canvas at original dimensions (no scaling)
         const canvas = document.createElement('canvas');
@@ -1529,28 +1582,35 @@ class ImageConverter {
 
         // Draw image at native resolution
         ctx.drawImage(img, 0, 0);
+        
+        // Immediately free decoded image reference
+        img.src = '';
 
         // Get the format mime type
         const mimeType = this.getMimeType();
 
         // Use maximum quality for lossless conversion
         // For PNG and BMP, quality is ignored
-        // For WebP and JPEG, use 1.0 (100%) by default
+        // For WebP and JPEG, use settings.quality
         const quality = this.settings.quality;
 
-        const dataUrl = canvas.toDataURL(mimeType, quality);
-
-        // Calculate the file size from base64
-        const base64 = dataUrl.split(',')[1];
-        const size = Math.round((base64.length * 3) / 4);
-
-        return {
-            dataUrl: dataUrl,
-            size: size
-        };
+        return new Promise((resolve) => {
+            canvas.toBlob((blob) => {
+                // Free canvas buffer memory immediately
+                canvas.width = 0;
+                canvas.height = 0;
+                
+                const objectUrl = URL.createObjectURL(blob);
+                resolve({
+                    objectUrl: objectUrl,
+                    size: blob.size,
+                    blob: blob
+                });
+            }, mimeType, quality);
+        });
     }
 
-    getFormatFromMime(mimeType) {
+    getFormatFromMime(mimeType, filename = '') {
         const formats = {
             'image/png': 'png',
             'image/jpeg': 'jpg',
@@ -1561,7 +1621,13 @@ class ImageConverter {
             'image/heic': 'heic',
             'image/heif': 'heic'
         };
-        return formats[mimeType] || 'unknown';
+        let format = formats[mimeType];
+        if (!format && filename) {
+            const ext = filename.toLowerCase().split('.').pop();
+            if (['jpg', 'jpeg'].includes(ext)) return 'jpg';
+            if (['png', 'webp', 'gif', 'bmp', 'tiff', 'heic', 'heif'].includes(ext)) return ext;
+        }
+        return format || 'unknown';
     }
 
     getMimeType() {
@@ -1604,7 +1670,7 @@ class ImageConverter {
 
         item.innerHTML = `
             <div class="preview-image-container">
-                <img src="${imageData.convertedDataUrl}" alt="${imageData.name}" class="preview-image">
+                <img src="${imageData.convertedObjectURL}" alt="${imageData.name}" class="preview-image">
                 <span class="preview-badge">${this.settings.format.toUpperCase()}</span>
             </div>
             <div class="preview-info">
@@ -1651,8 +1717,14 @@ class ImageConverter {
         this.stats.totalConvertedSize = 0;
 
         for (const imageData of this.images) {
+            // Revoke old URL first to free memory
+            if (imageData.convertedObjectURL) {
+                URL.revokeObjectURL(imageData.convertedObjectURL);
+            }
+
             const result = await this.convertImage(imageData);
-            imageData.convertedDataUrl = result.dataUrl;
+            imageData.convertedObjectURL = result.objectUrl;
+            imageData.convertedBlob = result.blob;
             imageData.convertedSize = result.size;
             imageData.convertedFormat = this.settings.format;
 
@@ -1662,7 +1734,7 @@ class ImageConverter {
             const item = this.previewGrid.querySelector(`.preview-item[data-id="${imageData.id}"]`);
             if (item) {
                 const img = item.querySelector('.preview-image');
-                img.src = imageData.convertedDataUrl;
+                img.src = imageData.convertedObjectURL;
 
                 const badge = item.querySelector('.preview-badge');
                 badge.textContent = this.settings.format.toUpperCase();
@@ -1697,13 +1769,16 @@ class ImageConverter {
         const link = document.createElement('a');
         const baseName = imageData.name.substring(0, imageData.name.lastIndexOf('.')) || imageData.name;
         link.download = `${baseName}.${this.getFileExtension()}`;
-        link.href = imageData.convertedDataUrl;
+        link.href = imageData.convertedObjectURL;
         link.click();
     }
 
     removeSingle(id) {
         const imageData = this.images.find(img => img.id === id);
         if (imageData) {
+            if (imageData.convertedObjectURL) {
+                URL.revokeObjectURL(imageData.convertedObjectURL);
+            }
             this.stats.totalOriginalSize -= imageData.originalSize;
             this.stats.totalConvertedSize -= imageData.convertedSize;
             this.stats.total--;
@@ -1745,9 +1820,8 @@ class ImageConverter {
                 const baseName = imageData.name.substring(0, imageData.name.lastIndexOf('.')) || imageData.name;
                 const fileName = `${baseName}.${this.getFileExtension()}`;
 
-                // Convert data URL to blob
-                const base64Data = imageData.convertedDataUrl.split(',')[1];
-                imgFolder.file(fileName, base64Data, { base64: true });
+                // Add blob directly to JSZip (no base64 needed)
+                imgFolder.file(fileName, imageData.convertedBlob);
             }
 
             // Generate ZIP and download
@@ -1771,6 +1845,12 @@ class ImageConverter {
     }
 
     clearAll() {
+        // Revoke all converted object URLs to free memory
+        this.images.forEach(imageData => {
+            if (imageData.convertedObjectURL) {
+                URL.revokeObjectURL(imageData.convertedObjectURL);
+            }
+        });
         this.images = [];
         this.previewGrid.innerHTML = '';
         this.settingsPanel.classList.remove('active');
