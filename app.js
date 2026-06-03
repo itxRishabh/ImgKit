@@ -1446,12 +1446,24 @@ class ImageConverter {
                             this.showLoading(`Uploading HEIC: ${file.name} (${sizeMB}MB) to server for conversion...`, 10);
                             await new Promise(r => setTimeout(r, 50));
 
-                            const apiUrl = '/api/convert-heic?format=jpeg&quality=92';
-                            const response = await fetch(apiUrl, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/octet-stream' },
-                                body: file
-                            });
+                            let response;
+                            try {
+                                // Try local API endpoint first
+                                response = await fetch('/api/convert-heic?format=jpeg&quality=92', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/octet-stream' },
+                                    body: file
+                                });
+                                if (!response.ok) throw new Error(`Local endpoint failed: status ${response.status}`);
+                            } catch (localErr) {
+                                console.log('Local API conversion failed or unavailable, trying production fallback...', localErr.message);
+                                // Fallback to live production API (fully CORS-enabled)
+                                response = await fetch('https://imgkit-sigma.vercel.app/api/convert-heic?format=jpeg&quality=92', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/octet-stream' },
+                                    body: file
+                                });
+                            }
 
                             if (!response.ok) {
                                 throw new Error(`Server returned ${response.status}`);
