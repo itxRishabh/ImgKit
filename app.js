@@ -344,11 +344,9 @@ class ImageSquare {
      */
     async extractAndProcessImage(zipEntry, filename) {
         try {
-            // Get the file data as base64
-            const base64Data = await zipEntry.async('base64');
-
-            // Determine MIME type from extension
-            const ext = filename.toLowerCase().split('.').pop();
+            const blob = await zipEntry.async('blob');
+            const cleanFilename = filename.split('/').pop();
+            const ext = cleanFilename.toLowerCase().split('.').pop();
             const mimeTypes = {
                 'jpg': 'image/jpeg',
                 'jpeg': 'image/jpeg',
@@ -360,60 +358,11 @@ class ImageSquare {
                 'tif': 'image/tiff'
             };
             const mimeType = mimeTypes[ext] || 'image/png';
-
-            // Extract just the filename without path
-            const cleanFilename = filename.split('/').pop();
-
-            // Create data URL from base64
-            const dataUrl = `data:${mimeType};base64,${base64Data}`;
-
-            // Process the image directly from data URL
-            await this.processImageFromDataUrl(dataUrl, cleanFilename);
+            const file = new File([blob], cleanFilename, { type: mimeType });
+            await this.processImage(file);
         } catch (error) {
             console.error('Error extracting image from ZIP:', filename, error);
         }
-    }
-
-    /**
-     * Process image from a data URL (for ZIP extracted images)
-     */
-    async processImageFromDataUrl(dataUrl, filename) {
-        return new Promise(async (resolve, reject) => {
-            const startTime = performance.now();
-            try {
-                const response = await fetch(dataUrl);
-                const blob = await response.blob();
-                const file = new File([blob], filename, { type: blob.type });
-
-                const img = await this.loadImage(file);
-                const imageData = {
-                    id: Date.now() + Math.random().toString(36).substr(2, 9),
-                    name: filename,
-                    originalWidth: img.width,
-                    originalHeight: img.height,
-                    file: file
-                };
-                img.src = ''; // immediately free memory
-
-                // Process the image
-                const result = await this.convertToSquare(imageData);
-                imageData.squareObjectURL = result.objectUrl;
-                imageData.squareBlob = result.blob;
-                imageData.squareSize = result.size;
-                imageData.processingTime = performance.now() - startTime;
-
-                this.images.push(imageData);
-                this.stats.total++;
-                this.stats.success++;
-                this.stats.totalTime += imageData.processingTime;
-
-                this.addPreviewItem(imageData);
-                resolve();
-            } catch (error) {
-                console.error('Failed to process image from data URL:', filename, error);
-                resolve();
-            }
-        });
     }
 
     async processImage(file) {
@@ -1324,13 +1273,39 @@ class ImageConverter {
             return lower.endsWith('.heic') || lower.endsWith('.heif');
         });
 
+        const total = imageFiles.length + zipFiles.length;
+        let processedCount = 0;
+        const startTime = performance.now();
+
         // Process regular image files
         for (const file of imageFiles) {
+            processedCount++;
+            const percent = Math.round(((processedCount - 1) / total) * 100);
+            
+            // Calculate time estimation
+            let timeEstimateText = '';
+            if (processedCount > 1) {
+                const elapsed = performance.now() - startTime;
+                const timePerFile = elapsed / (processedCount - 1);
+                const remainingFiles = total - processedCount + 1;
+                const remainingTimeMs = timePerFile * remainingFiles;
+                
+                if (remainingTimeMs > 1000) {
+                    timeEstimateText = `<br><span style="font-size: 0.85em; opacity: 0.8;">Estimated time remaining: ${Math.round(remainingTimeMs / 1000)}s</span>`;
+                } else {
+                    timeEstimateText = `<br><span style="font-size: 0.85em; opacity: 0.8;">Almost done...</span>`;
+                }
+            }
+            
+            this.showLoading(`Processing image ${processedCount} of ${total}... ${percent}%${timeEstimateText}`, percent);
             await this.processImage(file);
         }
 
         // Extract and process images from ZIP files
         for (const zipFile of zipFiles) {
+            processedCount++;
+            const percent = Math.round(((processedCount - 1) / total) * 100);
+            this.showLoading(`Extracting & processing ZIP ${processedCount - imageFiles.length} of ${zipFiles.length}... ${percent}%`, percent);
             await this.processZipFile(zipFile);
         }
 
@@ -1350,7 +1325,7 @@ class ImageConverter {
             const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.tiff', '.tif', '.heic', '.heif'];
 
             // Get all image files from the ZIP
-            const imagePromises = [];
+            const zipEntries = [];
 
             zip.forEach((relativePath, zipEntry) => {
                 // Skip directories and hidden files
@@ -1363,12 +1338,18 @@ class ImageConverter {
                 const isImage = imageExtensions.some(ext => lowerPath.endsWith(ext));
 
                 if (isImage) {
-                    imagePromises.push(this.extractAndProcessImage(zipEntry, relativePath));
+                    zipEntries.push({ entry: zipEntry, path: relativePath });
                 }
             });
 
-            // Process all images from the ZIP
-            await Promise.all(imagePromises);
+            // Process all images from the ZIP sequentially to avoid memory spikes
+            let index = 0;
+            for (const item of zipEntries) {
+                index++;
+                const percent = Math.round(((index - 1) / zipEntries.length) * 100);
+                this.showLoading(`Extracting image ${index} of ${zipEntries.length} from ZIP... ${percent}%`, percent);
+                await this.extractAndProcessImage(item.entry, item.path);
+            }
         } catch (error) {
             console.error('Error processing ZIP file:', error);
         }
@@ -1379,11 +1360,9 @@ class ImageConverter {
      */
     async extractAndProcessImage(zipEntry, filename) {
         try {
-            // Get the file data as base64
-            const base64Data = await zipEntry.async('base64');
-
-            // Determine MIME type from extension
-            const ext = filename.toLowerCase().split('.').pop();
+            const blob = await zipEntry.async('blob');
+            const cleanFilename = filename.split('/').pop();
+            const ext = cleanFilename.toLowerCase().split('.').pop();
             const mimeTypes = {
                 'jpg': 'image/jpeg',
                 'jpeg': 'image/jpeg',
@@ -1395,96 +1374,35 @@ class ImageConverter {
                 'tif': 'image/tiff'
             };
             const mimeType = mimeTypes[ext] || 'image/png';
-
-            // Extract just the filename without path
-            const cleanFilename = filename.split('/').pop();
-
-            // Create data URL from base64
-            const dataUrl = `data:${mimeType};base64,${base64Data}`;
-
-            // Estimate original file size from base64 (approximate)
-            const estimatedSize = Math.round((base64Data.length * 3) / 4);
-
-            // Process the image directly from data URL
-            await this.processImageFromDataUrl(dataUrl, cleanFilename, mimeType, estimatedSize);
+            const file = new File([blob], cleanFilename, { type: mimeType });
+            await this.processImage(file);
         } catch (error) {
             console.error('Error extracting image from ZIP:', filename, error);
         }
-    }
-
-    /**
-     * Process image from a data URL (for ZIP extracted images)
-     */
-    async processImageFromDataUrl(dataUrl, filename, mimeType, originalSize) {
-        return new Promise(async (resolve) => {
-            const startTime = performance.now();
-            try {
-                const response = await fetch(dataUrl);
-                const blob = await response.blob();
-                const file = new File([blob], filename, { type: mimeType });
-
-                const img = await this.loadImage(file);
-                const imageData = {
-                    id: Date.now() + Math.random().toString(36).substr(2, 9),
-                    name: filename,
-                    originalFormat: this.getFormatFromMime(mimeType, filename),
-                    originalSize: originalSize,
-                    width: img.width,
-                    height: img.height,
-                    file: file
-                };
-                img.src = ''; // immediately release decoded image memory
-
-                // Convert the image
-                const result = await this.convertImage(imageData);
-                imageData.convertedObjectURL = result.objectUrl;
-                imageData.convertedBlob = result.blob;
-                imageData.convertedSize = result.size;
-                imageData.convertedFormat = this.settings.format;
-                imageData.processingTime = performance.now() - startTime;
-
-                this.images.push(imageData);
-                this.stats.total++;
-                this.stats.totalOriginalSize += imageData.originalSize;
-                this.stats.totalConvertedSize += imageData.convertedSize;
-                this.stats.totalTime += imageData.processingTime;
-
-                this.addPreviewItem(imageData);
-                resolve();
-            } catch (error) {
-                console.error('Failed to process image from data URL:', filename, error);
-                resolve();
-            }
-        });
     }
 
     async processImage(file) {
         return new Promise(async (resolve) => {
             const startTime = performance.now();
 
-            // HEIC/HEIF: convert to JPEG blob first using heic2any
+            // HEIC/HEIF: convert to JPEG blob first using heic2any in a Web Worker
             const isHeic = file.type === 'image/heic' || file.type === 'image/heif' ||
                 file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
 
             if (isHeic) {
                 try {
-                    this.showLoading();
-                    const convertedBlob = await heic2any({
-                        blob: file,
-                        toType: 'image/jpeg',
-                        quality: 0.95
-                    });
-                    
-                    const actualBlob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+                    this.showLoading(`Converting HEIC: ${file.name}... (decoding in background to prevent browser freeze)`);
+                    const convertedBlob = await this.convertHeicInWorker(file);
                     
                     // Replace file reference with converted blob for the rest of the pipeline
                     const convertedFile = new File(
-                        [actualBlob],
+                        [convertedBlob],
                         file.name.replace(/\.(heic|heif)$/i, '.jpg'),
                         { type: 'image/jpeg' }
                     );
                     
                     // Process the converted file normally
+                    this.showLoading(`Loading converted image...`);
                     const img = await this.loadImage(convertedFile);
                     const imageData = {
                         id: Date.now() + Math.random().toString(36).substr(2, 9),
@@ -1497,6 +1415,7 @@ class ImageConverter {
                     };
                     img.src = ''; // Release memory
 
+                    this.showLoading(`Compressing & converting to ${this.settings.format.toUpperCase()}...`);
                     const result = await this.convertImage(imageData);
                     imageData.convertedObjectURL = result.objectUrl;
                     imageData.convertedBlob = result.blob;
@@ -1552,6 +1471,51 @@ class ImageConverter {
                 console.error('Failed to load image:', file.name, err);
                 resolve();
             }
+        });
+    }
+
+    convertHeicInWorker(file) {
+        return new Promise((resolve, reject) => {
+            const workerCode = `
+                self.importScripts('https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js');
+                
+                self.onmessage = async function(e) {
+                    const { file } = e.data;
+                    try {
+                        const convertedBlob = await heic2any({
+                            blob: file,
+                            toType: 'image/jpeg',
+                            quality: 0.95
+                        });
+                        const actualBlob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+                        self.postMessage({ success: true, blob: actualBlob });
+                    } catch (error) {
+                        self.postMessage({ success: false, error: error.message || error.toString() });
+                    }
+                };
+            `;
+            
+            const blob = new Blob([workerCode], { type: 'application/javascript' });
+            const workerUrl = URL.createObjectURL(blob);
+            const worker = new Worker(workerUrl);
+            
+            worker.onmessage = (e) => {
+                URL.revokeObjectURL(workerUrl);
+                worker.terminate();
+                if (e.data.success) {
+                    resolve(e.data.blob);
+                } else {
+                    reject(new Error(e.data.error));
+                }
+            };
+            
+            worker.onerror = (e) => {
+                URL.revokeObjectURL(workerUrl);
+                worker.terminate();
+                reject(e);
+            };
+            
+            worker.postMessage({ file });
         });
     }
 
@@ -1875,11 +1839,57 @@ class ImageConverter {
         this.avgTimeEl.textContent = `${avgTime}ms`;
     }
 
-    showLoading() {
+    showLoading(message = 'Processing your images...', percentage = null) {
+        const textEl = this.loadingOverlay.querySelector('p');
+        if (textEl) {
+            textEl.innerHTML = message;
+        }
+
+        let progressContainer = this.loadingOverlay.querySelector('.loading-progress-container');
+        if (percentage !== null) {
+            if (!progressContainer) {
+                progressContainer = document.createElement('div');
+                progressContainer.className = 'loading-progress-container';
+                progressContainer.style.width = '240px';
+                progressContainer.style.height = '6px';
+                progressContainer.style.background = 'rgba(255, 255, 255, 0.15)';
+                progressContainer.style.borderRadius = '3px';
+                progressContainer.style.marginTop = '15px';
+                progressContainer.style.overflow = 'hidden';
+                progressContainer.style.position = 'relative';
+                progressContainer.style.marginLeft = 'auto';
+                progressContainer.style.marginRight = 'auto';
+
+                const progressBar = document.createElement('div');
+                progressBar.className = 'loading-progress-bar';
+                progressBar.style.height = '100%';
+                progressBar.style.width = '0%';
+                progressBar.style.background = '#95BF47';
+                progressBar.style.transition = 'width 0.2s ease';
+
+                progressContainer.appendChild(progressBar);
+                this.loadingOverlay.querySelector('.loading-content').appendChild(progressContainer);
+            }
+            const bar = progressContainer.querySelector('.loading-progress-bar');
+            if (bar) {
+                bar.style.width = `${percentage}%`;
+            }
+        } else if (progressContainer) {
+            progressContainer.remove();
+        }
+
         this.loadingOverlay.classList.add('active');
     }
 
     hideLoading() {
+        const progressContainer = this.loadingOverlay.querySelector('.loading-progress-container');
+        if (progressContainer) {
+            progressContainer.remove();
+        }
+        const textEl = this.loadingOverlay.querySelector('p');
+        if (textEl) {
+            textEl.textContent = 'Processing your images...';
+        }
         this.loadingOverlay.classList.remove('active');
     }
 }
