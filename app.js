@@ -1385,21 +1385,34 @@ class ImageConverter {
         return new Promise(async (resolve) => {
             const startTime = performance.now();
 
-            // HEIC/HEIF: convert to JPEG blob first using heic2any in a Web Worker
+            // HEIC/HEIF: convert to JPEG blob first using heic2any on the main thread (sequentially, yielding to allow DOM rendering)
             const isHeic = file.type === 'image/heic' || file.type === 'image/heif' ||
                 file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
 
             if (isHeic) {
                 try {
-                    this.showLoading(`Converting HEIC: ${file.name}... (decoding in background to prevent browser freeze)`);
-                    const convertedBlob = await this.convertHeicInWorker(file);
+                    this.showLoading(`Converting HEIC: ${file.name}... (decoding - please wait)`);
+                    
+                    // Yield to event loop to allow DOM/spinner to paint
+                    await new Promise(resolve => setTimeout(resolve, 150));
+                    
+                    const convertedBlob = await heic2any({
+                        blob: file,
+                        toType: 'image/jpeg',
+                        quality: 0.95
+                    });
+                    
+                    const actualBlob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
                     
                     // Replace file reference with converted blob for the rest of the pipeline
                     const convertedFile = new File(
-                        [convertedBlob],
+                        [actualBlob],
                         file.name.replace(/\.(heic|heif)$/i, '.jpg'),
                         { type: 'image/jpeg' }
                     );
+                    
+                    // Yield to event loop
+                    await new Promise(resolve => setTimeout(resolve, 50));
                     
                     // Process the converted file normally
                     this.showLoading(`Loading converted image...`);
@@ -1471,51 +1484,6 @@ class ImageConverter {
                 console.error('Failed to load image:', file.name, err);
                 resolve();
             }
-        });
-    }
-
-    convertHeicInWorker(file) {
-        return new Promise((resolve, reject) => {
-            const workerCode = `
-                self.importScripts('https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js');
-                
-                self.onmessage = async function(e) {
-                    const { file } = e.data;
-                    try {
-                        const convertedBlob = await heic2any({
-                            blob: file,
-                            toType: 'image/jpeg',
-                            quality: 0.95
-                        });
-                        const actualBlob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
-                        self.postMessage({ success: true, blob: actualBlob });
-                    } catch (error) {
-                        self.postMessage({ success: false, error: error.message || error.toString() });
-                    }
-                };
-            `;
-            
-            const blob = new Blob([workerCode], { type: 'application/javascript' });
-            const workerUrl = URL.createObjectURL(blob);
-            const worker = new Worker(workerUrl);
-            
-            worker.onmessage = (e) => {
-                URL.revokeObjectURL(workerUrl);
-                worker.terminate();
-                if (e.data.success) {
-                    resolve(e.data.blob);
-                } else {
-                    reject(new Error(e.data.error));
-                }
-            };
-            
-            worker.onerror = (e) => {
-                URL.revokeObjectURL(workerUrl);
-                worker.terminate();
-                reject(e);
-            };
-            
-            worker.postMessage({ file });
         });
     }
 
