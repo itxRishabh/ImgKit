@@ -29,3 +29,4 @@ node_modules/
 
 # Test files
 test_temp/
+.vercel

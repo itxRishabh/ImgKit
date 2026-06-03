@@ -1447,22 +1447,34 @@ class ImageConverter {
                             await new Promise(r => setTimeout(r, 50));
 
                             let response;
-                            try {
-                                // Try local API endpoint first
-                                response = await fetch('/api/convert-heic?format=jpeg&quality=92', {
+                            // Vercel request limit is 4.5MB. Direct files > 4MB to Render.com.
+                            const useRender = file.size > 4 * 1024 * 1024;
+                            const renderUrl = 'https://imgkit-backend.onrender.com/api/convert-heic?format=jpeg&quality=92';
+
+                            if (useRender) {
+                                console.log('File > 4MB. Sending directly to Render backend...');
+                                response = await fetch(renderUrl, {
                                     method: 'POST',
                                     headers: { 'Content-Type': 'application/octet-stream' },
                                     body: file
                                 });
-                                if (!response.ok) throw new Error(`Local endpoint failed: status ${response.status}`);
-                            } catch (localErr) {
-                                console.log('Local API conversion failed or unavailable, trying production fallback...', localErr.message);
-                                // Fallback to live production API (fully CORS-enabled)
-                                response = await fetch('https://imgkit-sigma.vercel.app/api/convert-heic?format=jpeg&quality=92', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/octet-stream' },
-                                    body: file
-                                });
+                            } else {
+                                try {
+                                    // Try local/Vercel API first for small files
+                                    response = await fetch('/api/convert-heic?format=jpeg&quality=92', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/octet-stream' },
+                                        body: file
+                                    });
+                                    if (!response.ok) throw new Error(`Vercel failed: status ${response.status}`);
+                                } catch (localErr) {
+                                    console.log('Vercel API failed/unavailable, falling back to Render...');
+                                    response = await fetch(renderUrl, {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/octet-stream' },
+                                        body: file
+                                    });
+                                }
                             }
 
                             if (!response.ok) {
