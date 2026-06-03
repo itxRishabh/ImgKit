@@ -1441,11 +1441,20 @@ class ImageConverter {
 
                     // ── Strategy 2: heic2any fallback with safety limits ──
                     if (!nativeSuccess) {
-                        // For very large HEIC (>30MB), reduce quality to save memory
-                        const heicQuality = file.size > 30 * 1024 * 1024 ? 0.7 : 
-                                            file.size > 15 * 1024 * 1024 ? 0.8 : 0.92;
+                        // heic2any is a pure JS decoder — a 37MB HEIC expands to ~200MB+ of
+                        // raw pixels in memory. Browsers kill tabs that exceed ~256-512MB.
+                        // This limit is NOT a code bug — it's a fundamental browser constraint.
+                        const HEIC_MAX_SIZE = 15 * 1024 * 1024; // 15 MB
+                        if (file.size > HEIC_MAX_SIZE) {
+                            this.hideLoading();
+                            this.showHeicSizeWarning(file.name, file.size);
+                            resolve();
+                            return;
+                        }
 
-                        this.showLoading(`Converting HEIC: ${file.name}... (${Math.round(file.size / 1024 / 1024)}MB - using optimized decoder)`);
+                        const heicQuality = file.size > 10 * 1024 * 1024 ? 0.8 : 0.92;
+
+                        this.showLoading(`Converting HEIC: ${file.name}... (${Math.round(file.size / 1024 / 1024)}MB)`);
                         await new Promise(r => setTimeout(r, 100));
 
                         const convertedBlob = await heic2any({
@@ -1944,6 +1953,67 @@ class ImageConverter {
             textEl.textContent = 'Processing your images...';
         }
         this.loadingOverlay.classList.remove('active');
+    }
+
+    showHeicSizeWarning(fileName, fileSize) {
+        const sizeMB = Math.round(fileSize / 1024 / 1024);
+
+        // Remove any existing warning
+        const existing = document.querySelector('.heic-size-warning');
+        if (existing) existing.remove();
+
+        const overlay = document.createElement('div');
+        overlay.className = 'heic-size-warning';
+        overlay.style.cssText = `
+            position: fixed; inset: 0; z-index: 99999;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+            display: flex; align-items: center; justify-content: center;
+            animation: fadeIn 0.2s ease;
+        `;
+
+        overlay.innerHTML = `
+            <div style="
+                background: #1a1a2e; border: 1px solid rgba(149,191,71,0.3);
+                border-radius: 16px; padding: 32px 36px; max-width: 460px; width: 90%;
+                text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            ">
+                <div style="font-size: 48px; margin-bottom: 12px;">⚠️</div>
+                <h3 style="color: #fff; font-size: 18px; margin: 0 0 8px; font-family: 'Outfit', sans-serif;">
+                    HEIC File Too Large for Browser
+                </h3>
+                <p style="color: #aaa; font-size: 14px; line-height: 1.6; margin: 0 0 20px;">
+                    <strong style="color: #f0f0f0;">${fileName}</strong> is <strong style="color: #ff6b6b;">${sizeMB}MB</strong>.
+                    Browser memory limits prevent HEIC decoding above ~15MB — the tab will crash.
+                </p>
+                <div style="
+                    background: rgba(149,191,71,0.1); border: 1px solid rgba(149,191,71,0.2);
+                    border-radius: 10px; padding: 14px 18px; text-align: left; margin-bottom: 20px;
+                ">
+                    <p style="color: #95BF47; font-size: 13px; font-weight: 600; margin: 0 0 8px;">💡 How to fix:</p>
+                    <ul style="color: #ccc; font-size: 13px; line-height: 1.7; margin: 0; padding-left: 18px;">
+                        <li>Convert to JPEG/PNG first using your phone's Share → Save as JPEG</li>
+                        <li>On iPhone: Settings → Camera → Formats → <strong>Most Compatible</strong></li>
+                        <li>Use Safari (it has native HEIC support, no size limit)</li>
+                        <li>Use a smaller HEIC file (under 15MB)</li>
+                    </ul>
+                </div>
+                <button onclick="this.closest('.heic-size-warning').remove()" style="
+                    background: #95BF47; color: #000; border: none;
+                    padding: 10px 32px; border-radius: 8px; font-size: 14px;
+                    font-weight: 600; cursor: pointer; font-family: 'Outfit', sans-serif;
+                    transition: background 0.2s;
+                " onmouseover="this.style.background='#a8d44f'" onmouseout="this.style.background='#95BF47'">
+                    Got it
+                </button>
+            </div>
+        `;
+
+        document.body.appendChild(overlay);
+
+        // Also allow clicking overlay background to dismiss
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) overlay.remove();
+        });
     }
 }
 
