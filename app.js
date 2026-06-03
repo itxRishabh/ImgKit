@@ -1385,57 +1385,113 @@ class ImageConverter {
         return new Promise(async (resolve) => {
             const startTime = performance.now();
 
-            // HEIC/HEIF: convert to JPEG blob first using heic2any on the main thread (sequentially, yielding to allow DOM rendering)
+            // HEIC/HEIF: multi-strategy conversion to prevent OOM on large files
             const isHeic = file.type === 'image/heic' || file.type === 'image/heif' ||
                 file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
 
             if (isHeic) {
                 try {
                     this.showLoading(`Converting HEIC: ${file.name}... (decoding - please wait)`);
-                    
-                    // Yield to event loop to allow DOM/spinner to paint
-                    await new Promise(resolve => setTimeout(resolve, 150));
-                    
-                    const convertedBlob = await heic2any({
-                        blob: file,
-                        toType: 'image/jpeg',
-                        quality: 0.95
-                    });
-                    
-                    const actualBlob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
-                    
-                    // Replace file reference with converted blob for the rest of the pipeline
-                    const convertedFile = new File(
-                        [actualBlob],
-                        file.name.replace(/\.(heic|heif)$/i, '.jpg'),
-                        { type: 'image/jpeg' }
-                    );
-                    
-                    // Yield to event loop
-                    await new Promise(resolve => setTimeout(resolve, 50));
-                    
-                    // Process the converted file normally
-                    this.showLoading(`Loading converted image...`);
-                    const img = await this.loadImage(convertedFile);
+                    await new Promise(r => setTimeout(r, 100));
+
+                    let convertedFile = null;
+                    let finalWidth = 0;
+                    let finalHeight = 0;
+
+                    // ── Strategy 1: Native browser HEIC decoding via createImageBitmap ──
+                    // Safari and Chrome 118+ can decode HEIC natively with much less memory
+                    let nativeSuccess = false;
+                    try {
+                        const bitmap = await createImageBitmap(file);
+                        finalWidth = bitmap.width;
+                        finalHeight = bitmap.height;
+
+                        // For very large images (>4000px), downscale to cap memory usage
+                        const MAX_DIM = 4096;
+                        let drawW = bitmap.width;
+                        let drawH = bitmap.height;
+                        if (drawW > MAX_DIM || drawH > MAX_DIM) {
+                            const scale = MAX_DIM / Math.max(drawW, drawH);
+                            drawW = Math.round(drawW * scale);
+                            drawH = Math.round(drawH * scale);
+                        }
+
+                        const canvas = document.createElement('canvas');
+                        canvas.width = drawW;
+                        canvas.height = drawH;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(bitmap, 0, 0, drawW, drawH);
+                        bitmap.close(); // free native bitmap memory immediately
+
+                        const jpegBlob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', 0.92));
+                        canvas.width = 0;
+                        canvas.height = 0; // free canvas buffer
+
+                        convertedFile = new File(
+                            [jpegBlob],
+                            file.name.replace(/\.(heic|heif)$/i, '.jpg'),
+                            { type: 'image/jpeg' }
+                        );
+                        finalWidth = drawW;
+                        finalHeight = drawH;
+                        nativeSuccess = true;
+                    } catch (nativeErr) {
+                        console.log('Native HEIC decode not supported, falling back to heic2any:', nativeErr.message);
+                    }
+
+                    // ── Strategy 2: heic2any fallback with safety limits ──
+                    if (!nativeSuccess) {
+                        // For very large HEIC (>30MB), reduce quality to save memory
+                        const heicQuality = file.size > 30 * 1024 * 1024 ? 0.7 : 
+                                            file.size > 15 * 1024 * 1024 ? 0.8 : 0.92;
+
+                        this.showLoading(`Converting HEIC: ${file.name}... (${Math.round(file.size / 1024 / 1024)}MB - using optimized decoder)`);
+                        await new Promise(r => setTimeout(r, 100));
+
+                        const convertedBlob = await heic2any({
+                            blob: file,
+                            toType: 'image/jpeg',
+                            quality: heicQuality
+                        });
+
+                        const actualBlob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+
+                        convertedFile = new File(
+                            [actualBlob],
+                            file.name.replace(/\.(heic|heif)$/i, '.jpg'),
+                            { type: 'image/jpeg' }
+                        );
+
+                        // Get dimensions from the converted JPEG
+                        await new Promise(r => setTimeout(r, 50));
+                        this.showLoading(`Loading converted image...`);
+                        const tempImg = await this.loadImage(convertedFile);
+                        finalWidth = tempImg.width;
+                        finalHeight = tempImg.height;
+                        tempImg.src = '';
+                    }
+
+                    // ── Finalize: convert to target format ──
+                    await new Promise(r => setTimeout(r, 50));
+                    this.showLoading(`Compressing & converting to ${this.settings.format.toUpperCase()}...`);
+
                     const imageData = {
                         id: Date.now() + Math.random().toString(36).substr(2, 9),
-                        name: file.name, // keep original HEIC name for display
+                        name: file.name,
                         originalFormat: 'heic',
                         originalSize: file.size,
-                        width: img.width,
-                        height: img.height,
+                        width: finalWidth,
+                        height: finalHeight,
                         file: convertedFile
                     };
-                    img.src = ''; // Release memory
 
-                    this.showLoading(`Compressing & converting to ${this.settings.format.toUpperCase()}...`);
                     const result = await this.convertImage(imageData);
                     imageData.convertedObjectURL = result.objectUrl;
                     imageData.convertedBlob = result.blob;
                     imageData.convertedSize = result.size;
                     imageData.convertedFormat = this.settings.format;
                     imageData.processingTime = performance.now() - startTime;
-                    
+
                     this.images.push(imageData);
                     this.stats.total++;
                     this.stats.totalOriginalSize += imageData.originalSize;
@@ -1504,26 +1560,55 @@ class ImageConverter {
     }
 
     async convertImage(imageData) {
-        const img = await this.loadImage(imageData.file);
+        // Use createImageBitmap for memory-efficient decoding with automatic downscaling
+        const objectUrl = URL.createObjectURL(imageData.file);
+        let drawSource;
+        let drawW, drawH;
 
-        // Create canvas at original dimensions (no scaling)
+        try {
+            // Try createImageBitmap first — much more memory efficient than <img>
+            const bitmap = await createImageBitmap(imageData.file);
+            drawW = bitmap.width;
+            drawH = bitmap.height;
+
+            // Cap very large images to prevent canvas OOM (max ~16MP)
+            const MAX_DIM = 4096;
+            if (drawW > MAX_DIM || drawH > MAX_DIM) {
+                const scale = MAX_DIM / Math.max(drawW, drawH);
+                drawW = Math.round(drawW * scale);
+                drawH = Math.round(drawH * scale);
+            }
+
+            drawSource = bitmap;
+        } catch (e) {
+            // Fallback to HTMLImageElement for older browsers
+            const img = await this.loadImage(imageData.file);
+            drawW = img.width;
+            drawH = img.height;
+
+            const MAX_DIM = 4096;
+            if (drawW > MAX_DIM || drawH > MAX_DIM) {
+                const scale = MAX_DIM / Math.max(drawW, drawH);
+                drawW = Math.round(drawW * scale);
+                drawH = Math.round(drawH * scale);
+            }
+
+            drawSource = img;
+        }
+
+        URL.revokeObjectURL(objectUrl);
+
         const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
+        canvas.width = drawW;
+        canvas.height = drawH;
         const ctx = canvas.getContext('2d');
+        ctx.drawImage(drawSource, 0, 0, drawW, drawH);
 
-        // Draw image at native resolution
-        ctx.drawImage(img, 0, 0);
-        
-        // Immediately free decoded image reference
-        img.src = '';
+        // Free source memory
+        if (drawSource.close) drawSource.close(); // ImageBitmap
+        if (drawSource.src !== undefined) drawSource.src = ''; // HTMLImageElement
 
-        // Get the format mime type
         const mimeType = this.getMimeType();
-
-        // Use maximum quality for lossless conversion
-        // For PNG and BMP, quality is ignored
-        // For WebP and JPEG, use settings.quality
         const quality = this.settings.quality;
 
         return new Promise((resolve) => {
@@ -1531,7 +1616,7 @@ class ImageConverter {
                 // Free canvas buffer memory immediately
                 canvas.width = 0;
                 canvas.height = 0;
-                
+
                 const objectUrl = URL.createObjectURL(blob);
                 resolve({
                     objectUrl: objectUrl,
