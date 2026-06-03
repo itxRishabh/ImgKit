@@ -20,3 +20,12 @@ Thumbs.db
 # Local environment files
 .env
 .env.local
+
+# Dependencies
+node_modules/
+
+# Vercel
+.vercel/
+
+# Test files
+test_temp/

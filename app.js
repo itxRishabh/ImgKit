@@ -1439,13 +1439,54 @@ class ImageConverter {
                         console.log('Native HEIC decode not supported, falling back to heic2any:', nativeErr.message);
                     }
 
-                    // ── Strategy 2: heic2any fallback with safety limits ──
+                    // ── Strategy 2: Server-side conversion via sharp API (handles ANY size) ──
                     if (!nativeSuccess) {
-                        // heic2any is a pure JS decoder — a 37MB HEIC expands to ~200MB+ of
-                        // raw pixels in memory. Browsers kill tabs that exceed ~256-512MB.
-                        // This limit is NOT a code bug — it's a fundamental browser constraint.
-                        const HEIC_MAX_SIZE = 15 * 1024 * 1024; // 15 MB
-                        if (file.size > HEIC_MAX_SIZE) {
+                        try {
+                            const sizeMB = Math.round(file.size / 1024 / 1024);
+                            this.showLoading(`Uploading HEIC: ${file.name} (${sizeMB}MB) to server for conversion...`, 10);
+                            await new Promise(r => setTimeout(r, 50));
+
+                            const apiUrl = '/api/convert-heic?format=jpeg&quality=92';
+                            const response = await fetch(apiUrl, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/octet-stream' },
+                                body: file
+                            });
+
+                            if (!response.ok) {
+                                throw new Error(`Server returned ${response.status}`);
+                            }
+
+                            this.showLoading(`Server converting ${file.name}...`, 60);
+                            const convertedBlob = await response.blob();
+                            finalWidth = parseInt(response.headers.get('X-Output-Width')) || 0;
+                            finalHeight = parseInt(response.headers.get('X-Output-Height')) || 0;
+
+                            convertedFile = new File(
+                                [convertedBlob],
+                                file.name.replace(/\.(heic|heif)$/i, '.jpg'),
+                                { type: 'image/jpeg' }
+                            );
+
+                            // If server didn't return dimensions, get them from the image
+                            if (!finalWidth || !finalHeight) {
+                                const tempImg = await this.loadImage(convertedFile);
+                                finalWidth = tempImg.width;
+                                finalHeight = tempImg.height;
+                                tempImg.src = '';
+                            }
+
+                            nativeSuccess = true; // mark as success so we skip heic2any
+                            this.showLoading(`Server conversion complete!`, 90);
+                        } catch (serverErr) {
+                            console.log('Server HEIC conversion unavailable, trying client-side:', serverErr.message);
+                        }
+                    }
+
+                    // ── Strategy 3: Client-side heic2any (last resort, small files only) ──
+                    if (!nativeSuccess) {
+                        const HEIC_MAX_CLIENT = 15 * 1024 * 1024; // 15 MB
+                        if (file.size > HEIC_MAX_CLIENT) {
                             this.hideLoading();
                             this.showHeicSizeWarning(file.name, file.size);
                             resolve();
@@ -1454,7 +1495,7 @@ class ImageConverter {
 
                         const heicQuality = file.size > 10 * 1024 * 1024 ? 0.8 : 0.92;
 
-                        this.showLoading(`Converting HEIC: ${file.name}... (${Math.round(file.size / 1024 / 1024)}MB)`);
+                        this.showLoading(`Converting HEIC: ${file.name}... (${Math.round(file.size / 1024 / 1024)}MB - client-side)`);
                         await new Promise(r => setTimeout(r, 100));
 
                         const convertedBlob = await heic2any({
@@ -1471,7 +1512,6 @@ class ImageConverter {
                             { type: 'image/jpeg' }
                         );
 
-                        // Get dimensions from the converted JPEG
                         await new Promise(r => setTimeout(r, 50));
                         this.showLoading(`Loading converted image...`);
                         const tempImg = await this.loadImage(convertedFile);

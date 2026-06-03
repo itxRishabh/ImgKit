@@ -1,0 +1,9 @@
+{
+  "name": "imgkit",
+  "version": "1.0.0",
+  "description": "ImgKit - Image conversion toolkit with server-side HEIC support",
+  "private": true,
+  "dependencies": {
+    "sharp": "^0.33.2"
+  }
+}
