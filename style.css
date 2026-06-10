@@ -1584,10 +1584,12 @@ body {
     margin-bottom: 0;
 }
 
-/* ===== Responsive Utilities ===== */
+/* ===== Responsive Utilities & Device Optimizations ===== */
+
+/* Large Mobile / Tablet */
 @media (max-width: 768px) {
     .app-container {
-        padding: 0 16px 40px;
+        padding: 0 16px 32px;
     }
 
     .header {
@@ -1597,12 +1599,21 @@ body {
         padding: 24px 0 16px;
     }
 
+    .header-tagline {
+        margin-top: 4px;
+    }
+
     .hero-title {
         font-size: 24px;
     }
 
+    .hero-subtitle {
+        font-size: 13px;
+        padding: 0 8px;
+    }
+
     .upload-area {
-        padding: 40px 20px;
+        padding: 36px 20px;
     }
 
     .settings-panel,
@@ -1613,16 +1624,134 @@ body {
     .preview-grid {
         grid-template-columns: 1fr;
     }
+
+    .crop-canvas-container {
+        max-height: 50vh;
+        min-height: 240px;
+    }
+
+    .crop-source-image {
+        max-height: 50vh;
+    }
+
+    /* iOS Safari zoom prevention on focus */
+    .text-input, 
+    select, 
+    textarea {
+        font-size: 16px !important;
+    }
 }
 
+/* Medium/Small Mobile */
+@media (max-width: 600px) {
+    .preview-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .preview-actions {
+        flex-direction: column;
+        width: 100%;
+        gap: 8px;
+    }
+
+    .preview-actions .btn {
+        width: 100%;
+    }
+
+    .settings-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .dimension-inputs {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .dimension-field {
+        width: 100%;
+    }
+
+    .link-btn {
+        width: 100%;
+        height: 40px;
+    }
+
+    .color-options,
+    .removebg-color-options {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .color-presets {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .custom-color,
+    .custom-removebg-color {
+        justify-content: center;
+    }
+
+    .toggle-buttons-wrap {
+        flex-wrap: wrap;
+    }
+    
+    .toggle-buttons-wrap .toggle-btn {
+        flex: 1 1 calc(33.33% - 4px);
+        font-size: 11px;
+        padding: 8px 4px;
+    }
+}
+
+/* Extra Small Devices */
 @media (max-width: 480px) {
     .tool-nav {
-        gap: 12px;
+        gap: 14px;
+        margin-bottom: 24px;
     }
     
     .tool-tab {
         font-size: 13px;
-        padding: 10px 2px 12px;
+        padding: 10px 2px 10px;
+    }
+
+    .stats-section {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .upload-title {
+        font-size: 15px;
+    }
+
+    .upload-text {
+        font-size: 12px;
+    }
+
+    .upload-formats {
+        font-size: 10px;
+    }
+
+    .favicon-preview-grid {
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        gap: 10px;
+    }
+
+    .heic-size-warning {
+        padding: 16px;
+    }
+
+    .heic-warning-title {
+        font-size: 14px;
+    }
+
+    .heic-warning-text {
+        font-size: 12px;
     }
 }
 
