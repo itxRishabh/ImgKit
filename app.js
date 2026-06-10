@@ -1201,25 +1201,57 @@ class ImageConverter {
                 btn.classList.add('active');
                 this.settings.format = btn.dataset.value;
 
-                // Show/hide quality slider for lossy formats
-                if (this.settings.format === 'png' || this.settings.format === 'bmp' || this.settings.format === 'gif') {
-                    this.qualitySetting.style.display = 'none';
-                } else {
-                    this.qualitySetting.style.display = 'flex';
+                // Quality setting is always visible for all formats (lossy and lossless)
+                this.qualitySetting.style.display = 'flex';
+
+                // Update hints and default values based on selected format
+                let hintText = '';
+                let defaultQuality = 82;
+                
+                if (this.settings.format === 'webp') {
+                    hintText = '(82% = Optimal for WebP)';
+                    defaultQuality = 82;
+                } else if (this.settings.format === 'jpg' || this.settings.format === 'jpeg') {
+                    hintText = '(85% = Optimal for JPEG)';
+                    defaultQuality = 85;
+                } else if (this.settings.format === 'png') {
+                    hintText = '(100% = Lossless, Lower = Lossy Compression)';
+                    defaultQuality = 100;
+                } else if (this.settings.format === 'gif') {
+                    hintText = '(100% = Full Palette, Lower = Reduced Colors)';
+                    defaultQuality = 100;
+                } else if (this.settings.format === 'bmp') {
+                    hintText = '(100% = 24-bit, Lower = Color Quantization)';
+                    defaultQuality = 100;
                 }
+                
+                const hintEl = this.qualitySetting.querySelector('.quality-hint');
+                if (hintEl) {
+                    hintEl.textContent = hintText;
+                }
+
+                this.settings.quality = defaultQuality / 100;
+                this.qualitySlider.value = defaultQuality;
+                this.qualityValue.textContent = defaultQuality;
 
                 this.reprocessAllImages();
             });
         });
 
-        // Quality slider
+        // Quality slider - real-time debounced updates for smooth sliding
+        let debounceTimer;
         this.qualitySlider.addEventListener('input', (e) => {
             this.settings.quality = e.target.value / 100;
             this.qualityValue.textContent = e.target.value;
+            
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                this.reprocessAllImages(true); // Quiet mode prevents modal loading flicker
+            }, 60);
         });
 
         this.qualitySlider.addEventListener('change', () => {
-            this.reprocessAllImages();
+            this.reprocessAllImages(true);
         });
 
         // Clear all
@@ -1684,6 +1716,25 @@ class ImageConverter {
         const mimeType = this.getMimeType();
         const quality = this.settings.quality;
 
+        // Perform color quantization for png, bmp, and gif to achieve real-time size savings
+        if ((this.settings.format === 'png' || this.settings.format === 'bmp' || this.settings.format === 'gif') && quality < 1.0) {
+            try {
+                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imgData.data;
+                const levels = Math.max(2, Math.round(Math.pow(quality, 1.5) * 253) + 2);
+                const step = 255 / (levels - 1);
+                
+                for (let i = 0; i < data.length; i += 4) {
+                    data[i] = Math.round(data[i] / step) * step;     // R
+                    data[i+1] = Math.round(data[i+1] / step) * step; // G
+                    data[i+2] = Math.round(data[i+2] / step) * step; // B
+                }
+                ctx.putImageData(imgData, 0, 0);
+            } catch (err) {
+                console.warn('Canvas quantization failed (possibly cross-origin or too large):', err);
+            }
+        }
+
         return new Promise((resolve) => {
             canvas.toBlob((blob) => {
                 // Free canvas buffer memory immediately
@@ -1798,10 +1849,10 @@ class ImageConverter {
         return `${truncated}...${ext}`;
     }
 
-    async reprocessAllImages() {
+    async reprocessAllImages(isQuiet = false) {
         if (!this.images.length) return;
 
-        this.showLoading();
+        if (!isQuiet) this.showLoading();
 
         // Reset stats for recalculation
         this.stats.totalConvertedSize = 0;
@@ -1849,7 +1900,7 @@ class ImageConverter {
         }
 
         this.updateStats();
-        this.hideLoading();
+        if (!isQuiet) this.hideLoading();
     }
 
     downloadSingle(id) {
