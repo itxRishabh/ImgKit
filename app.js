@@ -3749,3 +3749,154 @@ document.querySelectorAll('.tool-tab').forEach(tab => {
         }
     });
 });
+
+// Global Drag & Drop Overlay Injection & File Routing
+(function() {
+    const overlay = document.createElement('div');
+    overlay.id = 'globalDragOverlay';
+    overlay.style.cssText = `
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        z-index: 99999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        color: #ffffff;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        opacity: 0;
+    `;
+    
+    overlay.innerHTML = `
+        <div style="
+            border: 1px dashed #333333;
+            border-radius: 12px;
+            padding: 48px 32px;
+            text-align: center;
+            background: #0a0a0a;
+            max-width: 420px;
+            width: calc(100% - 32px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        ">
+            <div style="
+                width: 56px;
+                height: 56px;
+                background: #ffffff;
+                color: #000000;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 20px;
+                box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
+            ">
+                <i class="fas fa-cloud-arrow-up"></i>
+            </div>
+            <h2 style="font-size: 18px; font-weight: 600; letter-spacing: -0.4px; margin: 0; color: #ffffff;">
+                Drop files anywhere
+            </h2>
+            <p style="color: #666666; font-size: 13px; margin: 0; line-height: 1.5; max-width: 280px;">
+                Release your images to load them directly into the active tool.
+            </p>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+
+    let dragCounter = 0;
+
+    window.addEventListener('dragenter', (e) => {
+        if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
+            e.preventDefault();
+            dragCounter++;
+            if (dragCounter === 1) {
+                overlay.style.display = 'flex';
+                overlay.offsetHeight; // force reflow
+                overlay.style.opacity = '1';
+            }
+        }
+    });
+
+    window.addEventListener('dragleave', (e) => {
+        if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
+            e.preventDefault();
+            dragCounter--;
+            if (dragCounter === 0) {
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    if (dragCounter === 0) {
+                        overlay.style.display = 'none';
+                    }
+                }, 200);
+            }
+        }
+    });
+
+    window.addEventListener('dragover', (e) => {
+        if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
+            e.preventDefault();
+        }
+    });
+
+    window.addEventListener('drop', (e) => {
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            e.preventDefault();
+            dragCounter = 0;
+            overlay.style.opacity = '0';
+            overlay.style.display = 'none';
+            
+            routeGlobalFiles(e.dataTransfer.files);
+        }
+    });
+
+    function routeGlobalFiles(files) {
+        const activeTab = document.querySelector('.tool-tab.active');
+        if (!activeTab) return;
+        
+        const tool = activeTab.dataset.tool;
+        console.log(`Routing ${files.length} global files to: ${tool}`);
+        
+        const fileList = Array.from(files);
+        
+        if (tool === 'square') {
+            if (typeof imageSquare !== 'undefined') {
+                imageSquare.handleFiles(files);
+            }
+        } else if (tool === 'converter') {
+            if (typeof imageConverter !== 'undefined') {
+                imageConverter.handleFiles(files);
+            }
+        } else if (tool === 'remover') {
+            if (typeof backgroundRemover !== 'undefined') {
+                backgroundRemover.handleFiles(files);
+            }
+        } else if (tool === 'cropper') {
+            if (typeof imageCropper !== 'undefined') {
+                const imageFile = fileList.find(f => f.type.startsWith('image/'));
+                if (imageFile) imageCropper.loadImage(imageFile);
+            }
+        } else if (tool === 'favicon') {
+            if (typeof faviconGen !== 'undefined') {
+                const imageFile = fileList.find(f => f.type.startsWith('image/'));
+                if (imageFile) faviconGen.handleFile(imageFile);
+            }
+        } else if (tool === 'trimmer') {
+            if (typeof imageTrimmer !== 'undefined') {
+                const imageFile = fileList.find(f => f.type.startsWith('image/'));
+                if (imageFile) imageTrimmer.handleFile(imageFile);
+            }
+        } else if (tool === 'ocr') {
+            if (typeof imageOCR !== 'undefined') {
+                imageOCR.handleFiles(files);
+            }
+        }
+    }
+})();
