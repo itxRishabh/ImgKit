@@ -1612,6 +1612,51 @@ body {
         padding: 0 8px;
     }
 
+    .tool-nav {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        border-bottom: none;
+        margin-bottom: 32px;
+        overflow-x: visible;
+        white-space: normal;
+        padding: 0;
+    }
+
+    .tool-tab {
+        flex: none;
+        width: 100%;
+        justify-content: center;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 10px 8px;
+        font-size: 12px;
+        transition: all var(--transition-fast);
+        white-space: normal;
+        text-align: center;
+    }
+
+    .tool-tab:hover {
+        border-color: var(--border-active);
+    }
+
+    .tool-tab.active {
+        background: var(--accent);
+        color: var(--bg);
+        border-color: var(--accent);
+    }
+
+    .tool-tab.active::after {
+        display: none;
+    }
+
+    .tool-tab.active .ai-badge {
+        background: var(--bg);
+        color: var(--accent-dim);
+        border-color: var(--border-active);
+    }
+
     .upload-area {
         padding: 36px 20px;
     }
@@ -1711,13 +1756,24 @@ body {
 /* Extra Small Devices */
 @media (max-width: 480px) {
     .tool-nav {
-        gap: 14px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
         margin-bottom: 24px;
     }
     
     .tool-tab {
-        font-size: 13px;
-        padding: 10px 2px 10px;
+        font-size: 11px;
+        padding: 8px 4px;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .tool-tab i {
+        font-size: 12px;
+    }
+
+    .tool-tab:last-child {
+        grid-column: span 2;
     }
 
     .stats-section {
