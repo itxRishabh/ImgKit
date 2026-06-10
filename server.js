@@ -12,14 +12,14 @@ app.use(cors({
     allowedHeaders: ['Content-Type']
 }));
 
-// Accept raw binary bodies up to 250MB
+// Accept raw binary bodies up to 1000MB (1GB)
 app.use(express.raw({
     type: 'image/*',
-    limit: '250mb'
+    limit: '1000mb'
 }));
 app.use(express.raw({
     type: 'application/octet-stream',
-    limit: '250mb'
+    limit: '1000mb'
 }));
 
 // Health check endpoint
