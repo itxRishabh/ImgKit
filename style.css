@@ -4,28 +4,37 @@
 
 :root {
     /* Color Palette */
-    --bg: #000000;
-    --surface: #0a0a0a;
-    --border: #1a1a1a;
-    --border-active: #333333;
+    --bg: #030303;
+    --surface: #0b0b0d;
+    --border: #1d1d21;
+    --border-active: #32323b;
     --accent: #ffffff;
-    --accent-dim: #888888;
-    --text: #ffffff;
-    --text-muted: #666666;
+    --accent-dim: #8e8e93;
+    --text: #f5f5f7;
+    --text-muted: #6e6e73;
     
+    /* Tool-specific Premium Accents */
+    --accent-square: #e5b82d;     /* Gold */
+    --accent-converter: #00c781;  /* Emerald Mint */
+    --accent-remover: #a855f7;    /* Lavender Amethyst */
+    --accent-cropper: #3b82f6;    /* Sapphire Blue */
+    --accent-favicon: #06b6d4;    /* Diamond Cyan */
+    --accent-trimmer: #f97316;    /* Rust Amber */
+    --accent-ocr: #ec4899;        /* Ruby Rose */
+
     /* Semantic States */
-    --success: #00ff00;
-    --error: #ff0000;
-    --warning: #f59e0b;
+    --success: #30d158;           /* Apple-style green */
+    --error: #ff453a;             /* Apple-style red */
+    --warning: #ff9f0a;           /* Apple-style orange */
 
     /* Grid Overlay */
-    --grid: radial-gradient(circle, #141414 1px, transparent 1px);
+    --grid: radial-gradient(circle, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
 
     /* Layout Tokens */
-    --radius-sm: 4px;
-    --radius-md: 6px;
-    --radius-lg: 8px;
-    --radius-xl: 12px;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 20px;
     --transition-fast: 0.15s cubic-bezier(0.16, 1, 0.3, 1);
     --transition-normal: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -79,13 +88,15 @@ body {
 .logo-icon {
     width: 32px;
     height: 32px;
-    background: var(--accent);
-    color: var(--bg);
-    border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, #ffffff 0%, #a855f7 100%);
+    color: #000000;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 15px;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.25);
 }
 
 .logo-text {
@@ -95,9 +106,9 @@ body {
 }
 
 .logo-badge {
-    background: transparent;
-    color: var(--accent-dim);
-    border: 1px solid var(--border-active);
+    background: rgba(168, 85, 247, 0.1);
+    color: #c084fc;
+    border: 1px solid rgba(168, 85, 247, 0.2);
     font-size: 9px;
     font-weight: 600;
     padding: 2px 6px;
@@ -144,11 +155,11 @@ body {
 }
 
 .tool-tab:hover {
-    color: var(--accent);
+    color: var(--text);
 }
 
 .tool-tab.active {
-    color: var(--accent);
+    color: var(--text);
 }
 
 .tool-tab.active::after {
@@ -157,9 +168,38 @@ body {
     bottom: -1px;
     left: 0;
     right: 0;
-    height: 2px;
-    background: var(--accent);
+    height: 2.5px;
+    border-radius: 99px 99px 0 0;
 }
+
+/* Tool-Specific Accent Mapping */
+.tool-tab[data-tool="square"] i { color: var(--accent-square); }
+.tool-tab.active[data-tool="square"] { color: var(--accent-square); }
+.tool-tab.active[data-tool="square"]::after { background: var(--accent-square); }
+
+.tool-tab[data-tool="converter"] i { color: var(--accent-converter); }
+.tool-tab.active[data-tool="converter"] { color: var(--accent-converter); }
+.tool-tab.active[data-tool="converter"]::after { background: var(--accent-converter); }
+
+.tool-tab[data-tool="remover"] i { color: var(--accent-remover); }
+.tool-tab.active[data-tool="remover"] { color: var(--accent-remover); }
+.tool-tab.active[data-tool="remover"]::after { background: var(--accent-remover); }
+
+.tool-tab[data-tool="cropper"] i { color: var(--accent-cropper); }
+.tool-tab.active[data-tool="cropper"] { color: var(--accent-cropper); }
+.tool-tab.active[data-tool="cropper"]::after { background: var(--accent-cropper); }
+
+.tool-tab[data-tool="favicon"] i { color: var(--accent-favicon); }
+.tool-tab.active[data-tool="favicon"] { color: var(--accent-favicon); }
+.tool-tab.active[data-tool="favicon"]::after { background: var(--accent-favicon); }
+
+.tool-tab[data-tool="trimmer"] i { color: var(--accent-trimmer); }
+.tool-tab.active[data-tool="trimmer"] { color: var(--accent-trimmer); }
+.tool-tab.active[data-tool="trimmer"]::after { background: var(--accent-trimmer); }
+
+.tool-tab[data-tool="ocr"] i { color: var(--accent-ocr); }
+.tool-tab.active[data-tool="ocr"] { color: var(--accent-ocr); }
+.tool-tab.active[data-tool="ocr"]::after { background: var(--accent-ocr); }
 
 .tool-tab i {
     font-size: 14px;
@@ -170,10 +210,60 @@ body {
     font-weight: 700;
     background: var(--border-active);
     color: var(--accent-dim);
-    padding: 1px 4px;
-    border-radius: 3px;
+    padding: 2px 5px;
+    border-radius: 4px;
     letter-spacing: 0.5px;
     border: 1px solid var(--border);
+    transition: all var(--transition-fast);
+}
+
+.tool-tab[data-tool="remover"] .ai-badge {
+    background: rgba(168, 85, 247, 0.08);
+    color: var(--accent-remover);
+    border-color: rgba(168, 85, 247, 0.25);
+}
+
+.tool-tab[data-tool="ocr"] .ai-badge {
+    background: rgba(236, 72, 153, 0.08);
+    color: var(--accent-ocr);
+    border-color: rgba(236, 72, 153, 0.25);
+}
+
+/* Premium Gradient Text scoped per tool */
+#squareTool .gradient-text {
+    background: linear-gradient(135deg, #ffffff 30%, var(--accent-square) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+#converterTool .gradient-text {
+    background: linear-gradient(135deg, #ffffff 30%, var(--accent-converter) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+#removerTool .gradient-text {
+    background: linear-gradient(135deg, #ffffff 30%, var(--accent-remover) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+#cropperTool .gradient-text {
+    background: linear-gradient(135deg, #ffffff 30%, var(--accent-cropper) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+#faviconTool .gradient-text {
+    background: linear-gradient(135deg, #ffffff 30%, var(--accent-favicon) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+#trimmerTool .gradient-text {
+    background: linear-gradient(135deg, #ffffff 30%, var(--accent-trimmer) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+#ocrTool .gradient-text {
+    background: linear-gradient(135deg, #ffffff 30%, var(--accent-ocr) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 /* ===== Tool Sections ===== */
@@ -1816,3 +1906,86 @@ body {
     from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* ==========================================================================
+   ImgKit Premium Color Coding & Workspace Overrides
+   ========================================================================== */
+
+/* 1. Upload Areas (Hover & Dragover) */
+#uploadArea:hover { border-color: var(--accent-square); background: rgba(229, 184, 45, 0.015); }
+#uploadArea.drag-over { border-color: var(--accent-square); background: rgba(229, 184, 45, 0.04); }
+#uploadArea:hover .upload-icon { color: var(--accent-square); border-color: rgba(229, 184, 45, 0.25); }
+
+#converterUploadArea:hover { border-color: var(--accent-converter); background: rgba(0, 199, 129, 0.015); }
+#converterUploadArea.drag-over { border-color: var(--accent-converter); background: rgba(0, 199, 129, 0.04); }
+#converterUploadArea:hover .upload-icon { color: var(--accent-converter); border-color: rgba(0, 199, 129, 0.25); }
+
+#removerUploadArea:hover { border-color: var(--accent-remover); background: rgba(168, 85, 247, 0.015); }
+#removerUploadArea.drag-over { border-color: var(--accent-remover); background: rgba(168, 85, 247, 0.04); }
+#removerUploadArea:hover .upload-icon { color: var(--accent-remover); border-color: rgba(168, 85, 247, 0.25); }
+
+#cropperUploadArea:hover { border-color: var(--accent-cropper); background: rgba(59, 130, 246, 0.015); }
+#cropperUploadArea.drag-over { border-color: var(--accent-cropper); background: rgba(59, 130, 246, 0.04); }
+#cropperUploadArea:hover .upload-icon { color: var(--accent-cropper); border-color: rgba(59, 130, 246, 0.25); }
+
+#faviconUploadArea:hover { border-color: var(--accent-favicon); background: rgba(6, 182, 212, 0.015); }
+#faviconUploadArea.drag-over { border-color: var(--accent-favicon); background: rgba(6, 182, 212, 0.04); }
+#faviconUploadArea:hover .upload-icon { color: var(--accent-favicon); border-color: rgba(6, 182, 212, 0.25); }
+
+#trimmerUploadArea:hover { border-color: var(--accent-trimmer); background: rgba(249, 115, 22, 0.015); }
+#trimmerUploadArea.drag-over { border-color: var(--accent-trimmer); background: rgba(249, 115, 22, 0.04); }
+#trimmerUploadArea:hover .upload-icon { color: var(--accent-trimmer); border-color: rgba(249, 115, 22, 0.25); }
+
+#ocrUploadArea:hover { border-color: var(--accent-ocr); background: rgba(236, 72, 153, 0.015); }
+#ocrUploadArea.drag-over { border-color: var(--accent-ocr); background: rgba(236, 72, 153, 0.04); }
+#ocrUploadArea:hover .upload-icon { color: var(--accent-ocr); border-color: rgba(236, 72, 153, 0.25); }
+
+/* 2. Primary Action Buttons */
+#squareTool .btn-primary { background: var(--accent-square); color: #000000; font-weight: 600; }
+#squareTool .btn-primary:hover { background: #d0a525; }
+
+#converterTool .btn-primary { background: var(--accent-converter); color: #000000; font-weight: 600; }
+#converterTool .btn-primary:hover { background: #00b072; }
+
+#removerTool .btn-primary { background: var(--accent-remover); color: #ffffff; font-weight: 600; }
+#removerTool .btn-primary:hover { background: #9333ea; }
+
+#cropperTool .btn-primary { background: var(--accent-cropper); color: #ffffff; font-weight: 600; }
+#cropperTool .btn-primary:hover { background: #2563eb; }
+
+#faviconTool .btn-primary { background: var(--accent-favicon); color: #000000; font-weight: 600; }
+#faviconTool .btn-primary:hover { background: #0891b2; }
+
+#trimmerTool .btn-primary { background: var(--accent-trimmer); color: #ffffff; font-weight: 600; }
+#trimmerTool .btn-primary:hover { background: #ea580c; }
+
+#ocrTool .btn-primary { background: var(--accent-ocr); color: #ffffff; font-weight: 600; }
+#ocrTool .btn-primary:hover { background: #db2777; }
+
+/* 3. Range Sliders Thumb Color */
+#squareTool .quality-slider::-webkit-slider-thumb { background: var(--accent-square); }
+#converterTool .quality-slider::-webkit-slider-thumb { background: var(--accent-converter); }
+#removerTool .quality-slider::-webkit-slider-thumb { background: var(--accent-remover); }
+#cropperTool .quality-slider::-webkit-slider-thumb { background: var(--accent-cropper); }
+#faviconTool .quality-slider::-webkit-slider-thumb { background: var(--accent-favicon); }
+#trimmerTool .quality-slider::-webkit-slider-thumb { background: var(--accent-trimmer); }
+#ocrTool .quality-slider::-webkit-slider-thumb { background: var(--accent-ocr); }
+
+/* 4. Active Option Toggle Buttons */
+#squareTool .toggle-btn.active { background: rgba(229, 184, 45, 0.08) !important; border-color: rgba(229, 184, 45, 0.25) !important; color: var(--accent-square) !important; }
+#converterTool .toggle-btn.active { background: rgba(0, 199, 129, 0.08) !important; border-color: rgba(0, 199, 129, 0.25) !important; color: var(--accent-converter) !important; }
+#removerTool .toggle-btn.active { background: rgba(168, 85, 247, 0.08) !important; border-color: rgba(168, 85, 247, 0.25) !important; color: var(--accent-remover) !important; }
+#cropperTool .toggle-btn.active { background: rgba(59, 130, 246, 0.08) !important; border-color: rgba(59, 130, 246, 0.25) !important; color: var(--accent-cropper) !important; }
+#faviconTool .toggle-btn.active { background: rgba(6, 182, 212, 0.08) !important; border-color: rgba(6, 182, 212, 0.25) !important; color: var(--accent-favicon) !important; }
+#trimmerTool .toggle-btn.active { background: rgba(249, 115, 22, 0.08) !important; border-color: rgba(249, 115, 22, 0.25) !important; color: var(--accent-trimmer) !important; }
+#ocrTool .toggle-btn.active { background: rgba(236, 72, 153, 0.08) !important; border-color: rgba(236, 72, 153, 0.25) !important; color: var(--accent-ocr) !important; }
+
+/* 5. Stat Card Icons */
+#squareTool .stat-icon { color: var(--accent-square); background: rgba(229, 184, 45, 0.05); border-color: rgba(229, 184, 45, 0.1); }
+#converterTool .stat-icon { color: var(--accent-converter); background: rgba(0, 199, 129, 0.05); border-color: rgba(0, 199, 129, 0.1); }
+#removerTool .stat-icon { color: var(--accent-remover); background: rgba(168, 85, 247, 0.05); border-color: rgba(168, 85, 247, 0.1); }
+#cropperTool .stat-icon { color: var(--accent-cropper); background: rgba(59, 130, 246, 0.05); border-color: rgba(59, 130, 246, 0.1); }
+#faviconTool .stat-icon { color: var(--accent-favicon); background: rgba(6, 182, 212, 0.05); border-color: rgba(6, 182, 212, 0.1); }
+#trimmerTool .stat-icon { color: var(--accent-trimmer); background: rgba(249, 115, 22, 0.05); border-color: rgba(249, 115, 22, 0.1); }
+#ocrTool .stat-icon { color: var(--accent-ocr); background: rgba(236, 72, 153, 0.05); border-color: rgba(236, 72, 153, 0.1); }
+
