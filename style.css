@@ -1542,20 +1542,102 @@ body {
 
 /* ===== Footer ===== */
 .footer {
-    text-align: center;
-    padding: 32px 0 16px;
+    padding: 40px 0 24px;
     border-top: 1px solid var(--border);
+    margin-top: 60px;
+}
+
+.footer-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.footer-tagline {
     color: var(--text-muted);
     font-size: 12px;
+    max-width: 340px;
+    line-height: 1.5;
 }
 
-.footer i {
-    color: var(--accent-dim);
+.footer-socials {
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-.footer-note {
-    font-size: 11px;
-    margin-top: 6px;
+.social-link {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 15px;
+    text-decoration: none;
+    transition: all var(--transition-fast);
+}
+
+.social-link:hover {
+    color: #ffffff;
+    border-color: var(--border-active);
+    transform: translateY(-2px);
+}
+
+.social-link[title="GitHub"]:hover { background: #24292f; border-color: #444d56; }
+.social-link[title="X / Twitter"]:hover { background: #1a1a2e; border-color: #333; }
+.social-link[title="Instagram"]:hover { background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); border-color: #c13584; }
+.social-link[title="LinkedIn"]:hover { background: #0a66c2; border-color: #0a66c2; }
+.social-link[title="YouTube"]:hover { background: #ff0000; border-color: #ff0000; }
+.social-link[title="Discord"]:hover { background: #5865f2; border-color: #5865f2; }
+
+.footer-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 20px 0;
+}
+
+.footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.footer-dev-link {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color var(--transition-fast);
+}
+
+.footer-dev-link:hover {
+    color: #c084fc;
+}
+
+.footer-handle {
+    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: -0.3px;
 }
 
 /* ===== Loading Overlay ===== */
