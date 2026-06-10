@@ -2331,18 +2331,18 @@ class BackgroundRemover {
         const id = Date.now() + Math.random();
 
         try {
-            // Show loading with model status
+            // Show loading with server status
             if (!this.modelLoaded) {
-                this.showLoading('Loading AI model (first time only)...');
+                this.showLoading('Warming up AI server (first time may take ~30s)...');
             } else {
-                this.showLoading('Removing background...');
+                this.showLoading('Removing background via AI...');
             }
 
             // Load image
             const originalDataUrl = await this.readFileAsDataUrl(file);
             const originalImg = await this.loadImage(originalDataUrl);
 
-            // Remove background using AI
+            // Remove background using server-side AI
             const removedBlob = await this.removeBackground(file);
             const removedDataUrl = await this.blobToDataUrl(removedBlob);
             const removedImg = await this.loadImage(removedDataUrl);
@@ -2378,35 +2378,38 @@ class BackgroundRemover {
             this.hideLoading();
 
             // Show user-friendly error message
-            if (error.message.includes('local server') || error.message.includes('not available')) {
-                alert('⚠️ AI Background Removal requires a local server.\n\nTo use this feature:\n1. Open Terminal\n2. Navigate to ImgKit folder\n3. Run: npx serve\n4. Open the URL shown in terminal');
+            if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                alert('⚠️ Could not reach the AI server.\n\nThe backend may be waking up (free Render tier sleeps after inactivity). Please wait 30 seconds and try again.');
             } else {
-                alert('Error processing image. Please try again.');
+                alert(`⚠️ Background removal failed.\n\n${error.message}\n\nPlease try again or use a smaller image.`);
             }
         }
     }
 
     /**
-     * Remove background using AI
+     * Remove background using server-side AI (Render backend)
      */
     async removeBackground(file) {
-        // Lazy load the library
-        if (!window.imglyRemoveBackground) {
-            await window.loadBackgroundRemovalLib();
-            this.modelLoaded = true;
+        const BACKEND_URL = 'https://imgkit-backend.onrender.com/api/remove-bg';
+
+        // Read file as ArrayBuffer for binary upload
+        const arrayBuffer = await file.arrayBuffer();
+
+        const response = await fetch(BACKEND_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': file.type || 'image/png'
+            },
+            body: arrayBuffer
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || `Server error: ${response.status}`);
         }
 
-        // Configure for speed
-        const config = {
-            model: 'small',  // Use small model for speed
-            output: {
-                format: 'image/png',
-                quality: 0.8
-            }
-        };
-
-        // Remove background
-        const blob = await window.imglyRemoveBackground(file, config);
+        const blob = await response.blob();
+        this.modelLoaded = true; // Server model is always "loaded"
         return blob;
     }
 

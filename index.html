@@ -999,32 +999,7 @@
     <!-- JSZip for ZIP downloads -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
-    <!-- Background Removal AI Library -->
-    <script src="https://unpkg.com/@anthropic/background-removal@latest/dist/index.umd.js" crossorigin="anonymous"
-        onerror="console.warn('Background removal library could not load. Run with a local server for AI features.')"></script>
-
-    <script>
-        // Fallback loader for background removal library
-        window.loadBackgroundRemovalLib = async function () {
-            // Check if library loaded via script tag
-            if (window.imglyRemoveBackground) {
-                return window.imglyRemoveBackground;
-            }
-
-            // Try to use the removeBackground function from the loaded library
-            if (typeof removeBackground === 'function') {
-                window.imglyRemoveBackground = removeBackground;
-                return removeBackground;
-            }
-
-            // If running from file://, show helpful message
-            if (window.location.protocol === 'file:') {
-                throw new Error('AI features require a local server. Run: npx serve');
-            }
-
-            throw new Error('Background removal library not available');
-        };
-    </script>
+    <!-- Background removal is now handled server-side via Render backend -->
 
     <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
