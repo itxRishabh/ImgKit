@@ -3808,6 +3808,7 @@ class WatermarkRemover {
         this.autoDetectBtn = document.getElementById('watermarkAutoDetectBtn');
         this.applyBtn = document.getElementById('watermarkApplyBtn');
         this.downloadBtn = document.getElementById('watermarkDownloadBtn');
+        this.resetBtn = document.getElementById('watermarkResetBtn');
 
         this.loadingOverlay = document.getElementById('loadingOverlay');
     }
@@ -3858,6 +3859,11 @@ class WatermarkRemover {
         // Download
         this.downloadBtn.addEventListener('click', () => this.downloadImage());
 
+        // Reset
+        if (this.resetBtn) {
+            this.resetBtn.addEventListener('click', () => this.resetImage());
+        }
+
         // Canvas Drawing events
         this.maskCanvas.addEventListener('pointerdown', (e) => this.startDrawing(e));
         this.maskCanvas.addEventListener('pointermove', (e) => this.draw(e));
@@ -3894,6 +3900,9 @@ class WatermarkRemover {
         reader.onload = (e) => {
             const img = new Image();
             img.onload = () => {
+                // Keep original image stored in memory for resets
+                this.originalImg = img;
+
                 // Setup main canvas
                 this.mainCanvas.width = img.width;
                 this.mainCanvas.height = img.height;
@@ -3916,6 +3925,16 @@ class WatermarkRemover {
             img.src = e.target.result;
         };
         reader.readAsDataURL(file);
+    }
+
+    resetImage() {
+        if (!this.originalImg) return;
+        this.mainCanvas.width = this.originalImg.width;
+        this.mainCanvas.height = this.originalImg.height;
+        this.mainCtx.drawImage(this.originalImg, 0, 0);
+        this.clearMask();
+        this.downloadBtn.style.display = 'none';
+        showNotification('Image reset to original state.');
     }
 
     setBrushMode(mode) {
@@ -3990,17 +4009,27 @@ class WatermarkRemover {
             let count = 0;
             const ctx = this.maskCtx;
             ctx.globalCompositeOperation = 'source-over';
-            ctx.fillStyle = 'rgba(239, 68, 68, 0.6)';
+            ctx.fillStyle = 'rgba(239, 68, 68, 0.45)'; // Semi-transparent red highlight fill
+
+            const cleanPrompt = prompt.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
 
             words.forEach(w => {
-                if (w.text.toLowerCase().includes(prompt)) {
+                const cleanText = w.text.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+                if (cleanText.includes(cleanPrompt) || cleanPrompt.includes(cleanText)) {
                     const pad = 12;
                     const x = w.bbox.x0 - pad;
                     const y = w.bbox.y0 - pad;
                     const wWidth = (w.bbox.x1 - w.bbox.x0) + (pad * 2);
                     const wHeight = (w.bbox.y1 - w.bbox.y0) + (pad * 2);
                     
+                    // Draw filled box on mask canvas
                     ctx.fillRect(x, y, wWidth, wHeight);
+
+                    // Draw a solid border to confirm
+                    ctx.strokeStyle = 'rgba(239, 68, 68, 0.95)';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(x, y, wWidth, wHeight);
+
                     count++;
                 }
             });

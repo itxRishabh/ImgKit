@@ -656,9 +656,11 @@
                 <div class="preview-section" id="watermarkPreviewSection" style="display: none;">
                     <div class="watermark-editor-container">
                         <!-- Canvas Viewport -->
-                        <div class="watermark-canvas-wrapper">
-                            <canvas id="watermarkCanvas"></canvas>
-                            <canvas id="watermarkMaskCanvas"></canvas>
+                        <div class="watermark-canvas-viewport">
+                            <div class="watermark-canvas-wrapper">
+                                <canvas id="watermarkCanvas"></canvas>
+                                <canvas id="watermarkMaskCanvas"></canvas>
+                            </div>
                         </div>
                         <!-- Canvas Tools Overlay -->
                         <div class="canvas-controls-bar">
@@ -714,12 +716,15 @@
                         </div>
                     </div>
 
-                    <div class="crop-apply-row" style="margin-top: 24px;">
+                    <div class="crop-apply-row" style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
                         <button class="btn btn-primary" id="watermarkApplyBtn">
                             <i class="fas fa-wand-magic-sparkles"></i> Remove Watermark
                         </button>
                         <button class="btn btn-success" id="watermarkDownloadBtn" style="display: none;">
                             <i class="fas fa-download"></i> Download Image
+                        </button>
+                        <button class="btn" id="watermarkResetBtn" style="background: rgba(255,255,255,0.05); color: var(--text); border: 1px solid var(--border);">
+                            <i class="fas fa-arrow-rotate-left"></i> Reset
                         </button>
                     </div>
                 </div>
