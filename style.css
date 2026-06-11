@@ -17,6 +17,7 @@
     --accent-square: #e5b82d;     /* Gold */
     --accent-converter: #00c781;  /* Emerald Mint */
     --accent-remover: #a855f7;    /* Lavender Amethyst */
+    --accent-watermark: #ff453a;  /* Ruby Red */
     --accent-cropper: #3b82f6;    /* Sapphire Blue */
     --accent-favicon: #06b6d4;    /* Diamond Cyan */
     --accent-trimmer: #f97316;    /* Rust Amber */
@@ -184,6 +185,10 @@ body {
 .tool-tab[data-tool="remover"] i { color: var(--accent-remover); }
 .tool-tab.active[data-tool="remover"] { color: var(--accent-remover); }
 .tool-tab.active[data-tool="remover"]::after { background: var(--accent-remover); }
+
+.tool-tab[data-tool="watermark"] i { color: var(--accent-watermark); }
+.tool-tab.active[data-tool="watermark"] { color: var(--accent-watermark); }
+.tool-tab.active[data-tool="watermark"]::after { background: var(--accent-watermark); }
 
 .tool-tab[data-tool="cropper"] i { color: var(--accent-cropper); }
 .tool-tab.active[data-tool="cropper"] { color: var(--accent-cropper); }
@@ -1887,6 +1892,11 @@ body {
         border-color: var(--accent-remover);
         color: var(--accent-remover);
     }
+    .tool-tab.active[data-tool="watermark"] {
+        background: rgba(255, 69, 58, 0.08);
+        border-color: var(--accent-watermark);
+        color: var(--accent-watermark);
+    }
     .tool-tab.active[data-tool="cropper"] {
         background: rgba(59, 130, 246, 0.08);
         border-color: var(--accent-cropper);
@@ -2155,4 +2165,117 @@ body {
 #faviconTool .stat-icon { color: var(--accent-favicon); background: rgba(6, 182, 212, 0.05); border-color: rgba(6, 182, 212, 0.1); }
 #trimmerTool .stat-icon { color: var(--accent-trimmer); background: rgba(249, 115, 22, 0.05); border-color: rgba(249, 115, 22, 0.1); }
 #ocrTool .stat-icon { color: var(--accent-ocr); background: rgba(236, 72, 153, 0.05); border-color: rgba(236, 72, 153, 0.1); }
+#watermarkTool .stat-icon { color: var(--accent-watermark); background: rgba(255, 69, 58, 0.05); border-color: rgba(255, 69, 58, 0.1); }
+
+#watermarkTool .btn-primary { background: var(--accent-watermark); color: #ffffff; font-weight: 600; }
+#watermarkTool .btn-primary:hover { background: #e03b30; }
+#watermarkTool .quality-slider::-webkit-slider-thumb { background: var(--accent-watermark); }
+#watermarkTool .toggle-btn.active { background: rgba(255, 69, 58, 0.08) !important; border-color: rgba(255, 69, 58, 0.25) !important; color: var(--accent-watermark) !important; }
+
+/* ===== Watermark Canvas Editor UI ===== */
+.watermark-editor-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+}
+
+.watermark-canvas-wrapper {
+    position: relative;
+    max-width: 100%;
+    max-height: 70vh;
+    overflow: auto;
+    border-radius: var(--radius-md);
+    background: #000000;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 4px 24px rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.watermark-canvas-wrapper canvas {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+#watermarkMaskCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: crosshair;
+    mix-blend-mode: normal;
+}
+
+.canvas-controls-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 12px 20px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.canvas-controls-bar .control-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.canvas-controls-bar .btn-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+}
+
+.canvas-controls-bar .btn-icon:hover {
+    color: var(--text);
+    border-color: var(--border-active);
+}
+
+.canvas-controls-bar .btn-icon.active {
+    background: rgba(255, 69, 58, 0.08);
+    border-color: var(--accent-watermark);
+    color: var(--accent-watermark);
+}
+
+.input-with-action {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+
+.input-with-action .text-input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    color: var(--text);
+    font-size: 13px;
+    transition: all var(--transition-fast);
+}
+
+.input-with-action .text-input:focus {
+    outline: none;
+    border-color: var(--border-active);
+}
+
 

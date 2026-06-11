@@ -3767,11 +3767,555 @@ class ImageOCR {
     }
 }
 
+/**
+ * WatermarkRemover - Removes watermarks and objects locally or using AI Pro
+ */
+class WatermarkRemover {
+    constructor() {
+        this.isProcessing = false;
+        this.currentImage = null;
+        this.isDrawing = false;
+        this.brushMode = 'brush'; // 'brush' or 'eraser'
+        this.brushSize = 25;
+        this.engine = 'fast'; // 'fast' or 'ai'
+
+        this.initElements();
+        this.initEventListeners();
+    }
+
+    initElements() {
+        this.uploadArea = document.getElementById('watermarkUploadArea');
+        this.fileInput = document.getElementById('watermarkFileInput');
+        this.previewSection = document.getElementById('watermarkPreviewSection');
+        this.settingsPanel = document.getElementById('watermarkSettingsPanel');
+        this.statsSection = document.getElementById('watermarkStatsSection');
+
+        this.mainCanvas = document.getElementById('watermarkCanvas');
+        this.mainCtx = this.mainCanvas.getContext('2d');
+        this.maskCanvas = document.getElementById('watermarkMaskCanvas');
+        this.maskCtx = this.maskCanvas.getContext('2d', { willReadFrequently: true });
+
+        // Brush tools
+        this.brushToolBtn = document.getElementById('watermarkBrushTool');
+        this.eraserToolBtn = document.getElementById('watermarkEraserTool');
+        this.clearMaskBtn = document.getElementById('watermarkClearMaskBtn');
+        this.brushSizeSlider = document.getElementById('watermarkBrushSize');
+        this.brushSizeVal = document.getElementById('watermarkBrushSizeVal');
+
+        // Settings / Actions
+        this.engineToggle = document.getElementById('watermarkEngineToggle');
+        this.textPromptInput = document.getElementById('watermarkTextPrompt');
+        this.autoDetectBtn = document.getElementById('watermarkAutoDetectBtn');
+        this.applyBtn = document.getElementById('watermarkApplyBtn');
+        this.downloadBtn = document.getElementById('watermarkDownloadBtn');
+
+        this.loadingOverlay = document.getElementById('loadingOverlay');
+    }
+
+    initEventListeners() {
+        // Upload trigger
+        this.uploadArea.addEventListener('click', () => this.fileInput.click());
+        this.fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
+
+        // Drag and drop
+        this.uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            this.uploadArea.classList.add('drag-over');
+        });
+        this.uploadArea.addEventListener('dragleave', () => this.uploadArea.classList.remove('drag-over'));
+        this.uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            this.uploadArea.classList.remove('drag-over');
+            this.handleFiles(e.dataTransfer.files);
+        });
+
+        // Brush mode buttons
+        this.brushToolBtn.addEventListener('click', () => this.setBrushMode('brush'));
+        this.eraserToolBtn.addEventListener('click', () => this.setBrushMode('eraser'));
+        this.clearMaskBtn.addEventListener('click', () => this.clearMask());
+        
+        // Brush size slider
+        this.brushSizeSlider.addEventListener('input', (e) => {
+            this.brushSize = parseInt(e.target.value);
+            this.brushSizeVal.textContent = `${this.brushSize}px`;
+        });
+
+        // Engine Toggle
+        this.engineToggle.querySelectorAll('.toggle-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.engineToggle.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                this.engine = btn.dataset.value;
+            });
+        });
+
+        // Auto text detect button
+        this.autoDetectBtn.addEventListener('click', () => this.autoDetectText());
+
+        // Apply
+        this.applyBtn.addEventListener('click', () => this.processRemoval());
+
+        // Download
+        this.downloadBtn.addEventListener('click', () => this.downloadImage());
+
+        // Canvas Drawing events
+        this.maskCanvas.addEventListener('pointerdown', (e) => this.startDrawing(e));
+        this.maskCanvas.addEventListener('pointermove', (e) => this.draw(e));
+        window.addEventListener('pointerup', () => this.stopDrawing());
+
+        // Paste support
+        document.addEventListener('paste', (e) => {
+            const watermarkTool = document.getElementById('watermarkTool');
+            if (watermarkTool && watermarkTool.classList.contains('active')) {
+                this.handlePaste(e);
+            }
+        });
+    }
+
+    handlePaste(e) {
+        const items = e.clipboardData?.items;
+        if (!items) return;
+        for (const item of items) {
+            if (item.type.startsWith('image/')) {
+                const file = item.getAsFile();
+                if (file) this.handleFiles([file]);
+                break;
+            }
+        }
+    }
+
+    handleFiles(files) {
+        if (!files.length) return;
+        const file = files[0];
+        if (!file.type.startsWith('image/')) return;
+        this.currentImage = file;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                // Setup main canvas
+                this.mainCanvas.width = img.width;
+                this.mainCanvas.height = img.height;
+                this.mainCtx.drawImage(img, 0, 0);
+
+                // Setup mask canvas
+                this.maskCanvas.width = img.width;
+                this.maskCanvas.height = img.height;
+                this.clearMask();
+
+                // Display UI elements
+                this.uploadArea.style.display = 'none';
+                this.previewSection.style.display = 'block';
+                this.settingsPanel.style.display = 'block';
+                this.statsSection.style.display = 'grid';
+                
+                // Hide download button until processing is done
+                this.downloadBtn.style.display = 'none';
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    setBrushMode(mode) {
+        this.brushMode = mode;
+        if (mode === 'brush') {
+            this.brushToolBtn.classList.add('active');
+            this.eraserToolBtn.classList.remove('active');
+        } else {
+            this.eraserToolBtn.classList.add('active');
+            this.brushToolBtn.classList.remove('active');
+        }
+    }
+
+    clearMask() {
+        this.maskCtx.clearRect(0, 0, this.maskCanvas.width, this.maskCanvas.height);
+    }
+
+    startDrawing(e) {
+        this.isDrawing = true;
+        this.maskCtx.beginPath();
+        this.draw(e);
+    }
+
+    draw(e) {
+        if (!this.isDrawing) return;
+        e.preventDefault();
+
+        const rect = this.maskCanvas.getBoundingClientRect();
+        const scaleX = this.maskCanvas.width / rect.width;
+        const scaleY = this.maskCanvas.height / rect.height;
+        const x = (e.clientX - rect.left) * scaleX;
+        const y = (e.clientY - rect.top) * scaleY;
+
+        const ctx = this.maskCtx;
+        ctx.lineWidth = this.brushSize;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        if (this.brushMode === 'brush') {
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.strokeStyle = 'rgba(239, 68, 68, 0.6)'; // red semitransparent mask
+        } else {
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.strokeStyle = 'rgba(0,0,0,1)';
+        }
+
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+    }
+
+    stopDrawing() {
+        if (this.isDrawing) {
+            this.isDrawing = false;
+            this.maskCtx.beginPath();
+        }
+    }
+
+    async autoDetectText() {
+        const prompt = this.textPromptInput.value.trim().toLowerCase();
+        if (!prompt) {
+            showNotification('Please enter a text search query first!', 'warning');
+            return;
+        }
+
+        this.showLoading();
+        try {
+            const result = await Tesseract.recognize(this.mainCanvas, 'eng');
+            const words = result.data.words;
+            
+            let count = 0;
+            const ctx = this.maskCtx;
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.fillStyle = 'rgba(239, 68, 68, 0.6)';
+
+            words.forEach(w => {
+                if (w.text.toLowerCase().includes(prompt)) {
+                    const pad = 12;
+                    const x = w.bbox.x0 - pad;
+                    const y = w.bbox.y0 - pad;
+                    const wWidth = (w.bbox.x1 - w.bbox.x0) + (pad * 2);
+                    const wHeight = (w.bbox.y1 - w.bbox.y0) + (pad * 2);
+                    
+                    ctx.fillRect(x, y, wWidth, wHeight);
+                    count++;
+                }
+            });
+
+            if (count > 0) {
+                showNotification(`Found and auto-masked ${count} instance(s) of "${prompt}"!`);
+            } else {
+                showNotification(`Could not locate "${prompt}" in the image. Try manual brush.`, 'warning');
+            }
+        } catch (err) {
+            console.error('Auto detect OCR error:', err);
+            showNotification('Failed to auto-detect text watermark', 'error');
+        } finally {
+            this.hideLoading();
+        }
+    }
+
+    getMaskBoundingBox() {
+        const width = this.maskCanvas.width;
+        const height = this.maskCanvas.height;
+        const maskData = this.maskCtx.getImageData(0, 0, width, height).data;
+        let minX = width, maxX = 0, minY = height, maxY = 0;
+        let hasMask = false;
+
+        for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+                const idx = (y * width + x) * 4;
+                if (maskData[idx + 3] > 10) {
+                    if (x < minX) minX = x;
+                    if (x > maxX) maxX = x;
+                    if (y < minY) minY = y;
+                    if (y > maxY) maxY = y;
+                    hasMask = true;
+                }
+            }
+        }
+
+        if (!hasMask) return null;
+
+        const pad = 10;
+        return {
+            x: Math.max(0, minX - pad),
+            y: Math.max(0, minY - pad),
+            w: Math.min(maxX - minX + pad * 2 + 1, width - Math.max(0, minX - pad)),
+            h: Math.min(maxY - minY + pad * 2 + 1, height - Math.max(0, minY - pad))
+        };
+    }
+
+    async processRemoval() {
+        const bbox = this.getMaskBoundingBox();
+        if (!bbox) {
+            showNotification('Please brush over the watermark first!', 'warning');
+            return;
+        }
+
+        if (this.isProcessing) return;
+        this.isProcessing = true;
+        this.applyBtn.disabled = true;
+        this.showLoading();
+
+        // Let UI overlay render before inpainting block
+        await new Promise(resolve => setTimeout(resolve, 50));
+
+        try {
+            if (this.engine === 'fast') {
+                this.localInpaint(bbox);
+            } else {
+                this.contextAwareInpaint(bbox);
+            }
+        } catch (err) {
+            console.error('Inpainting error:', err);
+            showNotification('Removal failed', 'error');
+        } finally {
+            this.isProcessing = false;
+            this.applyBtn.disabled = false;
+            this.hideLoading();
+        }
+    }
+
+    localInpaint(bbox) {
+        const startTime = Date.now();
+        const width = this.mainCanvas.width;
+        const height = this.mainCanvas.height;
+
+        const ctx = this.mainCtx;
+        const imgData = ctx.getImageData(bbox.x, bbox.y, bbox.w, bbox.h);
+        const maskData = this.maskCtx.getImageData(bbox.x, bbox.y, bbox.w, bbox.h);
+        
+        const pixels = imgData.data;
+        const mask = maskData.data;
+        const w = bbox.w;
+        const h = bbox.h;
+
+        const isMasked = new Uint8Array(w * h);
+        const maskedIndices = [];
+        for (let i = 0; i < w * h; i++) {
+            if (mask[i * 4 + 3] > 10) {
+                isMasked[i] = 1;
+                maskedIndices.push(i);
+            }
+        }
+
+        if (maskedIndices.length === 0) return;
+
+        const workingPixels = new Uint8ClampedArray(pixels);
+        const passes = 12;
+
+        for (let pass = 0; pass < passes; pass++) {
+            for (let idx = 0; idx < maskedIndices.length; idx++) {
+                const i = maskedIndices[idx];
+                const px = i % w;
+                const py = Math.floor(i / w);
+
+                let sumR = 0, sumG = 0, sumB = 0, weightSum = 0;
+
+                for (let dy = -3; dy <= 3; dy++) {
+                    for (let dx = -3; dx <= 3; dx++) {
+                        if (dx === 0 && dy === 0) continue;
+                        const nx = px + dx;
+                        const ny = py + dy;
+
+                        if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
+                            const nIdx = ny * w + nx;
+                            if (!isMasked[nIdx]) {
+                                const dist = dx*dx + dy*dy;
+                                const weight = 1.0 / dist;
+                                sumR += workingPixels[nIdx * 4] * weight;
+                                sumG += workingPixels[nIdx * 4 + 1] * weight;
+                                sumB += workingPixels[nIdx * 4 + 2] * weight;
+                                weightSum += weight;
+                            }
+                        }
+                    }
+                }
+
+                if (weightSum > 0) {
+                    pixels[i * 4] = sumR / weightSum;
+                    pixels[i * 4 + 1] = sumG / weightSum;
+                    pixels[i * 4 + 2] = sumB / weightSum;
+                }
+            }
+            workingPixels.set(pixels);
+        }
+
+        ctx.putImageData(imgData, bbox.x, bbox.y);
+        this.clearMask();
+
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+        document.getElementById('watermarkProcessTime').textContent = `${elapsed}s`;
+        const percentage = ((maskedIndices.length / (width * height)) * 100).toFixed(1);
+        document.getElementById('watermarkMaskArea').textContent = `${percentage}%`;
+        
+        this.downloadBtn.style.display = 'inline-flex';
+        showNotification('Watermark removed successfully!');
+    }
+
+    contextAwareInpaint(bbox) {
+        const startTime = Date.now();
+        const width = this.mainCanvas.width;
+        const height = this.mainCanvas.height;
+
+        const ctx = this.mainCtx;
+        const imgData = ctx.getImageData(bbox.x, bbox.y, bbox.w, bbox.h);
+        const maskData = this.maskCtx.getImageData(bbox.x, bbox.y, bbox.w, bbox.h);
+        
+        const pixels = imgData.data;
+        const mask = maskData.data;
+        const w = bbox.w;
+        const h = bbox.h;
+
+        const isMasked = new Uint8Array(w * h);
+        const maskedIndices = [];
+        for (let i = 0; i < w * h; i++) {
+            if (mask[i * 4 + 3] > 10) {
+                isMasked[i] = 1;
+                maskedIndices.push(i);
+            }
+        }
+
+        if (maskedIndices.length === 0) return;
+
+        const searchPad = 60;
+        const searchX = Math.max(0, bbox.x - searchPad);
+        const searchY = Math.max(0, bbox.y - searchPad);
+        const searchW = Math.min(width - searchX, bbox.w + searchPad * 2);
+        const searchH = Math.min(height - searchY, bbox.h + searchPad * 2);
+
+        const searchImgData = ctx.getImageData(searchX, searchY, searchW, searchH);
+        const searchPixels = searchImgData.data;
+        const sw = searchW;
+        const sh = searchH;
+
+        const patchSize = 5;
+        const halfP = Math.floor(patchSize / 2);
+        const outputPixels = new Uint8ClampedArray(pixels);
+
+        for (let pass = 0; pass < 3; pass++) {
+            for (let idx = 0; idx < maskedIndices.length; idx++) {
+                const i = maskedIndices[idx];
+                const px = i % w;
+                const py = Math.floor(i / w);
+
+                let isBoundary = false;
+                for (let dy = -1; dy <= 1; dy++) {
+                    for (let dx = -1; dx <= 1; dx++) {
+                        const nx = px + dx;
+                        const ny = py + dy;
+                        if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
+                            if (!isMasked[ny * w + nx]) {
+                                isBoundary = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (isBoundary) break;
+                }
+
+                if (!isBoundary && pass > 0) continue;
+
+                let bestX = 0;
+                let bestY = 0;
+                let minDiff = Infinity;
+                const step = 4;
+
+                for (let sy = halfP; sy < sh - halfP; sy += step) {
+                    for (let sx = halfP; sx < sw - halfP; sx += step) {
+                        let searchMasked = false;
+                        for (let dy = -halfP; dy <= halfP; dy++) {
+                            for (let dx = -halfP; dx <= halfP; dx++) {
+                                const imgX = searchX + sx + dx;
+                                const imgY = searchY + sy + dy;
+                                const maskX = imgX - bbox.x;
+                                const maskY = imgY - bbox.y;
+                                if (maskX >= 0 && maskX < w && maskY >= 0 && maskY < h) {
+                                    if (isMasked[maskY * w + maskX]) {
+                                        searchMasked = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (searchMasked) break;
+                        }
+
+                        if (searchMasked) continue;
+
+                        let ssd = 0;
+                        let count = 0;
+                        for (let dy = -halfP; dy <= halfP; dy++) {
+                            for (let dx = -halfP; dx <= halfP; dx++) {
+                                const targetX = px + dx;
+                                const targetY = py + dy;
+                                if (targetX >= 0 && targetX < w && targetY >= 0 && targetY < h) {
+                                    const targetIdx = targetY * w + targetX;
+                                    if (!isMasked[targetIdx]) {
+                                        const sIdx = ((sy + dy) * sw + (sx + dx)) * 4;
+                                        const tIdx = targetIdx * 4;
+                                        const dr = searchPixels[sIdx] - outputPixels[tIdx];
+                                        const dg = searchPixels[sIdx + 1] - outputPixels[tIdx + 1];
+                                        const db = searchPixels[sIdx + 2] - outputPixels[tIdx + 2];
+                                        ssd += dr*dr + dg*dg + db*db;
+                                        count++;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (count > 0) {
+                            ssd /= count;
+                            if (ssd < minDiff) {
+                                minDiff = ssd;
+                                bestX = sx;
+                                bestY = sy;
+                            }
+                        }
+                    }
+                }
+
+                if (minDiff !== Infinity) {
+                    const sIdx = (bestY * sw + bestX) * 4;
+                    pixels[i * 4] = searchPixels[sIdx];
+                    pixels[i * 4 + 1] = searchPixels[sIdx + 1];
+                    pixels[i * 4 + 2] = searchPixels[sIdx + 2];
+                }
+            }
+        }
+
+        ctx.putImageData(imgData, bbox.x, bbox.y);
+        this.clearMask();
+
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+        document.getElementById('watermarkProcessTime').textContent = `${elapsed}s`;
+        const percentage = ((maskedIndices.length / (width * height)) * 100).toFixed(1);
+        document.getElementById('watermarkMaskArea').textContent = `${percentage}%`;
+
+        this.downloadBtn.style.display = 'inline-flex';
+        showNotification('Watermark removed successfully!');
+    }
+
+    downloadImage() {
+        const link = document.createElement('a');
+        link.download = this.currentImage ? `${this.currentImage.name.split('.')[0]}_no_watermark.png` : 'no_watermark.png';
+        link.href = this.mainCanvas.toDataURL('image/png');
+        link.click();
+    }
+
+    showLoading() { this.loadingOverlay.classList.add('active'); }
+    hideLoading() { this.loadingOverlay.classList.remove('active'); }
+}
+
 
 // Initialize tools
 const faviconGen = new FaviconGenerator();
 const imageTrimmer = new ImageTrimmer();
 const imageOCR = new ImageOCR();
+const watermarkRemover = new WatermarkRemover();
 
 // Tool Navigation - Switch between tools
 document.querySelectorAll('.tool-tab').forEach(tab => {
@@ -3792,6 +4336,8 @@ document.querySelectorAll('.tool-tab').forEach(tab => {
             document.getElementById('converterTool').classList.add('active');
         } else if (tool === 'remover') {
             document.getElementById('removerTool').classList.add('active');
+        } else if (tool === 'watermark') {
+            document.getElementById('watermarkTool').classList.add('active');
         } else if (tool === 'cropper') {
             document.getElementById('cropperTool').classList.add('active');
         } else if (tool === 'favicon') {
@@ -3950,6 +4496,11 @@ document.querySelectorAll('.tool-tab').forEach(tab => {
         } else if (tool === 'ocr') {
             if (typeof imageOCR !== 'undefined') {
                 imageOCR.handleFiles(files);
+            }
+        } else if (tool === 'watermark') {
+            if (typeof watermarkRemover !== 'undefined') {
+                const imageFile = fileList.find(f => f.type.startsWith('image/'));
+                if (imageFile) watermarkRemover.handleFiles([imageFile]);
             }
         }
     }

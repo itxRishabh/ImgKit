@@ -104,6 +104,11 @@
                 <span>Remove BG</span>
                 <span class="ai-badge">AI</span>
             </button>
+            <button class="tool-tab" data-tool="watermark">
+                <i class="fas fa-eraser"></i>
+                <span>Watermark Remover</span>
+                <span class="ai-badge">AI</span>
+            </button>
             <button class="tool-tab" data-tool="cropper">
                 <i class="fas fa-crop-alt"></i>
                 <span>Image Crop</span>
@@ -620,6 +625,128 @@
             </main>
         </div>
         <!-- End Background Remover Tool -->
+
+        <!-- Watermark / Object Remover Tool -->
+        <div class="tool-section" id="watermarkTool">
+            <main class="main-content">
+                <!-- Hero Section -->
+                <section class="hero">
+                    <h1 class="hero-title">
+                        <span class="gradient-text">Watermark</span> & Object Remover
+                    </h1>
+                    <p class="hero-subtitle">
+                        Remove watermarks, logos, stamps, and unwanted objects automatically or using manual brush.
+                    </p>
+                </section>
+
+                <!-- Upload Area -->
+                <div class="upload-section">
+                    <div class="upload-area" id="watermarkUploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-eraser"></i>
+                        </div>
+                        <h3 class="upload-title">Drop your image here</h3>
+                        <p class="upload-text">or click to browse • Ctrl+V to paste</p>
+                        <p class="upload-formats">Supports: JPG, PNG, WebP</p>
+                        <input type="file" id="watermarkFileInput" accept="image/*" hidden>
+                    </div>
+                </div>
+
+                <!-- Preview Area & Canvas editor -->
+                <div class="preview-section" id="watermarkPreviewSection" style="display: none;">
+                    <div class="watermark-editor-container">
+                        <!-- Canvas Viewport -->
+                        <div class="watermark-canvas-wrapper">
+                            <canvas id="watermarkCanvas"></canvas>
+                            <canvas id="watermarkMaskCanvas"></canvas>
+                        </div>
+                        <!-- Canvas Tools Overlay -->
+                        <div class="canvas-controls-bar">
+                            <div class="control-group">
+                                <button class="btn-icon active" id="watermarkBrushTool" title="Brush Mask">
+                                    <i class="fas fa-paint-brush"></i>
+                                </button>
+                                <button class="btn-icon" id="watermarkEraserTool" title="Eraser">
+                                    <i class="fas fa-eraser"></i>
+                                </button>
+                                <button class="btn" id="watermarkClearMaskBtn" title="Clear Mask">
+                                    Clear Mask
+                                </button>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Brush Size: <span id="watermarkBrushSizeVal">25px</span></label>
+                                <input type="range" id="watermarkBrushSize" min="5" max="100" value="25" class="quality-slider" style="width: 120px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Watermark Settings Panel -->
+                <div class="settings-panel" id="watermarkSettingsPanel">
+                    <h3 class="settings-title">
+                        <i class="fas fa-sliders"></i>
+                        Remover Settings
+                    </h3>
+                    <div class="settings-grid">
+                        <!-- Mode Selector -->
+                        <div class="setting-group">
+                            <label class="setting-label">Removal Engine</label>
+                            <div class="toggle-buttons" id="watermarkEngineToggle">
+                                <button class="toggle-btn active" data-value="fast">
+                                    <i class="fas fa-bolt"></i> Fast (Local)
+                                </button>
+                                <button class="toggle-btn" data-value="ai">
+                                    <i class="fas fa-wand-magic-sparkles"></i> AI Pro
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Auto-Text guided watermark input -->
+                        <div class="setting-group setting-group-wide">
+                            <label class="setting-label">Auto-Detect Text (Optional)</label>
+                            <div class="input-with-action">
+                                <input type="text" id="watermarkTextPrompt" placeholder="Type text to auto-remove (e.g. 'gemini', 'logo', 'draft')..." class="text-input">
+                                <button class="btn btn-primary btn-sm" id="watermarkAutoDetectBtn">
+                                    <i class="fas fa-magnifying-glass"></i> Detect
+                                </button>
+                            </div>
+                            <p class="slider-hint">Uses on-device OCR to automatically locate and mask the watermark text.</p>
+                        </div>
+                    </div>
+
+                    <div class="crop-apply-row" style="margin-top: 24px;">
+                        <button class="btn btn-primary" id="watermarkApplyBtn">
+                            <i class="fas fa-wand-magic-sparkles"></i> Remove Watermark
+                        </button>
+                        <button class="btn btn-success" id="watermarkDownloadBtn" style="display: none;">
+                            <i class="fas fa-download"></i> Download Image
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Statistics Section -->
+                <div class="stats-section" id="watermarkStatsSection">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="watermarkProcessTime">0.0s</span>
+                            <span class="stat-label">Processing Time</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-expand"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="watermarkMaskArea">0%</span>
+                            <span class="stat-label">Area Restored</span>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
 
         <!-- Image Crop Tool -->
         <div class="tool-section" id="cropperTool">
