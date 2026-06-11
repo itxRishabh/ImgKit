@@ -585,6 +585,10 @@ body {
 }
 
 /* ===== Custom Controls (Monochrome styling) ===== */
+.setting-group-wide {
+    grid-column: span 2;
+}
+
 .toggle-buttons {
     display: flex;
     background: var(--bg);
@@ -594,10 +598,15 @@ body {
     gap: 2px;
 }
 
+.toggle-buttons-wrap {
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
 .toggle-btn {
     flex: 1;
     padding: 8px 12px;
-    border: none;
+    border: 1px solid transparent;
     border-radius: var(--radius-sm);
     background: transparent;
     color: var(--text-muted);
@@ -612,6 +621,12 @@ body {
     white-space: nowrap;
 }
 
+.toggle-buttons-wrap .toggle-btn {
+    flex: 1 1 auto;
+    min-width: 75px;
+    padding: 8px 10px;
+}
+
 .toggle-btn:hover {
     color: var(--text);
 }
@@ -619,7 +634,22 @@ body {
 .toggle-btn.active {
     background: var(--surface);
     color: var(--text);
-    border: 1px solid var(--border-active);
+    border-color: var(--border-active);
+}
+
+/* Smart Extend AI Badge */
+.smart-badge {
+    font-size: 8px;
+    font-weight: 700;
+    background: rgba(168, 85, 247, 0.08);
+    color: var(--accent-remover);
+    border-color: rgba(168, 85, 247, 0.25);
+    padding: 1px 4px;
+    border-radius: 4px;
+    margin-left: 4px;
+    border: 1px solid var(--border);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
 /* Checkbox Container */
@@ -800,6 +830,13 @@ body {
 .custom-removebg-color span {
     font-size: 11px;
     color: var(--text-muted);
+}
+
+.color-options {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
 /* Color Presets */
