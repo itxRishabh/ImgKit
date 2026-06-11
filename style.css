@@ -1798,35 +1798,83 @@ body {
     .tool-tab {
         flex: none;
         width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         justify-content: center;
+        gap: 6px;
+        position: relative;
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: var(--radius-md);
-        padding: 10px 8px;
-        font-size: 12px;
+        padding: 14px 6px 12px;
+        font-size: 11px;
         transition: all var(--transition-fast);
         white-space: normal;
         text-align: center;
+    }
+
+    .tool-tab i {
+        font-size: 14px;
+    }
+
+    .tool-tab .ai-badge {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        font-size: 7px;
+        padding: 1px 3px;
     }
 
     .tool-tab:hover {
         border-color: var(--border-active);
     }
 
-    .tool-tab.active {
-        background: var(--accent);
-        color: var(--bg);
-        border-color: var(--accent);
-    }
-
     .tool-tab.active::after {
         display: none;
     }
 
+    /* Active Tool Specific Glow on Mobile */
+    .tool-tab.active[data-tool="converter"] {
+        background: rgba(16, 185, 129, 0.08);
+        border-color: var(--accent-converter);
+        color: var(--accent-converter);
+    }
+    .tool-tab.active[data-tool="square"] {
+        background: rgba(236, 72, 153, 0.08);
+        border-color: var(--accent-square);
+        color: var(--accent-square);
+    }
+    .tool-tab.active[data-tool="remover"] {
+        background: rgba(168, 85, 247, 0.08);
+        border-color: var(--accent-remover);
+        color: var(--accent-remover);
+    }
+    .tool-tab.active[data-tool="cropper"] {
+        background: rgba(59, 130, 246, 0.08);
+        border-color: var(--accent-cropper);
+        color: var(--accent-cropper);
+    }
+    .tool-tab.active[data-tool="favicon"] {
+        background: rgba(245, 158, 11, 0.08);
+        border-color: var(--accent-favicon);
+        color: var(--accent-favicon);
+    }
+    .tool-tab.active[data-tool="trimmer"] {
+        background: rgba(20, 184, 166, 0.08);
+        border-color: var(--accent-trimmer);
+        color: var(--accent-trimmer);
+    }
+    .tool-tab.active[data-tool="ocr"] {
+        background: rgba(236, 72, 153, 0.08);
+        border-color: var(--accent-ocr);
+        color: var(--accent-ocr);
+    }
+
     .tool-tab.active .ai-badge {
-        background: var(--bg);
-        color: var(--accent-dim);
-        border-color: var(--border-active);
+        background: transparent;
+        border-color: currentColor;
+        color: currentColor;
     }
 
     .upload-area {
