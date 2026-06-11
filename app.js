@@ -1106,7 +1106,9 @@ class ImageConverter {
         this.images = [];
         this.settings = {
             format: 'webp',
-            quality: 0.82 // 82% quality - visually lossless with optimal compression
+            quality: 0.82, // 82% quality - visually lossless with optimal compression
+            resizeMode: 'original',
+            maxWidth: 1920
         };
         this.stats = {
             total: 0,
@@ -1129,6 +1131,9 @@ class ImageConverter {
         // Settings elements
         this.settingsPanel = document.getElementById('converterSettingsPanel');
         this.formatToggle = document.getElementById('converterFormatToggle');
+        this.resizeToggle = document.getElementById('converterResizeToggle');
+        this.customSizeGroup = document.getElementById('converterCustomSizeGroup');
+        this.maxWidthInput = document.getElementById('converterMaxWidth');
         this.qualitySlider = document.getElementById('converterQualitySlider');
         this.qualityValue = document.getElementById('converterQualityValue');
         this.qualitySetting = document.getElementById('converterQualitySetting');
@@ -1252,6 +1257,36 @@ class ImageConverter {
 
         this.qualitySlider.addEventListener('change', () => {
             this.reprocessAllImages(true);
+        });
+
+        // Resize Toggle
+        this.resizeToggle.querySelectorAll('.toggle-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.resizeToggle.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                this.settings.resizeMode = btn.dataset.value;
+
+                if (this.settings.resizeMode === 'custom') {
+                    this.customSizeGroup.style.display = 'block';
+                } else {
+                    this.customSizeGroup.style.display = 'none';
+                }
+
+                this.reprocessAllImages();
+            });
+        });
+
+        // Max Width Input change (with input validation)
+        this.maxWidthInput.addEventListener('input', (e) => {
+            let val = parseInt(e.target.value) || 1920;
+            if (val < 10) val = 10;
+            if (val > 10000) val = 10000;
+            this.settings.maxWidth = val;
+            
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                this.reprocessAllImages(true);
+            }, 500); // Wait 500ms when typing dimensions to prevent excessive processing
         });
 
         // Clear all
@@ -1676,12 +1711,20 @@ class ImageConverter {
             drawW = bitmap.width;
             drawH = bitmap.height;
 
-            // Cap very large images to prevent canvas OOM (max ~16MP)
-            const MAX_DIM = 4096;
-            if (drawW > MAX_DIM || drawH > MAX_DIM) {
-                const scale = MAX_DIM / Math.max(drawW, drawH);
-                drawW = Math.round(drawW * scale);
-                drawH = Math.round(drawH * scale);
+            if (this.settings.resizeMode === 'custom' && this.settings.maxWidth) {
+                if (drawW > this.settings.maxWidth) {
+                    const scale = this.settings.maxWidth / drawW;
+                    drawW = this.settings.maxWidth;
+                    drawH = Math.round(drawH * scale);
+                }
+            } else {
+                // Cap very large images to prevent canvas OOM (max ~16MP)
+                const MAX_DIM = 4096;
+                if (drawW > MAX_DIM || drawH > MAX_DIM) {
+                    const scale = MAX_DIM / Math.max(drawW, drawH);
+                    drawW = Math.round(drawW * scale);
+                    drawH = Math.round(drawH * scale);
+                }
             }
 
             drawSource = bitmap;
@@ -1691,11 +1734,19 @@ class ImageConverter {
             drawW = img.width;
             drawH = img.height;
 
-            const MAX_DIM = 4096;
-            if (drawW > MAX_DIM || drawH > MAX_DIM) {
-                const scale = MAX_DIM / Math.max(drawW, drawH);
-                drawW = Math.round(drawW * scale);
-                drawH = Math.round(drawH * scale);
+            if (this.settings.resizeMode === 'custom' && this.settings.maxWidth) {
+                if (drawW > this.settings.maxWidth) {
+                    const scale = this.settings.maxWidth / drawW;
+                    drawW = this.settings.maxWidth;
+                    drawH = Math.round(drawH * scale);
+                }
+            } else {
+                const MAX_DIM = 4096;
+                if (drawW > MAX_DIM || drawH > MAX_DIM) {
+                    const scale = MAX_DIM / Math.max(drawW, drawH);
+                    drawW = Math.round(drawW * scale);
+                    drawH = Math.round(drawH * scale);
+                }
             }
 
             drawSource = img;

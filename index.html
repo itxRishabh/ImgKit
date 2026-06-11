@@ -408,6 +408,29 @@
                             </div>
                         </div>
 
+                        <!-- Resize Settings -->
+                        <div class="setting-group">
+                            <label class="setting-label">Resize Image</label>
+                            <div class="toggle-buttons" id="converterResizeToggle">
+                                <button class="toggle-btn active" data-value="original">
+                                    <i class="fas fa-expand-alt"></i> Original Size
+                                </button>
+                                <button class="toggle-btn" data-value="custom">
+                                    <i class="fas fa-compress-arrows-alt"></i> Custom Width
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Custom Resize Options -->
+                        <div class="setting-group" id="converterCustomSizeGroup" style="display: none;">
+                            <label class="setting-label">Max Width</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="converterMaxWidth" min="10" max="10000" value="1920" placeholder="1920">
+                                <span class="unit">px</span>
+                            </div>
+                            <p class="slider-hint">Aspect ratio will be maintained automatically.</p>
+                        </div>
+
                         <!-- Quality Slider -->
                         <div class="setting-group" id="converterQualitySetting">
                             <label class="setting-label">
