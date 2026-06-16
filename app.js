@@ -4558,6 +4558,7 @@ class VideoTool {
         this.compressionLevelSelect = document.getElementById('videoCompressionLevel');
         this.resolutionScaleSelect = document.getElementById('videoResolutionScale');
         this.keepAudioCheck = document.getElementById('videoKeepAudio');
+        this.largeWarningEl = document.getElementById('videoLargeWarning');
 
         // Progress Elements
         this.statusText = document.getElementById('videoStatusText');
@@ -4618,6 +4619,16 @@ class VideoTool {
         // Show metadata sizes
         this.origSizeVal.textContent = `${(file.size / (1024 * 1024)).toFixed(2)} MB`;
 
+        // Check if file is large (>40MB) and show recommendation warning
+        if (file.size > 40 * 1024 * 1024) {
+            this.largeWarningEl.style.display = 'block';
+            // Automatically set resolution scale to 50% for large files to avoid OOM
+            this.resolutionScaleSelect.value = '0.5';
+        } else {
+            this.largeWarningEl.style.display = 'none';
+            this.resolutionScaleSelect.value = '1';
+        }
+
         // Load video source for preview player
         const fileURL = URL.createObjectURL(file);
         this.previewPlayer.src = fileURL;
@@ -4641,6 +4652,7 @@ class VideoTool {
         this.currentFile = null;
         this.isProcessing = false;
         this.fileInput.value = '';
+        this.largeWarningEl.style.display = 'none';
 
         this.uploadSection.style.display = 'block';
         this.workspaceSection.style.display = 'none';
@@ -4655,11 +4667,18 @@ class VideoTool {
         this.progressValue.textContent = '0%';
         this.progressFill.style.width = '0%';
 
+        this.ffmpegLogs = [];
         const { createFFmpeg } = FFmpeg;
         this.ffmpeg = createFFmpeg({
             log: true,
             corePath: 'https://unpkg.com/@ffmpeg/core-st@0.11.1/dist/ffmpeg-core.js',
-            mainName: 'main'
+            mainName: 'main',
+            logger: ({ type, message }) => {
+                if (this.ffmpegLogs.length < 500) {
+                    this.ffmpegLogs.push(message);
+                }
+                console.log(`[FFmpeg] ${message}`);
+            }
         });
 
         await this.ffmpeg.load();
@@ -4675,6 +4694,9 @@ class VideoTool {
 
         try {
             await this.loadFFmpeg();
+
+            // Clear logs for this run
+            this.ffmpegLogs = [];
 
             this.statusText.textContent = 'Preparing video file...';
             const { fetchFile } = FFmpeg;
@@ -4708,8 +4730,10 @@ class VideoTool {
             }
 
             // Encoder and compression
+            // Note: 'ultrafast' preset is used for libx264 in WASM because it uses significantly
+            // less memory and runs 2x-3x faster than standard presets, preventing OOM crashes.
             if (targetFormat === 'mp4') {
-                args.push('-c:v', 'libx264', '-preset', 'veryfast', '-crf', crfValue);
+                args.push('-c:v', 'libx264', '-preset', 'ultrafast', '-crf', crfValue);
             } else if (targetFormat === 'webm') {
                 let webmCrf = '20';
                 if (crfValue === '18') webmCrf = '10';
@@ -4719,7 +4743,7 @@ class VideoTool {
             } else if (targetFormat === 'gif') {
                 // Gif doesn't use crf
             } else if (targetFormat === 'mkv') {
-                args.push('-c:v', 'libx264', '-preset', 'veryfast', '-crf', crfValue);
+                args.push('-c:v', 'libx264', '-preset', 'ultrafast', '-crf', crfValue);
             }
 
             const outName = `output.${targetFormat}`;
@@ -4738,8 +4762,37 @@ class VideoTool {
             // Run command
             await this.ffmpeg.run(...args);
 
+            // Verify output file existence & size to ensure it did not abort/crash silently
+            let fileExists = false;
+            try {
+                this.ffmpeg.FS('stat', outName);
+                fileExists = true;
+            } catch (e) {
+                // Not found
+            }
+
+            if (!fileExists) {
+                throw new Error('FFmpeg did not generate an output file. The process likely ran out of memory or crashed.');
+            }
+
             // Read output
             const data = this.ffmpeg.FS('readFile', outName);
+            if (!data || data.length < 10000) {
+                throw new Error('Output file is corrupted or empty (less than 10KB). Conversion aborted early.');
+            }
+
+            // Check captured logs for critical FFmpeg errors
+            const logText = this.ffmpegLogs.join('\n');
+            const hasCriticalError = logText.includes('Conversion failed') || 
+                                     logText.includes('Error splitting') || 
+                                     logText.includes('Out of memory') ||
+                                     logText.includes('Cannot allocate memory') ||
+                                     logText.includes('Error opening filters') ||
+                                     logText.includes('Unknown encoder');
+
+            if (hasCriticalError) {
+                throw new Error('FFmpeg conversion failed during execution. See browser console for details.');
+            }
 
             const mimeTypes = {
                 mp4: 'video/mp4',
@@ -4793,7 +4846,7 @@ class VideoTool {
 
         } catch (error) {
             console.error('Video conversion error:', error);
-            showNotification('Video conversion failed. Try lower quality or resolutions.', 'error');
+            showNotification(error.message || 'Video conversion failed. Try lower quality or resolutions.', 'error');
             this.progressContainer.style.display = 'none';
             this.workspaceSection.style.display = 'block';
         } finally {

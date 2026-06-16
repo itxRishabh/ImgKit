@@ -1201,6 +1201,15 @@
                             <h3 class="settings-title">
                                 <i class="fas fa-sliders"></i> Adjust Settings
                             </h3>
+                            <div id="videoLargeWarning" class="warning-box" style="display: none; margin-bottom: 20px; padding: 14px 16px; border-radius: var(--radius-md); background: rgba(255, 159, 10, 0.1); border: 1px solid rgba(255, 159, 10, 0.3); font-size: 13px; color: var(--warning); text-align: left; line-height: 1.5;">
+                                <div style="display: flex; align-items: flex-start; gap: 8px;">
+                                    <i class="fas fa-exclamation-triangle" style="margin-top: 3px; flex-shrink: 0;"></i>
+                                    <div>
+                                        <strong style="display: block; margin-bottom: 4px; color: var(--text);">Large Video Warning</strong>
+                                        Browser-side WebAssembly video conversion is memory-constrained. To avoid out-of-memory crashes, we recommend reducing the resolution scale to 50% or 25%.
+                                    </div>
+                                </div>
+                            </div>
                             <div class="settings-grid">
                                 <!-- Target Format -->
                                 <div class="setting-group">
