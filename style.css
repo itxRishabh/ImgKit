@@ -2288,4 +2288,109 @@ body {
     border-color: var(--border-active);
 }
 
+/* ===== Video Tool UI ===== */
+#videoTool .upload-area {
+    border-color: var(--accent-watermark);
+}
 
+.video-workspace-container {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 24px;
+    width: 100%;
+    align-items: start;
+}
+
+@media (max-width: 992px) {
+    .video-workspace-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.video-preview-card, .video-settings-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.video-viewport {
+    background: #000000;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    aspect-ratio: 16/9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.video-viewport video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.video-info-strip {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.video-info-strip .info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+}
+
+.video-info-strip .info-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.video-info-strip .info-val {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+/* Video Progress */
+.video-progress-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 30px;
+    width: 100%;
+    max-width: 600px;
+    margin: 40px auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* Accent override for active tab */
+.tool-tab[data-tool="video"].active {
+    border-bottom-color: var(--accent-watermark) !important;
+    color: var(--accent-watermark) !important;
+}
+
+.tool-tab[data-tool="video"] .ai-badge {
+    background: var(--accent-watermark) !important;
+}

@@ -3,6 +3,78 @@
  * Converts images to 1:1 aspect ratio by extending canvas
  */
 
+// Global Sleek Toast Notification System
+function showNotification(message, type = 'info') {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.style.cssText = `
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        `;
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-left: 4px solid var(--accent-watermark);
+        color: var(--text);
+        padding: 12px 20px;
+        border-radius: var(--radius-md);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        font-size: 13px;
+        font-weight: 500;
+        min-width: 250px;
+        max-width: 400px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        pointer-events: auto;
+    `;
+
+    let iconClass = 'fa-info-circle';
+    let iconColor = 'var(--accent-watermark)';
+    if (type === 'success') {
+        iconClass = 'fa-check-circle';
+        iconColor = '#30d158';
+        toast.style.borderLeftColor = '#30d158';
+    } else if (type === 'warning') {
+        iconClass = 'fa-exclamation-triangle';
+        iconColor = '#ff9f0a';
+        toast.style.borderLeftColor = '#ff9f0a';
+    } else if (type === 'error') {
+        iconClass = 'fa-times-circle';
+        iconColor = '#ff453a';
+        toast.style.borderLeftColor = '#ff453a';
+    }
+
+    toast.innerHTML = `<i class="fas ${iconClass}" style="color: ${iconColor}"></i><span>${message}</span>`;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateY(0)';
+    }, 10);
+
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-20px)';
+        setTimeout(() => toast.remove(), 300);
+    }, 3500);
+}
+
 class ImageSquare {
     constructor() {
         this.images = [];
@@ -1332,12 +1404,12 @@ class ImageConverter {
             file.type === 'application/x-zip-compressed' ||
             file.name.toLowerCase().endsWith('.zip')
         );
-        // Include standard image/* types AND HEIC/HEIF (which may have empty/unknown MIME in some browsers)
+        // Include standard image/* types AND HEIC/HEIF/DNG (which may have empty/unknown MIME in some browsers)
         const imageFiles = allFiles.filter(file => {
             if (zipFiles.includes(file)) return false;
             if (file.type.startsWith('image/')) return true;
             const lower = file.name.toLowerCase();
-            return lower.endsWith('.heic') || lower.endsWith('.heif');
+            return lower.endsWith('.heic') || lower.endsWith('.heif') || lower.endsWith('.dng');
         });
 
         const total = imageFiles.length + zipFiles.length;
@@ -1389,7 +1461,7 @@ class ImageConverter {
     async processZipFile(zipFile) {
         try {
             const zip = await JSZip.loadAsync(zipFile);
-            const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.tiff', '.tif', '.heic', '.heif'];
+            const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.tiff', '.tif', '.heic', '.heif', '.dng'];
 
             // Get all image files from the ZIP
             const zipEntries = [];
@@ -1438,7 +1510,8 @@ class ImageConverter {
                 'webp': 'image/webp',
                 'bmp': 'image/bmp',
                 'tiff': 'image/tiff',
-                'tif': 'image/tiff'
+                'tif': 'image/tiff',
+                'dng': 'image/x-adobe-dng'
             };
             const mimeType = mimeTypes[ext] || 'image/png';
             const file = new File([blob], cleanFilename, { type: mimeType });
@@ -1448,9 +1521,121 @@ class ImageConverter {
         }
     }
 
+    /**
+     * Parse the RAW DNG file binary structure to extract the largest embedded JPEG preview
+     */
+    extractLargestJPEGFromDng(arrayBuffer) {
+        const bytes = new Uint8Array(arrayBuffer);
+        const length = bytes.length;
+        const candidates = [];
+
+        // Scan the entire binary file for JPEG SOI (FF D8 FF)
+        for (let i = 0; i < length - 4; i++) {
+            if (bytes[i] === 0xFF && bytes[i + 1] === 0xD8 && bytes[i + 2] === 0xFF) {
+                const start = i;
+                let end = -1;
+
+                // Look ahead for the EOI (FF D9) marker, stop if another SOI starts
+                for (let j = i + 2; j < length - 1; j++) {
+                    if (bytes[j] === 0xFF && bytes[j + 1] === 0xD8 && bytes[j + 2] === 0xFF) {
+                        break;
+                    }
+                    if (bytes[j] === 0xFF && bytes[j + 1] === 0xD9) {
+                        end = j + 2;
+                    }
+                }
+
+                if (end !== -1) {
+                    candidates.push({
+                        start: start,
+                        length: end - start
+                    });
+                    i = end - 1; // skip past this JPEG block
+                }
+            }
+        }
+
+        if (candidates.length === 0) return null;
+
+        // Choose the largest embedded image (which will be the highest resolution preview)
+        candidates.sort((a, b) => b.length - a.length);
+        const best = candidates[0];
+
+        // Ensure it's a reasonable image (greater than 5KB)
+        if (best.length > 5000) {
+            return bytes.subarray(best.start, best.start + best.length);
+        }
+        return null;
+    }
+
     async processImage(file) {
         return new Promise(async (resolve) => {
             const startTime = performance.now();
+
+            // DNG: Direct client-side embedded high-res JPEG extraction
+            const isDng = file.name.toLowerCase().endsWith('.dng');
+
+            if (isDng) {
+                try {
+                    this.showLoading(`Extracting preview from DNG: ${file.name}...`);
+                    await new Promise(r => setTimeout(r, 50));
+
+                    // Read DNG file into ArrayBuffer
+                    const arrayBuffer = await file.arrayBuffer();
+                    
+                    // Search for the largest embedded JPEG
+                    const jpegBytes = this.extractLargestJPEGFromDng(arrayBuffer);
+                    
+                    if (!jpegBytes) {
+                        throw new Error('No valid embedded JPEG preview found in DNG file.');
+                    }
+
+                    const jpegBlob = new Blob([jpegBytes], { type: 'image/jpeg' });
+                    const convertedFile = new File(
+                        [jpegBlob],
+                        file.name.replace(/\.dng$/i, '.jpg'),
+                        { type: 'image/jpeg' }
+                    );
+
+                    const tempImg = await this.loadImage(convertedFile);
+                    const finalWidth = tempImg.width;
+                    const finalHeight = tempImg.height;
+                    tempImg.src = ''; // Release memory
+
+                    this.showLoading(`Converting and compressing DNG: ${file.name}...`);
+                    await new Promise(r => setTimeout(r, 50));
+
+                    const imageData = {
+                        id: Date.now() + Math.random().toString(36).substr(2, 9),
+                        name: file.name,
+                        originalFormat: 'dng',
+                        originalSize: file.size,
+                        width: finalWidth,
+                        height: finalHeight,
+                        file: convertedFile
+                    };
+
+                    const result = await this.convertImage(imageData);
+                    imageData.convertedObjectURL = result.objectUrl;
+                    imageData.convertedBlob = result.blob;
+                    imageData.convertedSize = result.size;
+                    imageData.convertedFormat = this.settings.format;
+                    imageData.processingTime = performance.now() - startTime;
+
+                    this.images.push(imageData);
+                    this.stats.total++;
+                    this.stats.totalOriginalSize += imageData.originalSize;
+                    this.stats.totalConvertedSize += imageData.convertedSize;
+                    this.stats.totalTime += imageData.processingTime;
+                    this.addPreviewItem(imageData);
+                    resolve();
+                } catch (err) {
+                    console.error('DNG conversion failed:', file.name, err);
+                    showNotification(`DNG conversion failed for ${file.name}: ${err.message}`, 'error');
+                    resolve();
+                }
+                return;
+            }
 
             // HEIC/HEIF: multi-strategy conversion to prevent OOM on large files
             const isHeic = file.type === 'image/heic' || file.type === 'image/heif' ||
@@ -1811,13 +1996,14 @@ class ImageConverter {
             'image/bmp': 'bmp',
             'image/tiff': 'tiff',
             'image/heic': 'heic',
-            'image/heif': 'heic'
+            'image/heif': 'heic',
+            'image/x-adobe-dng': 'dng'
         };
         let format = formats[mimeType];
         if (!format && filename) {
             const ext = filename.toLowerCase().split('.').pop();
             if (['jpg', 'jpeg'].includes(ext)) return 'jpg';
-            if (['png', 'webp', 'gif', 'bmp', 'tiff', 'heic', 'heif'].includes(ext)) return ext;
+            if (['png', 'webp', 'gif', 'bmp', 'tiff', 'heic', 'heif', 'dng'].includes(ext)) return ext;
         }
         return format || 'unknown';
     }
@@ -4339,12 +4525,288 @@ class WatermarkRemover {
     hideLoading() { this.loadingOverlay.classList.remove('active'); }
 }
 
+// Video Converter & Compressor Tool Class
+class VideoTool {
+    constructor() {
+        this.ffmpeg = null;
+        this.currentFile = null;
+        this.isProcessing = false;
+
+        this.initElements();
+        this.initEventListeners();
+    }
+
+    initElements() {
+        this.uploadArea = document.getElementById('videoUploadArea');
+        this.fileInput = document.getElementById('videoFileInput');
+        this.workspaceSection = document.getElementById('videoWorkspaceSection');
+        this.uploadSection = document.getElementById('videoUploadSection');
+        this.progressContainer = document.getElementById('videoProgressContainer');
+        this.resultSection = document.getElementById('videoResultSection');
+
+        // Players & Previews
+        this.previewPlayer = document.getElementById('videoPreviewPlayer');
+        this.resultPlayer = document.getElementById('videoResultPlayer');
+
+        // Original Stats
+        this.origSizeVal = document.getElementById('videoOrigSize');
+        this.origResVal = document.getElementById('videoOrigRes');
+        this.durationVal = document.getElementById('videoDuration');
+
+        // Settings Elements
+        this.targetFormatSelect = document.getElementById('videoTargetFormat');
+        this.compressionLevelSelect = document.getElementById('videoCompressionLevel');
+        this.resolutionScaleSelect = document.getElementById('videoResolutionScale');
+        this.keepAudioCheck = document.getElementById('videoKeepAudio');
+
+        // Progress Elements
+        this.statusText = document.getElementById('videoStatusText');
+        this.progressValue = document.getElementById('videoProgressValue');
+        this.progressFill = document.getElementById('videoProgressFill');
+
+        // Output stats
+        this.beforeSizeVal = document.getElementById('videoBeforeSize');
+        this.afterSizeVal = document.getElementById('videoAfterSize');
+        this.savingsPctVal = document.getElementById('videoSavingsPct');
+
+        // Buttons
+        this.processBtn = document.getElementById('videoProcessBtn');
+        this.resetBtn = document.getElementById('videoResetBtn');
+        this.downloadBtn = document.getElementById('videoDownloadBtn');
+        this.doneBtn = document.getElementById('videoDoneBtn');
+    }
+
+    initEventListeners() {
+        // Drop area click
+        this.uploadArea.addEventListener('click', () => this.fileInput.click());
+        this.fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
+
+        // Drag/Drop handling
+        this.uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            this.uploadArea.classList.add('drag-over');
+        });
+        this.uploadArea.addEventListener('dragleave', () => this.uploadArea.classList.remove('drag-over'));
+        this.uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            this.uploadArea.classList.remove('drag-over');
+            this.handleFiles(e.dataTransfer.files);
+        });
+
+        // Trigger processing
+        this.processBtn.addEventListener('click', () => this.processVideo());
+        this.resetBtn.addEventListener('click', () => this.resetWorkspace());
+        this.doneBtn.addEventListener('click', () => this.resetWorkspace());
+
+        // Player resolution and duration detection
+        this.previewPlayer.addEventListener('loadedmetadata', () => {
+            this.origResVal.textContent = `${this.previewPlayer.videoWidth} x ${this.previewPlayer.videoHeight}`;
+            this.durationVal.textContent = `${this.previewPlayer.duration.toFixed(1)}s`;
+        });
+    }
+
+    handleFiles(files) {
+        if (!files || files.length === 0) return;
+        const file = files[0];
+        if (!file.type.startsWith('video/')) {
+            showNotification('Please drop a valid video file!', 'warning');
+            return;
+        }
+
+        this.currentFile = file;
+
+        // Show metadata sizes
+        this.origSizeVal.textContent = `${(file.size / (1024 * 1024)).toFixed(2)} MB`;
+
+        // Load video source for preview player
+        const fileURL = URL.createObjectURL(file);
+        this.previewPlayer.src = fileURL;
+
+        // Display workspace
+        this.uploadSection.style.display = 'none';
+        this.workspaceSection.style.display = 'block';
+        this.resultSection.style.display = 'none';
+    }
+
+    resetWorkspace() {
+        if (this.previewPlayer.src) {
+            URL.revokeObjectURL(this.previewPlayer.src);
+            this.previewPlayer.src = '';
+        }
+        if (this.resultPlayer.src) {
+            URL.revokeObjectURL(this.resultPlayer.src);
+            this.resultPlayer.src = '';
+        }
+
+        this.currentFile = null;
+        this.isProcessing = false;
+        this.fileInput.value = '';
+
+        this.uploadSection.style.display = 'block';
+        this.workspaceSection.style.display = 'none';
+        this.progressContainer.style.display = 'none';
+        this.resultSection.style.display = 'none';
+    }
+
+    async loadFFmpeg() {
+        if (this.ffmpeg) return;
+
+        this.statusText.textContent = 'Loading WASM Video Engine...';
+        this.progressValue.textContent = '0%';
+        this.progressFill.style.width = '0%';
+
+        const { createFFmpeg } = FFmpeg;
+        this.ffmpeg = createFFmpeg({
+            log: true,
+            corePath: 'https://unpkg.com/@ffmpeg/core-st@0.11.1/dist/ffmpeg-core.js'
+        });
+
+        await this.ffmpeg.load();
+    }
+
+    async processVideo() {
+        if (this.isProcessing || !this.currentFile) return;
+        this.isProcessing = true;
+
+        this.progressContainer.style.display = 'block';
+        this.workspaceSection.style.display = 'none';
+        this.resultSection.style.display = 'none';
+
+        try {
+            await this.loadFFmpeg();
+
+            this.statusText.textContent = 'Preparing video file...';
+            const { fetchFile } = FFmpeg;
+            const fileData = await fetchFile(this.currentFile);
+            this.ffmpeg.FS('writeFile', 'input_video', fileData);
+
+            const targetFormat = this.targetFormatSelect.value;
+            const crfValue = this.compressionLevelSelect.value;
+            const scale = parseFloat(this.resolutionScaleSelect.value);
+
+            // Construct FFmpeg args
+            const args = ['-i', 'input_video'];
+            
+            // Resolution filter
+            const vf = [];
+            if (scale !== 1) {
+                vf.push(`scale=trunc(iw*${scale}/2)*2:trunc(ih*${scale}/2)*2`);
+            }
+            if (targetFormat === 'gif') {
+                vf.push('fps=12');
+            }
+            if (vf.length > 0) {
+                args.push('-vf', vf.join(','));
+            }
+
+            // Audio track
+            if (!this.keepAudioCheck.checked || targetFormat === 'gif') {
+                args.push('-an');
+            } else {
+                args.push('-c:a', 'aac');
+            }
+
+            // Encoder and compression
+            if (targetFormat === 'mp4') {
+                args.push('-c:v', 'libx264', '-preset', 'veryfast', '-crf', crfValue);
+            } else if (targetFormat === 'webm') {
+                let webmCrf = '20';
+                if (crfValue === '18') webmCrf = '10';
+                if (crfValue === '28') webmCrf = '32';
+                if (crfValue === '32') webmCrf = '45';
+                args.push('-c:v', 'libvpx', '-crf', webmCrf, '-b:v', '0');
+            } else if (targetFormat === 'gif') {
+                // Gif doesn't use crf
+            } else if (targetFormat === 'mkv') {
+                args.push('-c:v', 'libx264', '-preset', 'veryfast', '-crf', crfValue);
+            }
+
+            const outName = `output.${targetFormat}`;
+            args.push(outName);
+
+            this.statusText.textContent = 'Starting conversion...';
+
+            // Set progress hook
+            this.ffmpeg.setProgress(({ ratio }) => {
+                const pct = Math.min(100, Math.max(0, Math.round(ratio * 100)));
+                this.progressValue.textContent = `${pct}%`;
+                this.progressFill.style.width = `${pct}%`;
+                this.statusText.textContent = `Encoding video: ${pct}% completed...`;
+            });
+
+            // Run command
+            await this.ffmpeg.run(...args);
+
+            // Read output
+            const data = this.ffmpeg.FS('readFile', outName);
+
+            const mimeTypes = {
+                mp4: 'video/mp4',
+                webm: 'video/webm',
+                gif: 'image/gif',
+                mkv: 'video/x-matroska'
+            };
+
+            const outBlob = new Blob([data.buffer], { type: mimeTypes[targetFormat] || 'video/mp4' });
+            const outURL = URL.createObjectURL(outBlob);
+
+            // Set output preview
+            this.resultPlayer.src = outURL;
+
+            // Update stats
+            this.beforeSizeVal.textContent = `${(this.currentFile.size / (1024 * 1024)).toFixed(2)} MB`;
+            this.afterSizeVal.textContent = `${(outBlob.size / (1024 * 1024)).toFixed(2)} MB`;
+            
+            const ratio = ((this.currentFile.size - outBlob.size) / this.currentFile.size * 100).toFixed(0);
+            if (ratio > 0) {
+                this.savingsPctVal.textContent = `Size Reduced by ${ratio}% 🎉`;
+                this.savingsPctVal.style.color = 'var(--accent-success)';
+            } else {
+                this.savingsPctVal.textContent = `High-quality format requested (Size +${Math.abs(ratio)}%)`;
+                this.savingsPctVal.style.color = 'var(--accent-watermark)';
+            }
+
+            // Configure download button
+            this.downloadBtn.onclick = () => {
+                const a = document.createElement('a');
+                a.href = outURL;
+                a.download = `compressed_${this.currentFile.name.split('.')[0]}.${targetFormat}`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            };
+
+            // Switch view
+            this.progressContainer.style.display = 'none';
+            this.resultSection.style.display = 'block';
+
+            // Clean up files in virtual filesystem
+            try {
+                this.ffmpeg.FS('unlink', 'input_video');
+                this.ffmpeg.FS('unlink', outName);
+            } catch (err) {
+                console.warn('FS clean warning:', err);
+            }
+
+            showNotification('Video processed successfully!', 'success');
+
+        } catch (error) {
+            console.error('Video conversion error:', error);
+            showNotification('Video conversion failed. Try lower quality or resolutions.', 'error');
+            this.progressContainer.style.display = 'none';
+            this.workspaceSection.style.display = 'block';
+        } finally {
+            this.isProcessing = false;
+        }
+    }
+}
 
 // Initialize tools
 const faviconGen = new FaviconGenerator();
 const imageTrimmer = new ImageTrimmer();
 const imageOCR = new ImageOCR();
 const watermarkRemover = new WatermarkRemover();
+const videoToolInstance = new VideoTool();
 
 // Tool Navigation - Switch between tools
 document.querySelectorAll('.tool-tab').forEach(tab => {
@@ -4375,6 +4837,8 @@ document.querySelectorAll('.tool-tab').forEach(tab => {
             document.getElementById('trimmerTool').classList.add('active');
         } else if (tool === 'ocr') {
             document.getElementById('ocrTool').classList.add('active');
+        } else if (tool === 'video') {
+            document.getElementById('videoTool').classList.add('active');
         }
     });
 });
@@ -4530,6 +4994,10 @@ document.querySelectorAll('.tool-tab').forEach(tab => {
             if (typeof watermarkRemover !== 'undefined') {
                 const imageFile = fileList.find(f => f.type.startsWith('image/'));
                 if (imageFile) watermarkRemover.handleFiles([imageFile]);
+            }
+        } else if (tool === 'video') {
+            if (typeof videoToolInstance !== 'undefined') {
+                videoToolInstance.handleFiles(files);
             }
         }
     }
