@@ -181,6 +181,128 @@ app.post('/api/convert-heic', async (req, res) => {
     }
 });
 
+// Server-side video conversion endpoint using static FFmpeg binary
+const fs = require('fs');
+const path = require('path');
+const { execFile } = require('child_process');
+const ffmpegPath = require('ffmpeg-static');
+const crypto = require('crypto');
+
+app.post('/api/convert-video', async (req, res) => {
+    let inputPath = null;
+    let outputPath = null;
+    try {
+        const buffer = req.body;
+        if (!buffer || buffer.length === 0) {
+            return res.status(400).json({ error: 'No video data received.' });
+        }
+
+        const format = req.query.format || 'mp4';
+        const crf = req.query.crf || '23';
+        const scale = parseFloat(req.query.scale) || 1.0;
+        const keepAudio = req.query.audio === 'true';
+
+        console.log(`[Video Server] Received ${(buffer.length / 1024 / 1024).toFixed(2)} MB video. Format: ${format}, CRF: ${crf}, Scale: ${scale}`);
+
+        // Create temporary paths
+        const id = crypto.randomBytes(8).toString('hex');
+        const tmpDir = path.join(__dirname, 'tmp');
+        if (!fs.existsSync(tmpDir)) {
+            fs.mkdirSync(tmpDir, { recursive: true });
+        }
+        
+        inputPath = path.join(tmpDir, `input_${id}`);
+        outputPath = path.join(tmpDir, `output_${id}.${format}`);
+
+        // Write input video to disk
+        fs.writeFileSync(inputPath, buffer);
+
+        // Build FFmpeg arguments
+        const args = ['-i', inputPath];
+
+        // Resolution filter
+        const vf = [];
+        if (scale !== 1) {
+            vf.push(`scale=trunc(iw*${scale}/2)*2:trunc(ih*${scale}/2)*2`);
+        }
+        if (format === 'gif') {
+            vf.push('fps=12');
+        }
+        if (vf.length > 0) {
+            args.push('-vf', vf.join(','));
+        }
+
+        // Audio track
+        if (!keepAudio || format === 'gif') {
+            args.push('-an');
+        } else {
+            args.push('-c:a', 'aac');
+        }
+
+        // Encoder / Preset
+        if (format === 'mp4') {
+            args.push('-c:v', 'libx264', '-preset', 'ultrafast', '-crf', crf);
+        } else if (format === 'webm') {
+            let webmCrf = '20';
+            if (crf === '18') webmCrf = '10';
+            if (crf === '28') webmCrf = '32';
+            if (crf === '32') webmCrf = '45';
+            args.push('-c:v', 'libvpx', '-crf', webmCrf, '-b:v', '0');
+        } else if (format === 'mkv') {
+            args.push('-c:v', 'libx264', '-preset', 'ultrafast', '-crf', crf);
+        }
+
+        args.push('-y', outputPath);
+
+        console.log(`[Video Server] Running: ${ffmpegPath} ${args.join(' ')}`);
+
+        // Run FFmpeg CLI using execFile
+        execFile(ffmpegPath, args, { maxBuffer: 1024 * 1024 * 50 }, (error, stdout, stderr) => {
+            if (error) {
+                console.error('[Video Server] FFmpeg Error:', error, stderr);
+                cleanup();
+                return res.status(500).json({ error: 'FFmpeg processing failed', details: error.message });
+            }
+
+            if (!fs.existsSync(outputPath)) {
+                cleanup();
+                return res.status(500).json({ error: 'Output file was not generated.' });
+            }
+
+            // Read output file
+            const outputBuffer = fs.readFileSync(outputPath);
+            console.log(`[Video Server] Successfully converted video. Output size: ${(outputBuffer.length / 1024 / 1024).toFixed(2)} MB`);
+
+            const mimeTypes = {
+                mp4: 'video/mp4',
+                webm: 'video/webm',
+                gif: 'image/gif',
+                mkv: 'video/x-matroska'
+            };
+
+            res.setHeader('Content-Type', mimeTypes[format] || 'video/mp4');
+            res.setHeader('Content-Length', outputBuffer.length);
+            
+            res.status(200).send(outputBuffer);
+            cleanup();
+        });
+
+    } catch (err) {
+        console.error('[Video Server] Route Error:', err);
+        cleanup();
+        res.status(500).json({ error: 'Server conversion error', message: err.message });
+    }
+
+    function cleanup() {
+        try {
+            if (inputPath && fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+            if (outputPath && fs.existsSync(outputPath)) fs.unlinkSync(outputPath);
+        } catch (e) {
+            console.warn('[Video Server] Cleanup error:', e.message);
+        }
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`ImgKit Server running on port ${PORT}`);
     // Pre-warm the BG removal model in background

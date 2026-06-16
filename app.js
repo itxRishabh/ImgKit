@@ -4559,6 +4559,7 @@ class VideoTool {
         this.resolutionScaleSelect = document.getElementById('videoResolutionScale');
         this.keepAudioCheck = document.getElementById('videoKeepAudio');
         this.largeWarningEl = document.getElementById('videoLargeWarning');
+        this.useServerCheck = document.getElementById('videoUseServer');
 
         // Progress Elements
         this.statusText = document.getElementById('videoStatusText');
@@ -4624,9 +4625,11 @@ class VideoTool {
             this.largeWarningEl.style.display = 'block';
             // Automatically set resolution scale to 50% for large files to avoid OOM
             this.resolutionScaleSelect.value = '0.5';
+            this.useServerCheck.checked = true;
         } else {
             this.largeWarningEl.style.display = 'none';
             this.resolutionScaleSelect.value = '1';
+            this.useServerCheck.checked = false;
         }
 
         // Load video source for preview player
@@ -4653,6 +4656,7 @@ class VideoTool {
         this.isProcessing = false;
         this.fileInput.value = '';
         this.largeWarningEl.style.display = 'none';
+        this.useServerCheck.checked = false;
 
         this.uploadSection.style.display = 'block';
         this.workspaceSection.style.display = 'none';
@@ -4693,107 +4697,10 @@ class VideoTool {
         this.resultSection.style.display = 'none';
 
         try {
-            await this.loadFFmpeg();
-
-            // Clear logs for this run
-            this.ffmpegLogs = [];
-
-            this.statusText.textContent = 'Preparing video file...';
-            const { fetchFile } = FFmpeg;
-            const fileData = await fetchFile(this.currentFile);
-            this.ffmpeg.FS('writeFile', 'input_video', fileData);
-
             const targetFormat = this.targetFormatSelect.value;
             const crfValue = this.compressionLevelSelect.value;
             const scale = parseFloat(this.resolutionScaleSelect.value);
-
-            // Construct FFmpeg args
-            const args = ['-i', 'input_video'];
             
-            // Resolution filter
-            const vf = [];
-            if (scale !== 1) {
-                vf.push(`scale=trunc(iw*${scale}/2)*2:trunc(ih*${scale}/2)*2`);
-            }
-            if (targetFormat === 'gif') {
-                vf.push('fps=12');
-            }
-            if (vf.length > 0) {
-                args.push('-vf', vf.join(','));
-            }
-
-            // Audio track
-            if (!this.keepAudioCheck.checked || targetFormat === 'gif') {
-                args.push('-an');
-            } else {
-                args.push('-c:a', 'aac');
-            }
-
-            // Encoder and compression
-            // Note: 'ultrafast' preset is used for libx264 in WASM because it uses significantly
-            // less memory and runs 2x-3x faster than standard presets, preventing OOM crashes.
-            if (targetFormat === 'mp4') {
-                args.push('-c:v', 'libx264', '-preset', 'ultrafast', '-crf', crfValue);
-            } else if (targetFormat === 'webm') {
-                let webmCrf = '20';
-                if (crfValue === '18') webmCrf = '10';
-                if (crfValue === '28') webmCrf = '32';
-                if (crfValue === '32') webmCrf = '45';
-                args.push('-c:v', 'libvpx', '-crf', webmCrf, '-b:v', '0');
-            } else if (targetFormat === 'gif') {
-                // Gif doesn't use crf
-            } else if (targetFormat === 'mkv') {
-                args.push('-c:v', 'libx264', '-preset', 'ultrafast', '-crf', crfValue);
-            }
-
-            const outName = `output.${targetFormat}`;
-            args.push(outName);
-
-            this.statusText.textContent = 'Starting conversion...';
-
-            // Set progress hook
-            this.ffmpeg.setProgress(({ ratio }) => {
-                const pct = Math.min(100, Math.max(0, Math.round(ratio * 100)));
-                this.progressValue.textContent = `${pct}%`;
-                this.progressFill.style.width = `${pct}%`;
-                this.statusText.textContent = `Encoding video: ${pct}% completed...`;
-            });
-
-            // Run command
-            await this.ffmpeg.run(...args);
-
-            // Verify output file existence & size to ensure it did not abort/crash silently
-            let fileExists = false;
-            try {
-                this.ffmpeg.FS('stat', outName);
-                fileExists = true;
-            } catch (e) {
-                // Not found
-            }
-
-            if (!fileExists) {
-                throw new Error('FFmpeg did not generate an output file. The process likely ran out of memory or crashed.');
-            }
-
-            // Read output
-            const data = this.ffmpeg.FS('readFile', outName);
-            if (!data || data.length < 10000) {
-                throw new Error('Output file is corrupted or empty (less than 10KB). Conversion aborted early.');
-            }
-
-            // Check captured logs for critical FFmpeg errors
-            const logText = this.ffmpegLogs.join('\n');
-            const hasCriticalError = logText.includes('Conversion failed') || 
-                                     logText.includes('Error splitting') || 
-                                     logText.includes('Out of memory') ||
-                                     logText.includes('Cannot allocate memory') ||
-                                     logText.includes('Error opening filters') ||
-                                     logText.includes('Unknown encoder');
-
-            if (hasCriticalError) {
-                throw new Error('FFmpeg conversion failed during execution. See browser console for details.');
-            }
-
             const mimeTypes = {
                 mp4: 'video/mp4',
                 webm: 'video/webm',
@@ -4801,7 +4708,170 @@ class VideoTool {
                 mkv: 'video/x-matroska'
             };
 
-            const outBlob = new Blob([data.buffer], { type: mimeTypes[targetFormat] || 'video/mp4' });
+            let outBlob;
+
+            if (this.useServerCheck.checked) {
+                // SERVER-SIDE CONVERSION
+                this.statusText.textContent = 'Uploading to Cloud Server & converting (this may take a minute)...';
+                this.progressValue.textContent = 'Cloud...';
+                this.progressFill.style.width = '40%';
+
+                const queryParams = new URLSearchParams({
+                    format: targetFormat,
+                    crf: crfValue,
+                    scale: scale,
+                    audio: this.keepAudioCheck.checked ? 'true' : 'false'
+                });
+
+                const renderUrl = `https://imgkit-backend.onrender.com/api/convert-video?${queryParams.toString()}`;
+                const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+                let response;
+                if (isLocal) {
+                    try {
+                        console.log('Local environment detected, trying local server...');
+                        response = await fetch(`/api/convert-video?${queryParams.toString()}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/octet-stream' },
+                            body: this.currentFile
+                        });
+                        if (!response.ok) throw new Error('Local server failed');
+                    } catch (err) {
+                        console.warn('Local server conversion failed, falling back to Render...');
+                        response = await fetch(renderUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/octet-stream' },
+                            body: this.currentFile
+                        });
+                    }
+                } else {
+                    response = await fetch(renderUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/octet-stream' },
+                        body: this.currentFile
+                    });
+                }
+
+                if (!response.ok) {
+                    const errJson = await response.json().catch(() => ({}));
+                    throw new Error(errJson.error || `Server conversion failed with status ${response.status}`);
+                }
+
+                this.statusText.textContent = 'Downloading processed video...';
+                this.progressFill.style.width = '85%';
+                
+                const dataBuffer = await response.arrayBuffer();
+                outBlob = new Blob([dataBuffer], { type: mimeTypes[targetFormat] || 'video/mp4' });
+            } else {
+                // CLIENT-SIDE (WASM) CONVERSION
+                await this.loadFFmpeg();
+
+                // Clear logs for this run
+                this.ffmpegLogs = [];
+
+                this.statusText.textContent = 'Preparing video file...';
+                const { fetchFile } = FFmpeg;
+                const fileData = await fetchFile(this.currentFile);
+                this.ffmpeg.FS('writeFile', 'input_video', fileData);
+
+                // Construct FFmpeg args
+                const args = ['-i', 'input_video'];
+                
+                // Resolution filter
+                const vf = [];
+                if (scale !== 1) {
+                    vf.push(`scale=trunc(iw*${scale}/2)*2:trunc(ih*${scale}/2)*2`);
+                }
+                if (targetFormat === 'gif') {
+                    vf.push('fps=12');
+                }
+                if (vf.length > 0) {
+                    args.push('-vf', vf.join(','));
+                }
+
+                // Audio track
+                if (!this.keepAudioCheck.checked || targetFormat === 'gif') {
+                    args.push('-an');
+                } else {
+                    args.push('-c:a', 'aac');
+                }
+
+                // Encoder and compression
+                // Note: 'ultrafast' preset is used for libx264 in WASM because it uses significantly
+                // less memory and runs 2x-3x faster than standard presets, preventing OOM crashes.
+                if (targetFormat === 'mp4') {
+                    args.push('-c:v', 'libx264', '-preset', 'ultrafast', '-crf', crfValue);
+                } else if (targetFormat === 'webm') {
+                    let webmCrf = '20';
+                    if (crfValue === '18') webmCrf = '10';
+                    if (crfValue === '28') webmCrf = '32';
+                    if (crfValue === '32') webmCrf = '45';
+                    args.push('-c:v', 'libvpx', '-crf', webmCrf, '-b:v', '0');
+                } else if (targetFormat === 'gif') {
+                    // Gif doesn't use crf
+                } else if (targetFormat === 'mkv') {
+                    args.push('-c:v', 'libx264', '-preset', 'ultrafast', '-crf', crfValue);
+                }
+
+                const outName = `output.${targetFormat}`;
+                args.push(outName);
+
+                this.statusText.textContent = 'Starting conversion...';
+
+                // Set progress hook
+                this.ffmpeg.setProgress(({ ratio }) => {
+                    const pct = Math.min(100, Math.max(0, Math.round(ratio * 100)));
+                    this.progressValue.textContent = `${pct}%`;
+                    this.progressFill.style.width = `${pct}%`;
+                    this.statusText.textContent = `Encoding video: ${pct}% completed...`;
+                });
+
+                // Run command
+                await this.ffmpeg.run(...args);
+
+                // Verify output file existence & size to ensure it did not abort/crash silently
+                let fileExists = false;
+                try {
+                    this.ffmpeg.FS('stat', outName);
+                    fileExists = true;
+                } catch (e) {
+                    // Not found
+                }
+
+                if (!fileExists) {
+                    throw new Error('FFmpeg did not generate an output file. The process likely ran out of memory or crashed.');
+                }
+
+                // Read output
+                const data = this.ffmpeg.FS('readFile', outName);
+                if (!data || data.length < 10000) {
+                    throw new Error('Output file is corrupted or empty (less than 10KB). Conversion aborted early.');
+                }
+
+                // Check captured logs for critical FFmpeg errors
+                const logText = this.ffmpegLogs.join('\n');
+                const hasCriticalError = logText.includes('Conversion failed') || 
+                                         logText.includes('Error splitting') || 
+                                         logText.includes('Out of memory') ||
+                                         logText.includes('Cannot allocate memory') ||
+                                         logText.includes('Error opening filters') ||
+                                         logText.includes('Unknown encoder');
+
+                if (hasCriticalError) {
+                    throw new Error('FFmpeg conversion failed during execution. See browser console for details.');
+                }
+
+                outBlob = new Blob([data.buffer], { type: mimeTypes[targetFormat] || 'video/mp4' });
+
+                // Clean up files in virtual filesystem
+                try {
+                    this.ffmpeg.FS('unlink', 'input_video');
+                    this.ffmpeg.FS('unlink', outName);
+                } catch (err) {
+                    console.warn('FS clean warning:', err);
+                }
+            }
+
             const outURL = URL.createObjectURL(outBlob);
 
             // Set output preview
@@ -4833,14 +4903,6 @@ class VideoTool {
             // Switch view
             this.progressContainer.style.display = 'none';
             this.resultSection.style.display = 'block';
-
-            // Clean up files in virtual filesystem
-            try {
-                this.ffmpeg.FS('unlink', 'input_video');
-                this.ffmpeg.FS('unlink', outName);
-            } catch (err) {
-                console.warn('FS clean warning:', err);
-            }
 
             showNotification('Video processed successfully!', 'success');
 
