@@ -12,6 +12,9 @@ app.use(cors({
     allowedHeaders: ['Content-Type']
 }));
 
+// Serve static files from the project root directory
+app.use(express.static(__dirname));
+
 // Accept raw binary bodies up to 1000MB (1GB)
 app.use(express.raw({
     type: 'image/*',

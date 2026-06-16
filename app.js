@@ -4658,7 +4658,8 @@ class VideoTool {
         const { createFFmpeg } = FFmpeg;
         this.ffmpeg = createFFmpeg({
             log: true,
-            corePath: 'https://unpkg.com/@ffmpeg/core-st@0.11.1/dist/ffmpeg-core.js'
+            corePath: 'https://unpkg.com/@ffmpeg/core-st@0.11.1/dist/ffmpeg-core.js',
+            mainName: 'main'
         });
 
         await this.ffmpeg.load();
