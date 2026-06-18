@@ -5432,6 +5432,41 @@ document.querySelectorAll('.tool-tab').forEach(tab => {
     });
 });
 
+// Enable mouse drag-to-scroll on tool navigation (for desktop users)
+(function() {
+    const nav = document.querySelector('.tool-nav');
+    if (!nav) return;
+
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    nav.addEventListener('mousedown', (e) => {
+        isDown = true;
+        nav.classList.add('grabbing');
+        startX = e.pageX - nav.offsetLeft;
+        scrollLeft = nav.scrollLeft;
+    });
+
+    nav.addEventListener('mouseleave', () => {
+        isDown = false;
+        nav.classList.remove('grabbing');
+    });
+
+    nav.addEventListener('mouseup', () => {
+        isDown = false;
+        nav.classList.remove('grabbing');
+    });
+
+    nav.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - nav.offsetLeft;
+        const walk = (x - startX) * 1.5; // Scroll speed modifier
+        nav.scrollLeft = scrollLeft - walk;
+    });
+})();
+
 // Global Drag & Drop Overlay Injection & File Routing
 (function() {
     const overlay = document.createElement('div');

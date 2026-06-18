@@ -131,12 +131,32 @@ body {
     border-bottom: 1px solid var(--border);
     margin-bottom: 40px;
     overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+    cursor: grab;
+    padding-bottom: 4px;
+}
+
+.tool-nav.grabbing {
+    cursor: grabbing;
+    user-select: none;
 }
 
 .tool-nav::-webkit-scrollbar {
-    display: none;
+    height: 4px;
+}
+
+.tool-nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.tool-nav::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+}
+
+.tool-nav::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
 }
 
 .tool-tab {
@@ -1827,19 +1847,25 @@ body {
     }
 
     .tool-nav {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        display: flex;
         gap: 8px;
         border-bottom: none;
-        margin-bottom: 32px;
-        overflow-x: visible;
-        white-space: normal;
-        padding: 0;
+        margin-bottom: 24px;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding: 4px;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        cursor: grab;
+    }
+
+    .tool-nav::-webkit-scrollbar {
+        display: none;
     }
 
     .tool-tab {
-        flex: none;
-        width: 100%;
+        flex: 0 0 110px;
+        width: 110px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -2023,9 +2049,8 @@ body {
 /* Extra Small Devices */
 @media (max-width: 480px) {
     .tool-nav {
-        grid-template-columns: repeat(2, 1fr);
         gap: 6px;
-        margin-bottom: 24px;
+        margin-bottom: 18px;
     }
     
     .tool-tab {
@@ -2037,10 +2062,6 @@ body {
 
     .tool-tab i {
         font-size: 12px;
-    }
-
-    .tool-tab:last-child {
-        grid-column: span 2;
     }
 
     .stats-section {
