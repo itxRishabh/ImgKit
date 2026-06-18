@@ -4917,12 +4917,483 @@ class VideoTool {
     }
 }
 
+/**
+ * SizeManager - Tool to compress/scale images to a target file size (KB/MB)
+ */
+class SizeManager {
+    constructor() {
+        this.selectedFile = null;
+        this.selectedFormat = 'jpeg';
+        this.selectedStrategy = 'quality'; // 'quality' or 'dimensions'
+        this.originalImage = new Image();
+        this.init();
+    }
+
+    init() {
+        this.uploadArea = document.getElementById('sizeManagerUploadArea');
+        this.fileInput = document.getElementById('sizeManagerFileInput');
+        this.settingsPanel = document.getElementById('sizeManagerSettingsPanel');
+        this.resultSection = document.getElementById('sizeManagerResultSection');
+        this.processBtn = document.getElementById('sizeManagerProcessBtn');
+        this.resetBtn = document.getElementById('sizeManagerResetBtn');
+        this.downloadBtn = document.getElementById('sizeManagerDownloadBtn');
+        this.targetValEl = document.getElementById('sizeManagerTargetVal');
+        this.targetUnitEl = document.getElementById('sizeManagerTargetUnit');
+
+        this.origPreview = document.getElementById('sizeManagerOrigPreview');
+        this.origDimensionsEl = document.getElementById('sizeManagerOrigDimensions');
+        this.origSizeEl = document.getElementById('sizeManagerOrigSize');
+
+        this.outputPreview = document.getElementById('sizeManagerOutputPreview');
+        this.outputDimensionsEl = document.getElementById('sizeManagerOutputDimensions');
+        this.outputSizeEl = document.getElementById('sizeManagerOutputSize');
+
+        this.reductionEl = document.getElementById('sizeManagerReduction');
+        this.precisionEl = document.getElementById('sizeManagerPrecision');
+        this.timeEl = document.getElementById('sizeManagerTime');
+
+        // Formats toggle
+        document.querySelectorAll('#sizeManagerFormatToggle .toggle-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#sizeManagerFormatToggle .toggle-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                this.selectedFormat = btn.dataset.value;
+            });
+        });
+
+        // Strategy toggle
+        document.querySelectorAll('#sizeManagerStrategyToggle .toggle-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#sizeManagerStrategyToggle .toggle-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                this.selectedStrategy = btn.dataset.value;
+            });
+        });
+
+        // Event listeners
+        this.uploadArea.addEventListener('click', () => this.fileInput.click());
+        this.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
+
+        // Drag & Drop
+        this.uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            this.uploadArea.classList.add('dragover');
+        });
+
+        this.uploadArea.addEventListener('dragleave', () => {
+            this.uploadArea.classList.remove('dragover');
+        });
+
+        this.uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            this.uploadArea.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) {
+                this.fileInput.files = e.dataTransfer.files;
+                this.handleFileSelect();
+            }
+        });
+
+        this.processBtn.addEventListener('click', () => this.processImage());
+        this.resetBtn.addEventListener('click', () => this.reset());
+    }
+
+    formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    async handleFileSelect(e) {
+        const file = this.fileInput.files[0];
+        if (!file) return;
+
+        this.selectedFile = file;
+
+        // Show loading/handling
+        this.origSizeEl.textContent = this.formatFileSize(file.size);
+
+        // Check for HEIC
+        let processableFile = file;
+        const isHeic = file.type === 'image/heic' || file.type === 'image/heif' ||
+                        file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
+        
+        if (isHeic) {
+            showNotification('Converting HEIC image...', 'info');
+            try {
+                // Try native decode first
+                try {
+                    const bitmap = await createImageBitmap(file);
+                    const canvas = document.createElement('canvas');
+                    canvas.width = bitmap.width;
+                    canvas.height = bitmap.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(bitmap, 0, 0);
+                    bitmap.close();
+                    const jpegBlob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', 0.92));
+                    processableFile = new File([jpegBlob], file.name.replace(/\.(heic|heif)$/i, '.jpg'), { type: 'image/jpeg' });
+                } catch (nativeErr) {
+                    console.log('Native HEIC failed, using server/client library fallback', nativeErr);
+                    // Server/Client fallback
+                    if (file.size > 10 * 1024 * 1024) {
+                        // Use render backend
+                        const renderUrl = 'https://imgkit-backend.onrender.com/api/convert-heic?format=jpeg&quality=92';
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        const response = await fetch(renderUrl, {
+                            method: 'POST',
+                            body: formData
+                        });
+                        if (!response.ok) throw new Error('Render server conversion failed');
+                        const jpegBlob = await response.blob();
+                        processableFile = new File([jpegBlob], file.name.replace(/\.(heic|heif)$/i, '.jpg'), { type: 'image/jpeg' });
+                    } else {
+                        // client-side heic2any
+                        const convertedBlob = await heic2any({
+                            blob: file,
+                            toType: 'image/jpeg',
+                            quality: 0.92
+                        });
+                        processableFile = new File([convertedBlob], file.name.replace(/\.(heic|heif)$/i, '.jpg'), { type: 'image/jpeg' });
+                    }
+                }
+            } catch (err) {
+                console.error("HEIC conversion failed:", err);
+                showNotification('Failed to read HEIC file.', 'error');
+                return;
+            }
+        }
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            this.originalImage.onload = () => {
+                this.origDimensionsEl.textContent = `${this.originalImage.width} x ${this.originalImage.height} px`;
+                this.origPreview.src = event.target.result;
+                
+                // Show settings
+                this.settingsPanel.style.display = 'block';
+                this.resultSection.style.display = 'none';
+                
+                // Scroll to settings
+                this.settingsPanel.scrollIntoView({ behavior: 'smooth' });
+            };
+            this.originalImage.src = event.target.result;
+        };
+        reader.readAsDataURL(processableFile);
+    }
+
+    async handleFiles(files) {
+        if (files && files.length > 0) {
+            this.fileInput.files = files;
+            this.handleFileSelect();
+        }
+    }
+
+    async processImage() {
+        if (!this.selectedFile) return;
+
+        const targetVal = parseFloat(this.targetValEl.value);
+        const targetUnit = this.targetUnitEl.value;
+        if (isNaN(targetVal) || targetVal <= 0) {
+            showNotification('Please enter a valid target size.', 'warning');
+            return;
+        }
+
+        const targetBytes = targetUnit === 'kb' ? targetVal * 1024 : targetVal * 1024 * 1024;
+        
+        // Show loading state
+        const originalBtnText = this.processBtn.innerHTML;
+        this.processBtn.disabled = true;
+        this.processBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Resizing...`;
+
+        const startTime = performance.now();
+
+        try {
+            const result = await this.optimizeToTargetSize(this.originalImage, targetBytes, this.selectedFormat, this.selectedStrategy);
+            
+            const endTime = performance.now();
+            const processTime = Math.round(endTime - startTime);
+
+            // Clean up old URLs
+            if (this.outputUrl) {
+                URL.revokeObjectURL(this.outputUrl);
+            }
+
+            this.outputUrl = URL.createObjectURL(result.blob);
+            this.outputPreview.src = this.outputUrl;
+            this.outputDimensionsEl.textContent = `${result.width} x ${result.height} px`;
+            this.outputSizeEl.textContent = this.formatFileSize(result.blob.size);
+
+            // Calculate percentage diff
+            const reduction = ((result.blob.size - this.selectedFile.size) / this.selectedFile.size) * 100;
+            this.reductionEl.textContent = `${reduction > 0 ? '+' : ''}${reduction.toFixed(1)}%`;
+            if (reduction > 0) {
+                this.reductionEl.className = 'stat-value text-warning';
+            } else {
+                this.reductionEl.className = 'stat-value text-success';
+            }
+
+            // Accuracy
+            const accuracy = (1 - Math.abs(result.blob.size - targetBytes) / targetBytes) * 100;
+            this.precisionEl.textContent = `${Math.max(0, accuracy).toFixed(1)}%`;
+
+            this.timeEl.textContent = `${processTime}ms`;
+
+            // Configure download
+            const ext = this.selectedFormat === 'jpeg' ? 'jpg' : this.selectedFormat;
+            this.downloadBtn.href = this.outputUrl;
+            this.downloadBtn.download = `${this.selectedFile.name.replace(/\.[^/.]+$/, "")}_resized.${ext}`;
+
+            // Show results
+            this.resultSection.style.display = 'block';
+            this.resultSection.scrollIntoView({ behavior: 'smooth' });
+
+            showNotification('Image resized successfully!', 'success');
+        } catch (error) {
+            console.error(error);
+            showNotification('Error processing image compression.', 'error');
+        } finally {
+            this.processBtn.disabled = false;
+            this.processBtn.innerHTML = originalBtnText;
+        }
+    }
+
+    optimizeToTargetSize(img, targetBytes, format, strategy) {
+        return new Promise(async (resolve, reject) => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            let mimeType = 'image/jpeg';
+            if (format === 'png') mimeType = 'image/png';
+            else if (format === 'webp') mimeType = 'image/webp';
+
+            // PNG optimization: strictly resize dimensions since PNG is lossless
+            if (format === 'png') {
+                let minScale = 0.05;
+                let maxScale = 1.0;
+                let bestBlob = null;
+                let bestWidth = img.width;
+                let bestHeight = img.height;
+
+                // Simple binary search over dimensions
+                for (let i = 0; i < 8; i++) {
+                    const midScale = (minScale + maxScale) / 2;
+                    const w = Math.max(10, Math.round(img.width * midScale));
+                    const h = Math.max(10, Math.round(img.height * midScale));
+
+                    canvas.width = w;
+                    canvas.height = h;
+                    ctx.drawImage(img, 0, 0, w, h);
+
+                    const blob = await new Promise(res => canvas.toBlob(res, mimeType));
+                    if (!blob) break;
+
+                    if (blob.size <= targetBytes) {
+                        bestBlob = blob;
+                        bestWidth = w;
+                        bestHeight = h;
+                        minScale = midScale; // Try to get closer to target (go larger)
+                    } else {
+                        maxScale = midScale; // Too big, go smaller
+                    }
+                }
+
+                // If target size is too small even for 0.05 scale
+                if (!bestBlob) {
+                    canvas.width = Math.max(10, Math.round(img.width * 0.05));
+                    canvas.height = Math.max(10, Math.round(img.height * 0.05));
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    bestBlob = await new Promise(res => canvas.toBlob(res, mimeType));
+                    bestWidth = canvas.width;
+                    bestHeight = canvas.height;
+                }
+
+                return resolve({ blob: bestBlob, width: bestWidth, height: bestHeight });
+            }
+
+            // For JPEG/WebP: We search Quality (0.01 - 1.0) and Dimension Scale (0.05 - 1.0)
+            let bestBlob = null;
+            let bestWidth = img.width;
+            let bestHeight = img.height;
+
+            if (strategy === 'dimensions') {
+                // Maximize dimensions: keep scale as high as possible, lower quality first
+                let quality = 0.92;
+                
+                // First attempt at full resolution with good quality
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                let blob = await new Promise(res => canvas.toBlob(res, mimeType, quality));
+
+                if (blob && blob.size <= targetBytes) {
+                    // It fits! Tweak quality up to get even closer to target
+                    let minQ = quality;
+                    let maxQ = 1.0;
+                    for (let i = 0; i < 5; i++) {
+                        let midQ = (minQ + maxQ) / 2;
+                        let testBlob = await new Promise(res => canvas.toBlob(res, mimeType, midQ));
+                        if (testBlob && testBlob.size <= targetBytes) {
+                            blob = testBlob;
+                            minQ = midQ;
+                        } else {
+                            maxQ = midQ;
+                        }
+                    }
+                    return resolve({ blob, width: img.width, height: img.height });
+                }
+
+                // If it's too big, let's keep full resolution and search quality down to 0.05
+                let minQ = 0.05;
+                let maxQ = 0.92;
+                let foundWithScale1 = false;
+
+                for (let i = 0; i < 7; i++) {
+                    let midQ = (minQ + maxQ) / 2;
+                    let testBlob = await new Promise(res => canvas.toBlob(res, mimeType, midQ));
+                    if (testBlob && testBlob.size <= targetBytes) {
+                        bestBlob = testBlob;
+                        quality = midQ;
+                        minQ = midQ;
+                        foundWithScale1 = true;
+                    } else {
+                        maxQ = midQ;
+                    }
+                }
+
+                if (foundWithScale1) {
+                    return resolve({ blob: bestBlob, width: img.width, height: img.height });
+                }
+
+                // If quality 0.05 at 1.0 scale is still too big, we must decrease scale
+                let minScale = 0.05;
+                let maxScale = 1.0;
+                quality = 0.15; // Set a decent fallback low quality
+
+                for (let i = 0; i < 6; i++) {
+                    let midScale = (minScale + maxScale) / 2;
+                    let w = Math.max(10, Math.round(img.width * midScale));
+                    let h = Math.max(10, Math.round(img.height * midScale));
+                    canvas.width = w;
+                    canvas.height = h;
+                    ctx.drawImage(img, 0, 0, w, h);
+
+                    let testBlob = await new Promise(res => canvas.toBlob(res, mimeType, quality));
+                    if (testBlob && testBlob.size <= targetBytes) {
+                        bestBlob = testBlob;
+                        bestWidth = w;
+                        bestHeight = h;
+                        minScale = midScale;
+                    } else {
+                        maxScale = midScale;
+                    }
+                }
+
+                if (!bestBlob) {
+                    canvas.width = Math.max(10, Math.round(img.width * 0.05));
+                    canvas.height = Math.max(10, Math.round(img.height * 0.05));
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    bestBlob = await new Promise(res => canvas.toBlob(res, mimeType, 0.05));
+                    bestWidth = canvas.width;
+                    bestHeight = canvas.height;
+                }
+
+                return resolve({ blob: bestBlob, width: bestWidth, height: bestHeight });
+
+            } else {
+                // Maximize quality: keep quality high (e.g. >= 0.82), scale down dimensions first if needed
+                let quality = 0.82;
+                let minScale = 0.05;
+                let maxScale = 1.0;
+                
+                // Search scale first at quality = 0.82
+                for (let i = 0; i < 7; i++) {
+                    let midScale = (minScale + maxScale) / 2;
+                    let w = Math.max(10, Math.round(img.width * midScale));
+                    let h = Math.max(10, Math.round(img.height * midScale));
+                    canvas.width = w;
+                    canvas.height = h;
+                    ctx.drawImage(img, 0, 0, w, h);
+
+                    let testBlob = await new Promise(res => canvas.toBlob(res, mimeType, quality));
+                    if (testBlob && testBlob.size <= targetBytes) {
+                        bestBlob = testBlob;
+                        bestWidth = w;
+                        bestHeight = h;
+                        minScale = midScale; // Try larger scale
+                    } else {
+                        maxScale = midScale; // Too large, must go smaller scale
+                    }
+                }
+
+                // If we found a scaling that fits, tweak quality up/down for final fine-tuning
+                if (bestBlob) {
+                    canvas.width = bestWidth;
+                    canvas.height = bestHeight;
+                    ctx.drawImage(img, 0, 0, bestWidth, bestHeight);
+                    
+                    let minQ = 0.50;
+                    let maxQ = 0.95;
+                    for (let i = 0; i < 5; i++) {
+                        let midQ = (minQ + maxQ) / 2;
+                        let testBlob = await new Promise(res => canvas.toBlob(res, mimeType, midQ));
+                        if (testBlob && testBlob.size <= targetBytes) {
+                            bestBlob = testBlob;
+                            minQ = midQ;
+                        } else {
+                            maxQ = midQ;
+                        }
+                    }
+                    return resolve({ blob: bestBlob, width: bestWidth, height: bestHeight });
+                }
+
+                // If we didn't find any scale that fits at Q=0.82, drop scale to minimum (0.05) and search quality down.
+                canvas.width = Math.max(10, Math.round(img.width * 0.05));
+                canvas.height = Math.max(10, Math.round(img.height * 0.05));
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                
+                let minQ = 0.01;
+                let maxQ = 0.82;
+                for (let i = 0; i < 6; i++) {
+                    let midQ = (minQ + maxQ) / 2;
+                    let testBlob = await new Promise(res => canvas.toBlob(res, mimeType, midQ));
+                    if (testBlob && testBlob.size <= targetBytes) {
+                        bestBlob = testBlob;
+                        minQ = midQ;
+                    } else {
+                        maxQ = midQ;
+                    }
+                }
+
+                if (!bestBlob) {
+                    bestBlob = await new Promise(res => canvas.toBlob(res, mimeType, 0.01));
+                }
+
+                return resolve({ blob: bestBlob, width: canvas.width, height: canvas.height });
+            }
+        });
+    }
+
+    reset() {
+        this.selectedFile = null;
+        this.fileInput.value = '';
+        this.settingsPanel.style.display = 'none';
+        this.resultSection.style.display = 'none';
+        this.origPreview.src = '';
+        this.outputPreview.src = '';
+        if (this.outputUrl) {
+            URL.revokeObjectURL(this.outputUrl);
+            this.outputUrl = null;
+        }
+    }
+}
+
 // Initialize tools
 const faviconGen = new FaviconGenerator();
 const imageTrimmer = new ImageTrimmer();
 const imageOCR = new ImageOCR();
 const watermarkRemover = new WatermarkRemover();
 const videoToolInstance = new VideoTool();
+const sizeManagerInstance = new SizeManager();
 
 // Tool Navigation - Switch between tools
 document.querySelectorAll('.tool-tab').forEach(tab => {
@@ -4941,6 +5412,8 @@ document.querySelectorAll('.tool-tab').forEach(tab => {
             document.getElementById('squareTool').classList.add('active');
         } else if (tool === 'converter') {
             document.getElementById('converterTool').classList.add('active');
+        } else if (tool === 'sizemanager') {
+            document.getElementById('sizeManagerTool').classList.add('active');
         } else if (tool === 'remover') {
             document.getElementById('removerTool').classList.add('active');
         } else if (tool === 'watermark') {
@@ -5082,6 +5555,10 @@ document.querySelectorAll('.tool-tab').forEach(tab => {
         } else if (tool === 'converter') {
             if (typeof imageConverter !== 'undefined') {
                 imageConverter.handleFiles(files);
+            }
+        } else if (tool === 'sizemanager') {
+            if (typeof sizeManagerInstance !== 'undefined') {
+                sizeManagerInstance.handleFiles(files);
             }
         } else if (tool === 'remover') {
             if (typeof backgroundRemover !== 'undefined') {

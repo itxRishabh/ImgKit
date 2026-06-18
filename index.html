@@ -95,6 +95,11 @@
                 <i class="fas fa-shuffle"></i>
                 <span>Format Converter</span>
             </button>
+            <button class="tool-tab" data-tool="sizemanager">
+                <i class="fas fa-weight-hanging"></i>
+                <span>Size Manager</span>
+                <span class="ai-badge">NEW</span>
+            </button>
             <button class="tool-tab" data-tool="video">
                 <i class="fas fa-video"></i>
                 <span>Video Tool</span>
@@ -511,6 +516,170 @@
             </main>
         </div>
         <!-- End Format Converter Tool -->
+
+        <!-- Image Size Manager Tool -->
+        <div class="tool-section" id="sizeManagerTool">
+            <main class="main-content">
+                <!-- Hero Section -->
+                <section class="hero">
+                    <h1 class="hero-title">
+                        Image <span class="gradient-text">Size Manager</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Compress and scale images to reach your exact target size in KB or MB.
+                    </p>
+                </section>
+
+                <!-- Upload Area -->
+                <div class="upload-section">
+                    <div class="upload-area" id="sizeManagerUploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-weight-hanging"></i>
+                        </div>
+                        <h3 class="upload-title">Drop your image here</h3>
+                        <p class="upload-text">or click to browse</p>
+                        <p class="upload-formats">Supports: JPG, PNG, WebP, GIF, BMP, HEIC</p>
+                        <input type="file" id="sizeManagerFileInput" accept="image/*,.heic,.heif" hidden>
+                    </div>
+                </div>
+
+                <!-- Size Manager Settings Panel -->
+                <div class="settings-panel" id="sizeManagerSettingsPanel" style="display: none;">
+                    <h3 class="settings-title">
+                        <i class="fas fa-sliders"></i>
+                        Size Manager Settings
+                    </h3>
+
+                    <div class="settings-grid">
+                        <!-- Target Size Input -->
+                        <div class="setting-group">
+                            <label class="setting-label">Target File Size</label>
+                            <div class="input-with-unit-toggle">
+                                <input type="number" id="sizeManagerTargetVal" min="1" max="10000" value="200">
+                                <select id="sizeManagerTargetUnit" class="unit-select">
+                                    <option value="kb" selected>KB</option>
+                                    <option value="mb">MB</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Output Format -->
+                        <div class="setting-group">
+                            <label class="setting-label">Output Format</label>
+                            <div class="toggle-buttons toggle-buttons-wrap" id="sizeManagerFormatToggle">
+                                <button class="toggle-btn active" data-value="jpeg">
+                                    <i class="fas fa-image"></i> JPG
+                                </button>
+                                <button class="toggle-btn" data-value="webp">
+                                    <i class="fas fa-image"></i> WebP
+                                    <span class="format-badge">Best</span>
+                                </button>
+                                <button class="toggle-btn" data-value="png">
+                                    <i class="fas fa-image"></i> PNG
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Prioritize Strategy -->
+                        <div class="setting-group">
+                            <label class="setting-label">Optimization Strategy</label>
+                            <div class="toggle-buttons" id="sizeManagerStrategyToggle">
+                                <button class="toggle-btn active" data-value="quality">
+                                    <i class="fas fa-star"></i> Max Quality
+                                </button>
+                                <button class="toggle-btn" data-value="dimensions">
+                                    <i class="fas fa-up-right-and-down-left-from-center"></i> Max Resolution
+                                </button>
+                            </div>
+                            <span class="setting-hint">"Max Quality" scales down dimensions first to keep details sharp. "Max Resolution" lowers quality first to keep original width/height.</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Button -->
+                    <div class="settings-actions">
+                        <button class="btn btn-primary btn-lg" id="sizeManagerProcessBtn">
+                            <i class="fas fa-compress-arrows-alt"></i>
+                            Resize Image
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Preview and Results Workspace -->
+                <div class="preview-section" id="sizeManagerResultSection" style="display: none;">
+                    <div class="preview-header">
+                        <h3 class="preview-title">
+                            <i class="fas fa-circle-check text-success"></i>
+                            Ready for Download
+                        </h3>
+                        <div class="preview-actions">
+                            <button class="btn btn-secondary btn-sm" id="sizeManagerResetBtn">
+                                <i class="fas fa-rotate-left"></i> Start Over
+                            </button>
+                            <a class="btn btn-primary btn-sm" id="sizeManagerDownloadBtn" download>
+                                <i class="fas fa-download"></i> Download Image
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Comparison Grid -->
+                    <div class="comparison-grid">
+                        <div class="comparison-card">
+                            <div class="comparison-card-title">Original Image</div>
+                            <div class="preview-container">
+                                <img id="sizeManagerOrigPreview" alt="Original Preview">
+                            </div>
+                            <div class="image-meta">
+                                <span class="meta-item" id="sizeManagerOrigDimensions">-</span>
+                                <span class="meta-item" id="sizeManagerOrigSize">-</span>
+                            </div>
+                        </div>
+
+                        <div class="comparison-card">
+                            <div class="comparison-card-title">Resized Image</div>
+                            <div class="preview-container">
+                                <img id="sizeManagerOutputPreview" alt="Output Preview">
+                            </div>
+                            <div class="image-meta">
+                                <span class="meta-item" id="sizeManagerOutputDimensions">-</span>
+                                <span class="meta-item highlight" id="sizeManagerOutputSize">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats Panel -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-arrow-down-wide-short"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="sizeManagerReduction">-0%</span>
+                                <span class="stat-label">Size Difference</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-crosshairs"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="sizeManagerPrecision">-</span>
+                                <span class="stat-label">Accuracy to Target</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="sizeManagerTime">0ms</span>
+                                <span class="stat-label">Processing Time</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+        <!-- End Image Size Manager Tool -->
 
         <!-- Background Remover Tool -->
         <div class="tool-section" id="removerTool">
