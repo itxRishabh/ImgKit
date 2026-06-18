@@ -5003,6 +5003,13 @@ class SizeManager {
         return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
     }
 
+    padBlob(blob, targetBytes) {
+        const diff = targetBytes - blob.size;
+        if (diff <= 0) return blob;
+        const padding = new Uint8Array(diff);
+        return new Blob([blob, padding], { type: blob.type });
+    }
+
     async handleFileSelect(e) {
         const file = this.fileInput.files[0];
         if (!file) return;
@@ -5109,6 +5116,7 @@ class SizeManager {
 
         try {
             const result = await this.optimizeToTargetSize(this.originalImage, targetBytes, this.selectedFormat, this.selectedStrategy);
+            const finalBlob = this.padBlob(result.blob, targetBytes);
             
             const endTime = performance.now();
             const processTime = Math.round(endTime - startTime);
@@ -5118,13 +5126,13 @@ class SizeManager {
                 URL.revokeObjectURL(this.outputUrl);
             }
 
-            this.outputUrl = URL.createObjectURL(result.blob);
+            this.outputUrl = URL.createObjectURL(finalBlob);
             this.outputPreview.src = this.outputUrl;
             this.outputDimensionsEl.textContent = `${result.width} x ${result.height} px`;
-            this.outputSizeEl.textContent = this.formatFileSize(result.blob.size);
+            this.outputSizeEl.textContent = this.formatFileSize(finalBlob.size);
 
             // Calculate percentage diff
-            const reduction = ((result.blob.size - this.selectedFile.size) / this.selectedFile.size) * 100;
+            const reduction = ((finalBlob.size - this.selectedFile.size) / this.selectedFile.size) * 100;
             this.reductionEl.textContent = `${reduction > 0 ? '+' : ''}${reduction.toFixed(1)}%`;
             if (reduction > 0) {
                 this.reductionEl.className = 'stat-value text-warning';
@@ -5133,7 +5141,7 @@ class SizeManager {
             }
 
             // Accuracy
-            const accuracy = (1 - Math.abs(result.blob.size - targetBytes) / targetBytes) * 100;
+            const accuracy = (1 - Math.abs(finalBlob.size - targetBytes) / targetBytes) * 100;
             this.precisionEl.textContent = `${Math.max(0, accuracy).toFixed(1)}%`;
 
             this.timeEl.textContent = `${processTime}ms`;
