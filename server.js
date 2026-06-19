@@ -181,6 +181,70 @@ app.post('/api/convert-heic', async (req, res) => {
     }
 });
 
+// SEO Audit Proxy (local dev)
+app.get('/api/seo-audit', async (req, res) => {
+    const targetUrl = req.query.url;
+    if (!targetUrl) return res.status(400).json({ error: 'Missing ?url= parameter.' });
+
+    let parsedUrl;
+    try {
+        parsedUrl = new URL(targetUrl);
+        if (!['http:', 'https:'].includes(parsedUrl.protocol)) throw new Error('Bad protocol');
+    } catch (e) {
+        return res.status(400).json({ error: 'Invalid URL.' });
+    }
+
+    const origin = parsedUrl.origin;
+    const startTime = Date.now();
+
+    try {
+        const fetchOpts = {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (compatible; ImgKitSEOAudit/1.0)',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            },
+            redirect: 'follow',
+        };
+
+        const [pageRes, robotsRes, sitemapRes] = await Promise.allSettled([
+            fetch(targetUrl, fetchOpts),
+            fetch(`${origin}/robots.txt`, fetchOpts).catch(() => null),
+            fetch(`${origin}/sitemap.xml`, fetchOpts).catch(() => null),
+        ]);
+
+        if (pageRes.status === 'rejected') {
+            return res.status(502).json({ error: 'Failed to fetch URL.', message: pageRes.reason?.message });
+        }
+
+        const page = pageRes.value;
+        const html = await page.text();
+        const headers = {};
+        page.headers.forEach((value, key) => { headers[key] = value; });
+
+        let robotsTxt = null;
+        if (robotsRes.status === 'fulfilled' && robotsRes.value && robotsRes.value.ok) {
+            robotsTxt = await robotsRes.value.text();
+        }
+
+        let sitemapExists = false;
+        if (sitemapRes.status === 'fulfilled' && sitemapRes.value && sitemapRes.value.ok) {
+            const st = await sitemapRes.value.text();
+            sitemapExists = st.includes('<urlset') || st.includes('<sitemapindex');
+        }
+
+        return res.json({
+            url: targetUrl, finalUrl: page.url, statusCode: page.status,
+            headers, html, robotsTxt, sitemapExists,
+            isHttps: parsedUrl.protocol === 'https:',
+            responseTimeMs: Date.now() - startTime,
+            pageSize: html.length,
+        });
+    } catch (error) {
+        console.error('[SEO Audit] Error:', error);
+        return res.status(500).json({ error: 'Audit failed', message: error.message });
+    }
+});
+
 // Server-side video conversion endpoint using static FFmpeg binary
 const fs = require('fs');
 const path = require('path');

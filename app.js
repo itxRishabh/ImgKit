@@ -5494,7 +5494,7 @@ document.querySelectorAll('.tool-tab').forEach(tab => {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         opacity: 0;
-    `;
+    ;
     
     overlay.innerHTML = `
         <div style="
