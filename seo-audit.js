@@ -32,6 +32,7 @@ class SEOAuditTool {
         this.qsImages = document.getElementById('qsImages');
         
         this.categoriesContainer = document.getElementById('auditCategories');
+        this.downloadPdfBtn = document.getElementById('downloadPdfBtn');
         
         this.initEvents();
     }
@@ -41,6 +42,9 @@ class SEOAuditTool {
         this.urlInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.startAudit();
         });
+        if (this.downloadPdfBtn) {
+            this.downloadPdfBtn.addEventListener('click', () => this.downloadPdf());
+        }
     }
 
     showNotification(msg, type = 'info') {
@@ -667,6 +671,16 @@ class SEOAuditTool {
         this.warnCountEl.textContent = warnings;
         this.failCountEl.textContent = failed;
 
+        // Set Print Date
+        const printDateEl = document.getElementById('printDate');
+        if (printDateEl) {
+            printDateEl.textContent = new Date().toLocaleDateString(undefined, {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+ 
         // Weighted Average Score
         const finalScore = Math.round(totalScore / categories.length);
         this.overallScore.textContent = finalScore;
@@ -690,5 +704,24 @@ class SEOAuditTool {
             this.scoreLabel.textContent = 'Critical Optimization Needed';
             this.scoreLabel.style.color = 'var(--error)';
         }
+    }
+
+    downloadPdf() {
+        const auditedUrl = this.auditedUrlEl.textContent.trim() || 'website';
+        const cleanName = auditedUrl.replace(/https?:\/\//i, '').replace(/[\/:]/g, '_');
+        const originalTitle = document.title;
+        
+        // Expand all accordions so they show details on print
+        const cards = document.querySelectorAll('.category-card');
+        cards.forEach(c => c.classList.add('open'));
+        
+        // Change document title for clean print-to-PDF filename
+        document.title = `ImgKit_SEO_Report_${cleanName}`;
+        
+        // Trigger browser native print / PDF export
+        window.print();
+        
+        // Restore title
+        document.title = originalTitle;
     }
 }

@@ -659,3 +659,194 @@ body {
         align-items: center;
     }
 }
+
+/* ===== PDF Button & Print Layout ===== */
+.print-header {
+    display: none;
+}
+
+.score-actions {
+    margin-top: 18px;
+}
+
+.pdf-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.pdf-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--border-active);
+}
+
+.pdf-btn i {
+    color: var(--error);
+}
+
+@media print {
+    @page {
+        size: A4;
+        margin: 15mm;
+    }
+    
+    body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-size: 12px;
+    }
+    
+    .print-header {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #000000;
+        margin-bottom: 24px;
+    }
+    
+    .print-brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 18px;
+        font-weight: 700;
+        color: #000000;
+    }
+    
+    .print-brand i {
+        color: #00c781 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    
+    .print-meta-info {
+        font-size: 11px;
+        color: #555555;
+    }
+    
+    /* Hide Screen-only items */
+    .header,
+    .hero-section,
+    .loading-section,
+    .score-actions,
+    .footer,
+    .category-chevron {
+        display: none !important;
+    }
+    
+    .main-container {
+        padding: 0 !important;
+        max-width: 100% !important;
+    }
+    
+    /* Make Score Card Printer-Friendly */
+    .score-card {
+        background: #f8f9fa !important;
+        border: 1px solid #e9ecef !important;
+        color: #000000 !important;
+        padding: 24px !important;
+        box-shadow: none !important;
+        border-radius: var(--radius-md) !important;
+        margin-bottom: 20px !important;
+        page-break-inside: avoid;
+    }
+    
+    .gauge-bg {
+        stroke: #e9ecef !important;
+    }
+    
+    .gauge-fill {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    
+    .score-number {
+        color: #000000 !important;
+    }
+    
+    .score-summary .summary-item {
+        color: #333333 !important;
+    }
+    
+    /* Quick Stats Print Grid */
+    .quick-stats {
+        grid-template-columns: repeat(6, 1fr) !important;
+        gap: 8px !important;
+        margin-bottom: 24px !important;
+        page-break-inside: avoid;
+    }
+    
+    .qs-item {
+        background: #f8f9fa !important;
+        border: 1px solid #e9ecef !important;
+        padding: 10px !important;
+    }
+    
+    .qs-label {
+        color: #666666 !important;
+    }
+    
+    .qs-value {
+        color: #000000 !important;
+    }
+    
+    /* Accordion Auto-Expand & Cards */
+    .category-card {
+        background: #ffffff !important;
+        border: 1px solid #e9ecef !important;
+        box-shadow: none !important;
+        margin-bottom: 12px !important;
+        page-break-inside: avoid;
+        border-radius: var(--radius-md) !important;
+    }
+    
+    .category-header {
+        background: #f8f9fa !important;
+        padding: 12px 16px !important;
+        border-bottom: 1px solid #e9ecef !important;
+    }
+    
+    .category-body {
+        max-height: none !important;
+        display: block !important;
+    }
+    
+    .category-issues {
+        padding: 12px 16px !important;
+        border-top: none !important;
+    }
+    
+    .issue-row {
+        padding: 8px 0 !important;
+        border-bottom: 1px solid #e9ecef !important;
+    }
+    
+    .issue-title {
+        color: #000000 !important;
+    }
+    
+    .issue-detail {
+        color: #444444 !important;
+    }
+    
+    .issue-detail code {
+        background: #f1f3f5 !important;
+        color: #000000 !important;
+        border: 1px solid #dee2e6 !important;
+    }
+    
+    .issue-icon {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
