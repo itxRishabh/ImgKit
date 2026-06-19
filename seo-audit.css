@@ -819,6 +819,9 @@ body {
     .category-body {
         max-height: none !important;
         display: block !important;
+        overflow: visible !important;
+        transition: none !important;
+        height: auto !important;
     }
     
     .category-issues {

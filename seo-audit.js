@@ -711,8 +711,11 @@ class SEOAuditTool {
         const cleanName = auditedUrl.replace(/https?:\/\//i, '').replace(/[\/:]/g, '_');
         const originalTitle = document.title;
         
-        // Expand all accordions so they show details on print
+        // Remember which cards were open
         const cards = document.querySelectorAll('.category-card');
+        const cardStates = Array.from(cards).map(c => c.classList.contains('open'));
+        
+        // Expand all accordions so they show details on print
         cards.forEach(c => c.classList.add('open'));
         
         // Change document title for clean print-to-PDF filename
@@ -723,5 +726,12 @@ class SEOAuditTool {
         
         // Restore title
         document.title = originalTitle;
+        
+        // Restore accordion states
+        cards.forEach((c, idx) => {
+            if (!cardStates[idx]) {
+                c.classList.remove('open');
+            }
+        });
     }
 }
