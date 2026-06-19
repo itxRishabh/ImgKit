@@ -13,6 +13,7 @@
   <a href="#-features">Features</a> •
   <a href="#-usage">Usage</a> •
   <a href="#-tech-stack">Tech Stack</a> •
+  <a href="#-project-structure">Project Structure</a> •
   <a href="#-license">License</a>
 </p>
 
@@ -110,52 +111,73 @@ Precise image cropping with interactive selection and aspect ratio presets.
 
 ---
 
+### 5. SEO Audit Tool 🚀
+Analyze any website's SEO health with a comprehensive, professional-grade auditing engine. Find critical errors, warnings, and optimize search index visibility instantly.
+
+**Features:**
+- 📊 **Weighted Scoring Engine** - 0-100 score dynamic circular visualizer gauge.
+- 🏷️ **Meta Tags & Indexing** - Validates Title tags, descriptions, robot instructions, and canonicals.
+- 📐 **Semantic Hierarchy** - Inspects heading trees (`H1`, `H2`, `H3`) and flags structure imbalances.
+- 🔒 **Security Headers Check** - Scans for HTTPS SSL encryption and key protection headers (CSP, HSTS, X-Frame-Options, Referrer-Policy).
+- 🔗 **Link Profile Scrubber** - Reports internal/external link maps and flags dead/empty anchors.
+- 🖼️ **Image Accessibility** - Audits missing alt attributes across image libraries.
+- ⚙️ **Technical & Schema Check** - Verifies JSON-LD structured schemas, Open Graph sharing cards, and crawl directives (`robots.txt`, `sitemap.xml`).
+- 📄 **Export PDF Reports** - Print-optimized layout converter compiling all details, branded under the ImgKit ecosystem and credits.
+
+---
+
 ## ✨ Features
 
 | Feature | Description |
 |---------|-------------|
-| ⚡ **Lightning Fast** | All processing happens locally in your browser |
-| 🔒 **100% Private** | Your images never leave your device - no server uploads |
-| 🧠 **AI Background Removal** | Remove backgrounds with machine learning |
+| ⚡ **Lightning Fast** | All image processing happens locally in your browser |
+| 🔍 **Full SEO Audits** | Scrapes and rates external websites for metadata, hierarchy, and tags |
+| 🔒 **100% Private** | Your images never leave your device (AI runs local in-browser) |
+| 🧠 **AI Background Removal** | Remove backgrounds with native machine learning |
 | ✂️ **Image Crop** | Interactive cropping with aspect ratio presets |
+| 📄 **PDF Export Report** | Beautiful, print-ready formal PDF exports with dynamic accordion unfolding |
 | 📦 **Batch Processing** | Process multiple images at once |
 | 💾 **Quality Control** | Full control over output quality (10-100%) |
-| 📐 **Custom Dimensions** | Set exact output sizes with linked aspect ratios |
-| 🎯 **No Watermarks** | Clean output, no branding on your images |
 | 🆓 **Free Forever** | No sign-up, no limits, completely free |
 
 ---
 
 ## 🚀 Usage
 
-### Option 1: Open Directly
-Simply open `index.html` in any modern browser.
+ImgKit includes both browser-based image tools and a server-proxied SEO Auditor. To run the complete application suite locally:
 
-### Option 2: Clone & Run
-```bash
-git clone https://github.com/itxRishabh/ImgKit.git
-cd ImgKit
-open index.html
-```
+### 📦 Setup & Run Locally
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/itxRishabh/ImgKit.git
+   cd ImgKit
+   ```
+2. Install the required Node.js dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the Express server:
+   ```bash
+   npm start
+   ```
+4. Open the application:
+   Navigate to [http://localhost:3000](http://localhost:3000) in your web browser.
 
 ### How to Use
-1. **Select a tool** - Square Maker, Format Converter, Remove BG, or Image Crop
-2. **Upload images** - Drag & drop or click to browse
-3. **Adjust settings** - Background, format, quality, dimensions
-4. **Download** - Individual files or all at once
+- **Image Tools**: Select Square Maker, Format Converter, Remove BG, or Image Crop, upload files, customize output settings, and download.
+- **SEO Audit**: Click the **SEO Audit** link in the header, input a website URL (including `https://`), and review the live metrics dashboard. Click **Download PDF Report** to export a physical layout copy of the report.
 
 ---
 
 ## 🔧 Tech Stack
 
-- **HTML5** - Semantic markup structure
-- **CSS3** - Modern styling with animations & glassmorphism
-- **JavaScript (ES6+)** - Vanilla JS, zero dependencies
-- **Canvas API** - Client-side image processing
-- **@imgly/background-removal** - Browser-based AI for background removal
-- **JSZip** - ZIP file creation for batch downloads
-- **Font Awesome 6** - Beautiful iconography
-- **Google Fonts** - Inter typeface
+- **HTML5 & CSS3** - Semantic markup structure & modern glassmorphism styling
+- **JavaScript (ES6+)** - Core application logic & DOM parsing audit engine
+- **Node.js & Express** - Backend server routes and serverless APIs to fetch and proxy site contents bypassing CORS
+- **Canvas API** - In-browser local image processing
+- **@imgly/background-removal** - WebAssembly local browser-based AI model for background removal
+- **JSZip** - Dynamic zip file generator for batch conversions
+- **Font Awesome 6 & Google Fonts** - Inter typography and modern icon library
 
 ---
 
@@ -163,11 +185,18 @@ open index.html
 
 ```
 ImgKit/
-├── index.html      # Main application
-├── style.css       # Styles & animations
-├── app.js          # Core logic (ImageSquare + ImageConverter + BackgroundRemover + ImageCropper)
-├── README.md       # Documentation
-└── LICENSE         # MIT License
+├── api/
+│   └── seo-audit.js  # Serverless backend function for Vercel deploy
+├── index.html        # Main dashboard panel (Image Tools)
+├── seo-audit.html    # Standalone SEO Auditor page
+├── seo-audit.css     # Dedicated print/screen SEO audit styles
+├── seo-audit.js      # Core SEO parsing & scoring engine
+├── app.js            # Image tools client engine
+├── server.js         # Local Express development server & proxies
+├── style.css         # Main application stylesheet
+├── package.json      # Dependencies and run scripts
+├── README.md         # Documentation
+└── LICENSE           # MIT License
 ```
 
 ---
