@@ -123,6 +123,17 @@ Analyze any website's SEO health with a comprehensive, professional-grade auditi
 - 🖼️ **Image Accessibility** - Audits missing alt attributes across image libraries.
 - ⚙️ **Technical & Schema Check** - Verifies JSON-LD structured schemas, Open Graph sharing cards, and crawl directives (`robots.txt`, `sitemap.xml`).
 - 📄 **Export PDF Reports** - Print-optimized layout converter compiling all details, branded under the ImgKit ecosystem and credits.
+---
+
+### 6. SVG to Image Converter 🎨
+Convert vector SVG code or SVG files into high-quality raster formats (PNG, JPEG, WebP) with zero quality loss and custom scale support.
+
+**Features:**
+- ✍️ **Code & File Inputs** - Paste raw SVG code or drag-and-drop `.svg` files directly.
+- 🔍 **Live Rendering Preview** - Instant live rendering of SVG code with an inline error parser that catches syntax issues on the fly.
+- 📐 **Upscaling Scale Multipliers** - Upscale rendering scale factor (1x, 2x, 3x, 4x, 8x) to output pixel-perfect, crisp, high-resolution graphics.
+- 🎨 **Custom Background Fill** - Fill transparent SVG backdrops with solid colors using a premium color picker or export with transparency intact.
+- 📏 **Dimensions Override** - Set custom width/height dimensions to override default viewport attributes with aspect-ratio locking.
 
 ---
 
