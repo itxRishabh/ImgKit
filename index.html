@@ -99,6 +99,11 @@
                 <i class="fas fa-shuffle"></i>
                 <span>Format Converter</span>
             </button>
+            <button class="tool-tab" data-tool="svg">
+                <i class="fas fa-file-code"></i>
+                <span>SVG to Image</span>
+                <span class="ai-badge">NEW</span>
+            </button>
             <button class="tool-tab" data-tool="sizemanager">
                 <i class="fas fa-weight-hanging"></i>
                 <span>Size Manager</span>
@@ -520,6 +525,140 @@
             </main>
         </div>
         <!-- End Format Converter Tool -->
+
+        <!-- SVG Code/File to Image Converter Tool -->
+        <div class="tool-section" id="svgTool">
+            <main class="main-content">
+                <!-- Hero Section -->
+                <section class="hero">
+                    <h1 class="hero-title">
+                        SVG to <span class="gradient-text">Image Converter</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Paste your SVG code or upload an SVG file to convert it into high-resolution PNG, JPG, or WebP images instantly.
+                    </p>
+                </section>
+
+                <div class="tool-split-layout" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px;">
+                    <!-- Left Column: Input -->
+                    <div class="card-column" style="display: flex; flex-direction: column; gap: 24px;">
+                        <!-- Input Source selector -->
+                        <div class="settings-panel" style="margin-bottom: 0;">
+                            <h3 class="settings-title">
+                                <i class="fas fa-file-import"></i>
+                                Input Source
+                            </h3>
+                            <div class="toggle-buttons" id="svgInputTypeToggle" style="margin-bottom: 16px;">
+                                <button class="toggle-btn active" data-type="code">SVG Code</button>
+                                <button class="toggle-btn" data-type="file">SVG File</button>
+                            </div>
+
+                            <!-- Code Input Area -->
+                            <div id="svgCodeInputGroup">
+                                <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">Paste SVG Code here:</label>
+                                <textarea id="svgCodeInput" placeholder='&lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"&gt;
+  &lt;circle cx="50" cy="50" r="40" fill="#00c781" /&gt;
+&lt;/svg&gt;' style="width: 100%; height: 280px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; color: #34d399; font-family: &#39;Fira Code&#39;, &#39;SF Mono&#39;, monospace; font-size: 13px; resize: vertical; outline: none; transition: border-color 0.2s;" spellcheck="false"></textarea>
+                            </div>
+
+                            <!-- File Upload Area -->
+                            <div id="svgFileInputGroup" style="display: none;">
+                                <div class="upload-area" id="svgUploadArea" style="padding: 40px 20px;">
+                                    <div class="upload-icon">
+                                        <i class="fas fa-file-signature"></i>
+                                    </div>
+                                    <h3 class="upload-title">Drop your SVG file here</h3>
+                                    <p class="upload-text">or click to browse</p>
+                                    <input type="file" id="svgFileInput" accept=".svg,image/svg+xml" hidden>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Settings Panel -->
+                        <div class="settings-panel" style="margin-bottom: 0;">
+                            <h3 class="settings-title">
+                                <i class="fas fa-sliders"></i>
+                                Output Options
+                            </h3>
+                            
+                            <div class="settings-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                <!-- Format -->
+                                <div class="setting-group" style="grid-column: span 2;">
+                                    <label class="setting-label">Export Format</label>
+                                    <div class="toggle-buttons" id="svgFormatToggle">
+                                        <button class="toggle-btn active" data-format="png">PNG</button>
+                                        <button class="toggle-btn" data-format="jpeg">JPEG</button>
+                                        <button class="toggle-btn" data-format="webp">WebP</button>
+                                    </div>
+                                </div>
+
+                                <!-- Upscale Scale Factor -->
+                                <div class="setting-group">
+                                    <label class="setting-label">Resolution Scale</label>
+                                    <select id="svgScaleSelect" style="width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px; color: var(--text); outline: none;">
+                                        <option value="1">1x (Default Size)</option>
+                                        <option value="2" selected>2x (Clear)</option>
+                                        <option value="3">3x (HD)</option>
+                                        <option value="4">4x (Ultra HD)</option>
+                                        <option value="8">8x (Super High-Res)</option>
+                                    </select>
+                                </div>
+
+                                <!-- Background Color -->
+                                <div class="setting-group">
+                                    <label class="setting-label">Background Fill</label>
+                                    <div style="display: flex; gap: 8px;">
+                                        <select id="svgBgTypeSelect" style="flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px; color: var(--text); outline: none;">
+                                            <option value="transparent">Transparent</option>
+                                            <option value="solid">Solid Color</option>
+                                        </select>
+                                        <input type="color" id="svgBgColorPicker" value="#ffffff" style="display: none; width: 42px; height: 42px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: transparent; cursor: pointer; padding: 0;">
+                                    </div>
+                                </div>
+
+                                <!-- Custom Dimensions (Optional Override) -->
+                                <div class="setting-group">
+                                    <label class="setting-label">Width (px)</label>
+                                    <input type="number" id="svgCustomWidth" placeholder="Auto" style="width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px; color: var(--text); outline: none;">
+                                </div>
+                                <div class="setting-group">
+                                    <label class="setting-label">Height (px)</label>
+                                    <input type="number" id="svgCustomHeight" placeholder="Auto" style="width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px; color: var(--text); outline: none;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Live Preview & Action -->
+                    <div class="card-column" style="display: flex; flex-direction: column; gap: 24px;">
+                        <!-- Preview Card -->
+                        <div class="settings-panel" style="flex: 1; display: flex; flex-direction: column; margin-bottom: 0;">
+                            <h3 class="settings-title">
+                                <i class="fas fa-eye"></i>
+                                Live SVG Preview
+                            </h3>
+                            <div id="svgPreviewContainer" style="flex: 1; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 16px 16px; border: 1px dashed var(--border); border-radius: var(--radius-md); padding: 24px; min-height: 320px; overflow: hidden; position: relative;">
+                                <div id="svgPreviewWrapper" style="max-width: 100%; max-height: 100%; display: flex; align-items: center; justify-content: center;">
+                                    <span style="color: var(--text-muted); font-size: 14px;">Paste SVG code or upload a file to preview</span>
+                                </div>
+                                <div id="svgErrorBadge" style="display: none; position: absolute; bottom: 12px; left: 12px; right: 12px; background: rgba(255,69,58,0.1); border: 1px solid var(--error); border-radius: var(--radius-sm); padding: 8px 12px; color: var(--error); font-size: 12px; text-align: center;">
+                                    <i class="fas fa-exclamation-circle"></i> Invalid SVG structure
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Render & Download Actions -->
+                        <div class="settings-panel" style="margin-bottom: 0;">
+                            <button class="btn btn-primary" id="svgDownloadBtn" style="width: 100%; padding: 16px; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px;" disabled>
+                                <i class="fas fa-download"></i>
+                                <span>Download Rendered Image</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+        <!-- End SVG Code/File to Image Converter Tool -->
 
         <!-- Image Size Manager Tool -->
         <div class="tool-section" id="sizeManagerTool">

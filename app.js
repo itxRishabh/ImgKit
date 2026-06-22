@@ -5395,6 +5395,292 @@ class SizeManager {
     }
 }
 
+class SVGToImageConverter {
+    constructor() {
+        this.inputTypeToggle = document.getElementById('svgInputTypeToggle');
+        this.codeInputGroup = document.getElementById('svgCodeInputGroup');
+        this.fileInputGroup = document.getElementById('svgFileInputGroup');
+        
+        this.codeInput = document.getElementById('svgCodeInput');
+        this.fileInput = document.getElementById('svgFileInput');
+        this.uploadArea = document.getElementById('svgUploadArea');
+        
+        this.formatToggle = document.getElementById('svgFormatToggle');
+        this.scaleSelect = document.getElementById('svgScaleSelect');
+        this.bgTypeSelect = document.getElementById('svgBgTypeSelect');
+        this.bgColorPicker = document.getElementById('svgBgColorPicker');
+        
+        this.customWidthInput = document.getElementById('svgCustomWidth');
+        this.customHeightInput = document.getElementById('svgCustomHeight');
+        
+        this.previewWrapper = document.getElementById('svgPreviewWrapper');
+        this.errorBadge = document.getElementById('svgErrorBadge');
+        this.downloadBtn = document.getElementById('svgDownloadBtn');
+        
+        this.currentSvgText = '';
+        this.selectedFormat = 'png';
+        
+        this.initEvents();
+    }
+    
+    initEvents() {
+        if (!this.inputTypeToggle) return;
+        
+        this.inputTypeToggle.querySelectorAll('.toggle-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.inputTypeToggle.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const type = btn.dataset.type;
+                if (type === 'code') {
+                    this.codeInputGroup.style.display = 'block';
+                    this.fileInputGroup.style.display = 'none';
+                    this.updatePreviewFromCode();
+                } else {
+                    this.codeInputGroup.style.display = 'none';
+                    this.fileInputGroup.style.display = 'block';
+                    this.updatePreviewFromFile();
+                }
+            });
+        });
+        
+        this.codeInput.addEventListener('input', () => this.updatePreviewFromCode());
+        this.uploadArea.addEventListener('click', () => this.fileInput.click());
+        this.fileInput.addEventListener('change', () => this.handleFileSelect());
+        
+        this.uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            this.uploadArea.classList.add('drag-over');
+        });
+        
+        this.uploadArea.addEventListener('dragleave', () => {
+            this.uploadArea.classList.remove('drag-over');
+        });
+        
+        this.uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            this.uploadArea.classList.remove('drag-over');
+            if (e.dataTransfer.files.length > 0) {
+                this.fileInput.files = e.dataTransfer.files;
+                this.handleFileSelect();
+            }
+        });
+        
+        this.formatToggle.querySelectorAll('.toggle-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.formatToggle.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                this.selectedFormat = btn.dataset.format;
+            });
+        });
+        
+        this.bgTypeSelect.addEventListener('change', () => {
+            if (this.bgTypeSelect.value === 'solid') {
+                this.bgColorPicker.style.display = 'block';
+            } else {
+                this.bgColorPicker.style.display = 'none';
+            }
+        });
+        
+        this.downloadBtn.addEventListener('click', () => this.downloadImage());
+    }
+    
+    updatePreviewFromCode() {
+        const code = this.codeInput.value.trim();
+        if (!code) {
+            this.clearPreview();
+            return;
+        }
+        this.processSvgText(code);
+    }
+    
+    updatePreviewFromFile() {
+        if (!this.currentSvgText) {
+            this.clearPreview();
+        }
+    }
+    
+    handleFileSelect() {
+        const file = this.fileInput.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const text = e.target.result;
+            this.codeInput.value = text;
+            this.processSvgText(text);
+        };
+        reader.readAsText(file);
+    }
+    
+    clearPreview() {
+        this.previewWrapper.innerHTML = '<span style="color: var(--text-muted); font-size: 14px;">Paste SVG code or upload a file to preview</span>';
+        this.errorBadge.style.display = 'none';
+        this.downloadBtn.disabled = true;
+        this.currentSvgText = '';
+    }
+    
+    processSvgText(text) {
+        if (!text.includes('<svg') || !text.includes('</svg>')) {
+            this.showError('Invalid SVG code structure.');
+            return;
+        }
+        
+        try {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(text, 'image/svg+xml');
+            
+            const parserError = doc.querySelector('parsererror');
+            if (parserError) {
+                this.showError(parserError.textContent);
+                return;
+            }
+            
+            const svgNode = doc.querySelector('svg');
+            if (!svgNode) {
+                this.showError('No root <svg> element found.');
+                return;
+            }
+            
+            this.currentSvgText = text;
+            this.errorBadge.style.display = 'none';
+            
+            this.previewWrapper.innerHTML = '';
+            const clonedNode = svgNode.cloneNode(true);
+            clonedNode.setAttribute('width', '100%');
+            clonedNode.setAttribute('height', '100%');
+            clonedNode.style.maxWidth = '250px';
+            clonedNode.style.maxHeight = '250px';
+            
+            this.previewWrapper.appendChild(clonedNode);
+            this.downloadBtn.disabled = false;
+            
+            let width = svgNode.getAttribute('width');
+            let height = svgNode.getAttribute('height');
+            
+            if (!width || !height) {
+                const viewBox = svgNode.getAttribute('viewBox');
+                if (viewBox) {
+                    const parts = viewBox.split(/\s+/).filter(Boolean);
+                    if (parts.length === 4) {
+                        width = parts[2];
+                        height = parts[3];
+                    }
+                }
+            }
+            
+            if (width) {
+                this.customWidthInput.placeholder = Math.round(parseFloat(width)) || 'Auto';
+            }
+            if (height) {
+                this.customHeightInput.placeholder = Math.round(parseFloat(height)) || 'Auto';
+            }
+            
+        } catch (err) {
+            this.showError(err.message);
+        }
+    }
+    
+    showError(msg) {
+        console.warn('SVG Parse Error:', msg);
+        this.errorBadge.textContent = 'Invalid SVG: ' + (msg.substring(0, 60) || 'structure check failed');
+        this.errorBadge.style.display = 'block';
+        this.downloadBtn.disabled = true;
+    }
+    
+    async downloadImage() {
+        if (!this.currentSvgText) return;
+        
+        try {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(this.currentSvgText, 'image/svg+xml');
+            const svgNode = doc.querySelector('svg');
+            
+            let width = parseFloat(svgNode.getAttribute('width'));
+            let height = parseFloat(svgNode.getAttribute('height'));
+            
+            const viewBox = svgNode.getAttribute('viewBox');
+            let viewBoxWidth = 0;
+            let viewBoxHeight = 0;
+            
+            if (viewBox) {
+                const parts = viewBox.split(/\s+/).filter(Boolean);
+                if (parts.length === 4) {
+                    viewBoxWidth = parseFloat(parts[2]);
+                    viewBoxHeight = parseFloat(parts[3]);
+                }
+            }
+            
+            const customW = parseFloat(this.customWidthInput.value);
+            const customH = parseFloat(this.customHeightInput.value);
+            
+            let finalWidth = customW || width || viewBoxWidth || 500;
+            let finalHeight = customH || height || viewBoxHeight || 500;
+            
+            if (customW && !customH && (width || viewBoxWidth) && (height || viewBoxHeight)) {
+                const aspect = (height || viewBoxHeight) / (width || viewBoxWidth);
+                finalHeight = Math.round(customW * aspect);
+            } else if (customH && !customW && (width || viewBoxWidth) && (height || viewBoxHeight)) {
+                const aspect = (width || viewBoxWidth) / (height || viewBoxHeight);
+                finalWidth = Math.round(customH * aspect);
+            }
+            
+            const scale = parseFloat(this.scaleSelect.value) || 1;
+            const canvasWidth = finalWidth * scale;
+            const canvasHeight = finalHeight * scale;
+            
+            const canvas = document.createElement('canvas');
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+            const ctx = canvas.getContext('2d');
+            
+            if (this.bgTypeSelect.value === 'solid') {
+                ctx.fillStyle = this.bgColorPicker.value;
+                ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+            }
+            
+            svgNode.setAttribute('width', canvasWidth);
+            svgNode.setAttribute('height', canvasHeight);
+            if (!svgNode.getAttribute('viewBox') && (width || viewBoxWidth) && (height || viewBoxHeight)) {
+                svgNode.setAttribute('viewBox', `0 0 ${width || viewBoxWidth} ${height || viewBoxHeight}`);
+            }
+            
+            const serializer = new XMLSerializer();
+            const svgString = serializer.serializeToString(svgNode);
+            
+            const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+            const blobUrl = URL.createObjectURL(blob);
+            
+            const img = new Image();
+            img.onload = () => {
+                ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
+                URL.revokeObjectURL(blobUrl);
+                
+                const exportType = `image/${this.selectedFormat === 'jpeg' ? 'jpeg' : this.selectedFormat}`;
+                const dataUrl = canvas.toDataURL(exportType, 0.95);
+                
+                const link = document.createElement('a');
+                link.download = `imgkit_rendered.${this.selectedFormat}`;
+                link.href = dataUrl;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+            img.onerror = (e) => {
+                console.error('Image render error:', e);
+                URL.revokeObjectURL(blobUrl);
+                alert('Failed to render SVG. Please verify that all elements in the SVG are valid.');
+            };
+            
+            img.src = blobUrl;
+            
+        } catch (err) {
+            console.error('Conversion failed:', err);
+            alert('An unexpected error occurred during rendering: ' + err.message);
+        }
+    }
+}
+
 // Initialize tools
 const faviconGen = new FaviconGenerator();
 const imageTrimmer = new ImageTrimmer();
@@ -5402,6 +5688,7 @@ const imageOCR = new ImageOCR();
 const watermarkRemover = new WatermarkRemover();
 const videoToolInstance = new VideoTool();
 const sizeManagerInstance = new SizeManager();
+const svgToImageInstance = new SVGToImageConverter();
 
 // Tool Navigation - Switch between tools
 document.querySelectorAll('.tool-tab').forEach(tab => {
@@ -5436,6 +5723,8 @@ document.querySelectorAll('.tool-tab').forEach(tab => {
             document.getElementById('ocrTool').classList.add('active');
         } else if (tool === 'video') {
             document.getElementById('videoTool').classList.add('active');
+        } else if (tool === 'svg') {
+            document.getElementById('svgTool').classList.add('active');
         }
     });
 });
