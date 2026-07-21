@@ -1,5 +1,8 @@
 User-agent: *
 Allow: /
 
+# Block crawling of API endpoints
+Disallow: /api/
+
 # Sitemap
-Sitemap: https://imgkit-sigma.vercel.app/sitemap.xml
+Sitemap: https://www.rishabhdev.site/sitemap.xml
