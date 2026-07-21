@@ -151,39 +151,14 @@ body {
     transform: translateY(-1px);
 }
 
-/* ===== Tool Navigation (Redesigned Tab Bar) ===== */
+/* ===== Tool Navigation (Stacked/Wrapped Pill Grid) ===== */
 .tool-nav {
     display: flex;
-    gap: 16px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 40px;
-    overflow-x: auto;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
-    cursor: grab;
-    padding-bottom: 4px;
-}
-
-.tool-nav.grabbing {
-    cursor: grabbing;
-    user-select: none;
-}
-
-.tool-nav::-webkit-scrollbar {
-    height: 4px;
-}
-
-.tool-nav::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.tool-nav::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.12);
-    border-radius: 10px;
-}
-
-.tool-nav::-webkit-scrollbar-thumb:hover {
-    background: var(--primary);
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 32px;
+    padding-bottom: 0;
+    border-bottom: none;
 }
 
 .tool-tab {
@@ -191,34 +166,32 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 12px 4px 16px;
-    border: none;
-    background: transparent;
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.02);
     color: var(--text-muted);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
     cursor: pointer;
-    transition: color var(--transition-fast);
+    transition: all var(--transition-fast);
     white-space: nowrap;
 }
 
 .tool-tab:hover {
     color: var(--text);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--border-active);
+    transform: translateY(-1px);
 }
 
 .tool-tab.active {
-    color: var(--text);
+    color: var(--text) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: var(--border-active) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.tool-tab.active::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    right: 0;
-    height: 2.5px;
-    border-radius: 99px 99px 0 0;
-}
 
 /* Tool-Specific Accent Mapping */
 .tool-tab[data-tool="square"] i { color: var(--accent-square); }
@@ -1875,38 +1848,32 @@ body {
 
     .tool-nav {
         display: flex;
+        flex-wrap: wrap;
         gap: 8px;
         border-bottom: none;
         margin-bottom: 24px;
-        overflow-x: auto;
-        white-space: nowrap;
-        padding: 4px;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-        cursor: grab;
-    }
-
-    .tool-nav::-webkit-scrollbar {
-        display: none;
+        overflow-x: visible;
+        white-space: normal;
+        padding: 0;
     }
 
     .tool-tab {
-        flex: 0 0 110px;
-        width: 110px;
+        flex: 1 1 calc(50% - 4px);
+        min-width: 120px;
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
-        justify-content: center;
-        gap: 6px;
+        justify-content: flex-start;
+        gap: 8px;
         position: relative;
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: var(--radius-md);
-        padding: 14px 6px 12px;
-        font-size: 11px;
+        padding: 10px 12px;
+        font-size: 12px;
         transition: all var(--transition-fast);
-        white-space: normal;
-        text-align: center;
+        white-space: nowrap;
+        text-align: left;
     }
 
     .tool-tab i {
