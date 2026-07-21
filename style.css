@@ -2463,3 +2463,21 @@ body {
 .tool-tab[data-tool="sizemanager"] .ai-badge {
     background: var(--primary) !important;
 }
+
+/* Responsive Split Layout for SVG Tool and others */
+.tool-split-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+    width: 100%;
+    align-items: start;
+}
+
+@media (max-width: 992px) {
+    .tool-split-layout {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+
