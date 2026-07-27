@@ -125,6 +125,13 @@ body {
     gap: 10px;
 }
 
+.brand-logo-img {
+    height: 38px;
+    width: auto;
+    display: block;
+    border-radius: 4px;
+}
+
 .logo-icon {
     width: 34px;
     height: 34px;
