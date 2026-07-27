@@ -5926,4 +5926,56 @@ document.querySelectorAll('.tool-tab').forEach(tab => {
             }
         }
     }
+
+    // --- Automatic Day/Night Theme Controller ---
+    function initializeTheme() {
+        const themeBtn = document.getElementById('themeToggleBtn');
+        if (!themeBtn) return;
+
+        const themeIcon = themeBtn.querySelector('i');
+        
+        // Helper to set theme state
+        function setTheme(mode) {
+            if (mode === 'light') {
+                document.body.classList.add('light-theme');
+                if (themeIcon) {
+                    themeIcon.className = 'fas fa-moon';
+                }
+                themeBtn.title = 'Switch to Dark Mode';
+            } else {
+                document.body.classList.remove('light-theme');
+                if (themeIcon) {
+                    themeIcon.className = 'fas fa-sun';
+                }
+                themeBtn.title = 'Switch to Light Mode';
+            }
+        }
+
+        // Get saved theme preference
+        const savedTheme = localStorage.getItem('themePreference');
+
+        if (savedTheme) {
+            setTheme(savedTheme);
+        } else {
+            // Auto-detect based on local timezone hour (6 AM to 6 PM is Day mode)
+            const currentHour = new Date().getHours();
+            const isDaytime = currentHour >= 6 && currentHour < 18;
+            setTheme(isDaytime ? 'light' : 'dark');
+        }
+
+        // Toggle on button click
+        themeBtn.addEventListener('click', () => {
+            const isCurrentlyLight = document.body.classList.contains('light-theme');
+            const newTheme = isCurrentlyLight ? 'dark' : 'light';
+            setTheme(newTheme);
+            localStorage.setItem('themePreference', newTheme);
+        });
+    }
+
+    // Initialize theme settings
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeTheme);
+    } else {
+        initializeTheme();
+    }
 })();
