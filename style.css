@@ -126,8 +126,9 @@ body {
 }
 
 .brand-logo-img {
-    height: 54px;
-    width: auto;
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
     display: block;
     border-radius: 4px;
 }
