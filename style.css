@@ -351,11 +351,12 @@ body {
 }
 
 .hero-title {
-    font-size: 32px;
-    font-weight: 600;
-    letter-spacing: -0.8px;
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -1.2px;
     margin-bottom: 12px;
     color: var(--accent);
+    line-height: 1.25;
 }
 
 .hero-subtitle {
@@ -529,19 +530,19 @@ body {
 }
 
 .settings-title {
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 15px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 20px;
+    letter-spacing: 0.8px;
+    margin-bottom: 24px;
     display: flex;
     align-items: center;
     gap: 8px;
-    color: var(--accent-dim);
+    color: var(--text);
 }
 
 .settings-title i {
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .settings-grid {
@@ -1035,18 +1036,18 @@ body {
 }
 
 .preview-title {
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 15px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
     display: flex;
     align-items: center;
     gap: 8px;
-    color: var(--accent-dim);
+    color: var(--text);
 }
 
 .preview-title i {
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .preview-actions {
@@ -1578,10 +1579,11 @@ body {
 
 .features-title {
     text-align: center;
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 32px;
-    letter-spacing: -0.5px;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 36px;
+    letter-spacing: -0.8px;
+    color: var(--accent);
 }
 
 .features-grid {
