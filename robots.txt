@@ -5,4 +5,4 @@ Allow: /
 Disallow: /api/
 
 # Sitemap
-Sitemap: https://www.rishabhdev.site/sitemap.xml
+Sitemap: https://webtoolkitbox.com/sitemap.xml

@@ -719,7 +719,7 @@ class SEOAuditTool {
         cards.forEach(c => c.classList.add('open'));
         
         // Change document title for clean print-to-PDF filename
-        document.title = `ImgKit_SEO_Report_${cleanName}`;
+        document.title = `WebToolkitBox_SEO_Report_${cleanName}`;
         
         // Trigger browser native print / PDF export
         window.print();
