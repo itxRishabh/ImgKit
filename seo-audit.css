@@ -108,9 +108,24 @@ body {
     font-weight: 700;
 }
 
-.header-brand i {
-    color: var(--accent-seo);
-    font-size: 18px;
+.logo-icon {
+    width: 34px;
+    height: 34px;
+    background: #000000;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--border);
+}
+
+.logo-icon img {
+    width: 160%;
+    height: 160%;
+    object-fit: cover;
+    object-position: center 20%;
 }
 
 .header-badge {
