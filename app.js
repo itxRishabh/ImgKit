@@ -5957,10 +5957,8 @@ document.querySelectorAll('.tool-tab').forEach(tab => {
         if (savedTheme) {
             setTheme(savedTheme);
         } else {
-            // Auto-detect based on local timezone hour (6 AM to 6 PM is Day mode)
-            const currentHour = new Date().getHours();
-            const isDaytime = currentHour >= 6 && currentHour < 18;
-            setTheme(isDaytime ? 'light' : 'dark');
+            // Default to dark mode on initial load
+            setTheme('dark');
         }
 
         // Toggle on button click
