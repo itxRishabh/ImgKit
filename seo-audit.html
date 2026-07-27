@@ -28,10 +28,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
 
     <link rel="stylesheet" href="seo-audit.css">
-    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="icon" type="image/webp" href="images/logo.webp">
 </head>
 
 <body>
@@ -50,7 +50,7 @@
     <header class="header">
         <div class="header-inner">
             <a href="index.html" class="header-brand">
-                <img src="images/logo.png" alt="WebToolkitBox" class="brand-logo-img">
+                <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
                 <span class="header-badge">SEO</span>
             </a>
             <div style="display: flex; align-items: center; gap: 16px;">
@@ -167,7 +167,7 @@
         <p>Built with <i class="fas fa-heart" style="color: var(--error);"></i> by <a href="https://github.com/itxRishabh" target="_blank">@itxrishabh</a> · <a href="index.html">WebToolkitBox Home</a></p>
     </footer>
 
-    <script src="seo-audit.js"></script>
+    <script src="seo-audit.js" defer></script>
 </body>
 
 </html>
