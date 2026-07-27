@@ -294,38 +294,43 @@ body {
 }
 
 /* Premium Gradient Text scoped per tool */
+.gradient-text {
+    background: linear-gradient(135deg, var(--accent) 30%, var(--primary, #a855f7) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 #squareTool .gradient-text {
-    background: linear-gradient(135deg, #ffffff 30%, var(--accent-square) 100%);
+    background: linear-gradient(135deg, var(--accent) 30%, var(--accent-square) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 #converterTool .gradient-text {
-    background: linear-gradient(135deg, #ffffff 30%, var(--accent-converter) 100%);
+    background: linear-gradient(135deg, var(--accent) 30%, var(--accent-converter) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 #removerTool .gradient-text {
-    background: linear-gradient(135deg, #ffffff 30%, var(--accent-remover) 100%);
+    background: linear-gradient(135deg, var(--accent) 30%, var(--accent-remover) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 #cropperTool .gradient-text {
-    background: linear-gradient(135deg, #ffffff 30%, var(--accent-cropper) 100%);
+    background: linear-gradient(135deg, var(--accent) 30%, var(--accent-cropper) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 #faviconTool .gradient-text {
-    background: linear-gradient(135deg, #ffffff 30%, var(--accent-favicon) 100%);
+    background: linear-gradient(135deg, var(--accent) 30%, var(--accent-favicon) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 #trimmerTool .gradient-text {
-    background: linear-gradient(135deg, #ffffff 30%, var(--accent-trimmer) 100%);
+    background: linear-gradient(135deg, var(--accent) 30%, var(--accent-trimmer) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 #ocrTool .gradient-text {
-    background: linear-gradient(135deg, #ffffff 30%, var(--accent-ocr) 100%);
+    background: linear-gradient(135deg, var(--accent) 30%, var(--accent-ocr) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
