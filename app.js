@@ -75,6 +75,21 @@ function showNotification(message, type = 'info') {
     }, 3500);
 }
 
+// Helper function to load third-party scripts dynamically on demand
+function loadScript(url) {
+    return new Promise((resolve, reject) => {
+        if (Array.from(document.querySelectorAll('script')).some(s => s.src === url)) {
+            resolve();
+            return;
+        }
+        const script = document.createElement('script');
+        script.src = url;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.body.appendChild(script);
+    });
+}
+
 class ImageSquare {
     constructor() {
         this.images = [];
@@ -1774,6 +1789,9 @@ class ImageConverter {
                         this.showLoading(`Converting HEIC: ${file.name}... (${Math.round(file.size / 1024 / 1024)}MB - client-side)`);
                         await new Promise(r => setTimeout(r, 100));
 
+                        if (typeof heic2any === 'undefined') {
+                            await loadScript('https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js');
+                        }
                         const convertedBlob = await heic2any({
                             blob: file,
                             toType: 'image/jpeg',
@@ -3720,6 +3738,11 @@ class ImageOCR {
             // Perform OCR
             this.updateProgress(10, 'Performing intelligent layout analysis...');
             
+            if (typeof Tesseract === 'undefined') {
+                this.updateProgress(12, 'Downloading OCR language packages (approx. 1MB)...');
+                await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');
+            }
+            
             // PSM 1: Automatic page segmentation with OSD. 
             // Important for multi-column detection.
             const result = await Tesseract.recognize(
@@ -4189,6 +4212,9 @@ class WatermarkRemover {
 
         this.showLoading();
         try {
+            if (typeof Tesseract === 'undefined') {
+                await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');
+            }
             const result = await Tesseract.recognize(this.mainCanvas, 'eng');
             const words = result.data.words;
             
@@ -4671,6 +4697,10 @@ class VideoTool {
         this.progressValue.textContent = '0%';
         this.progressFill.style.width = '0%';
 
+        if (typeof FFmpeg === 'undefined') {
+            await loadScript('https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js');
+        }
+
         this.ffmpegLogs = [];
         const { createFFmpeg } = FFmpeg;
         this.ffmpeg = createFFmpeg({
@@ -5055,6 +5085,9 @@ class SizeManager {
                         processableFile = new File([jpegBlob], file.name.replace(/\.(heic|heif)$/i, '.jpg'), { type: 'image/jpeg' });
                     } else {
                         // client-side heic2any
+                        if (typeof heic2any === 'undefined') {
+                            await loadScript('https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js');
+                        }
                         const convertedBlob = await heic2any({
                             blob: file,
                             toType: 'image/jpeg',
