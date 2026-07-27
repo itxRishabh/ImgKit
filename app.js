@@ -5076,9 +5076,18 @@ class SizeManager {
                 this.origDimensionsEl.textContent = `${this.originalImage.width} x ${this.originalImage.height} px`;
                 this.origPreview.src = event.target.result;
                 
-                // Show settings
+                // Show settings and preview section immediately
                 this.settingsPanel.style.display = 'block';
-                this.resultSection.style.display = 'none';
+                this.resultSection.style.display = 'block';
+                
+                // Hide output card, stats, and download actions until processed
+                document.getElementById('sizeManagerOutputCard').style.display = 'none';
+                document.getElementById('sizeManagerStatsGrid').style.display = 'none';
+                document.getElementById('sizeManagerPreviewActions').style.display = 'none';
+                
+                // Force grid layout to occupy 1 column for original preview card
+                const grid = document.querySelector('#sizeManagerResultSection .comparison-grid');
+                if (grid) grid.style.gridTemplateColumns = '1fr';
                 
                 // Scroll to settings
                 this.settingsPanel.scrollIntoView({ behavior: 'smooth' });
@@ -5150,6 +5159,15 @@ class SizeManager {
             const ext = this.selectedFormat === 'jpeg' ? 'jpg' : this.selectedFormat;
             this.downloadBtn.href = this.outputUrl;
             this.downloadBtn.download = `${this.selectedFile.name.replace(/\.[^/.]+$/, "")}_resized.${ext}`;
+
+            // Restore comparison grid template (let CSS handle desktop columns or mobile stack)
+            const grid = document.querySelector('#sizeManagerResultSection .comparison-grid');
+            if (grid) grid.style.gridTemplateColumns = '';
+
+            // Show output card, stats, and download actions
+            document.getElementById('sizeManagerOutputCard').style.display = 'flex';
+            document.getElementById('sizeManagerStatsGrid').style.display = 'grid';
+            document.getElementById('sizeManagerPreviewActions').style.display = 'flex';
 
             // Show results
             this.resultSection.style.display = 'block';

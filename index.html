@@ -833,7 +833,7 @@
                             <i class="fas fa-circle-check text-success"></i>
                             Ready for Download
                         </h3>
-                        <div class="preview-actions">
+                        <div class="preview-actions" id="sizeManagerPreviewActions">
                             <button class="btn btn-secondary btn-sm" id="sizeManagerResetBtn">
                                 <i class="fas fa-rotate-left"></i> Start Over
                             </button>
@@ -845,7 +845,7 @@
 
                     <!-- Comparison Grid -->
                     <div class="comparison-grid">
-                        <div class="comparison-card">
+                        <div class="comparison-card" id="sizeManagerOrigCard">
                             <div class="comparison-card-title">Original Image</div>
                             <div class="preview-container">
                                 <img id="sizeManagerOrigPreview" alt="Original Preview">
@@ -856,7 +856,7 @@
                             </div>
                         </div>
 
-                        <div class="comparison-card">
+                        <div class="comparison-card" id="sizeManagerOutputCard">
                             <div class="comparison-card-title">Resized Image</div>
                             <div class="preview-container">
                                 <img id="sizeManagerOutputPreview" alt="Output Preview">
@@ -869,7 +869,7 @@
                     </div>
 
                     <!-- Stats Panel -->
-                    <div class="stats-grid">
+                    <div class="stats-grid" id="sizeManagerStatsGrid">
                         <div class="stat-card">
                             <div class="stat-icon">
                                 <i class="fas fa-arrow-down-wide-short"></i>
