@@ -530,14 +530,12 @@ class ImageSquare {
         let drawWidth = img.width;
         let drawHeight = img.height;
 
-        // Check if image needs to be scaled down to fit
-        if (drawWidth > canvasWidth || drawHeight > canvasHeight) {
-            const scaleX = canvasWidth / drawWidth;
-            const scaleY = canvasHeight / drawHeight;
-            const scale = Math.min(scaleX, scaleY);
-            drawWidth = Math.floor(drawWidth * scale);
-            drawHeight = Math.floor(drawHeight * scale);
-        }
+        // Scale image to fit within canvas while maintaining aspect ratio
+        const scaleX = canvasWidth / drawWidth;
+        const scaleY = canvasHeight / drawHeight;
+        const scale = Math.min(scaleX, scaleY);
+        drawWidth = Math.floor(drawWidth * scale);
+        drawHeight = Math.floor(drawHeight * scale);
 
         // Calculate position to center the image
         const x = Math.floor((canvasWidth - drawWidth) / 2);
@@ -4646,8 +4644,8 @@ class VideoTool {
         // Show metadata sizes
         this.origSizeVal.textContent = `${(file.size / (1024 * 1024)).toFixed(2)} MB`;
 
-        // Check if file is large (>40MB) and show recommendation warning
-        if (file.size > 40 * 1024 * 1024) {
+        // Check if file is large (>20MB) and show recommendation warning
+        if (file.size > 20 * 1024 * 1024) {
             this.largeWarningEl.style.display = 'block';
             // Automatically set resolution scale to 50% for large files to avoid OOM
             this.resolutionScaleSelect.value = '0.5';
@@ -4705,7 +4703,7 @@ class VideoTool {
         const { createFFmpeg } = FFmpeg;
         this.ffmpeg = createFFmpeg({
             log: true,
-            corePath: 'https://unpkg.com/@ffmpeg/core-st@0.11.1/dist/ffmpeg-core.js',
+            corePath: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core-st@0.11.1/dist/ffmpeg-core.js',
             mainName: 'main',
             logger: ({ type, message }) => {
                 if (this.ffmpegLogs.length < 500) {
