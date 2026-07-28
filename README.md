@@ -160,8 +160,8 @@ WebToolkitBox includes both browser-based image tools and a server-proxied SEO A
 ### 📦 Setup & Run Locally
 1. Clone the repository:
    ```bash
-   git clone https://github.com/itxRishabh/WebToolkitBox.git
-   cd WebToolkitBox
+   git clone https://github.com/itxRishabh/ImgKit.git
+   cd ImgKit
    ```
 2. Install the required Node.js dependencies:
    ```bash
@@ -195,7 +195,7 @@ WebToolkitBox includes both browser-based image tools and a server-proxied SEO A
 ## 📁 Project Structure
 
 ```
-WebToolkitBox/
+ImgKit/
 ├── api/
 │   └── seo-audit.js  # Serverless backend function for Vercel deploy
 ├── index.html        # Main dashboard panel (Image Tools)
