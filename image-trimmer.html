@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>PNG Transparency Trimmer & Border Cropper | WebToolkitBox</title>
+    <meta name="description" content="Trim and crop transparent edge pixels from PNG images automatically. Remove blank margins around icons, logo emblems, and canvas illustrations.">
+    <meta name="keywords" content="trim transparent pixels png, crop blank borders, trim image padding, png autocrop">
+    <link rel="canonical" href="https://webtoolkitbox.com/image-trimmer">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://webtoolkitbox.com/image-trimmer">
+    <meta property="og:site_name" content="WebToolkitBox">
+    <meta property="og:title" content="PNG Transparency Trimmer & Border Cropper | WebToolkitBox">
+    <meta property="og:description" content="Trim and crop transparent edge pixels from PNG images automatically. Remove blank margins around icons, logo emblems, and canvas illustrations.">
+    <meta property="og:image" content="https://webtoolkitbox.com/images/logo.png">
+    
+    <!-- Schema Markup -->
+    <script type="application/ld+json">
+    {
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "WebToolkitBox Image Trimmer",
+            "url": "https://webtoolkitbox.com/image-trimmer",
+            "description": "Auto-crop empty borders and transparent margins from PNG graphics.",
+            "applicationCategory": "MultimediaApplication",
+            "operatingSystem": "All"
+        }
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Rishabh Dev (@itxrishabh)">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="icon" type="image/webp" href="images/logo.webp">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <a href="/" class="logo" style="text-decoration: none; color: inherit;">
+                <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
+            </a>
+            <div class="header-right">
+                <span class="header-tagline">Your All-in-One Image Toolkit</span>
+                <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Light/Dark Mode">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <a href="seo-audit.html" class="seo-audit-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>SEO Audit</span>
+                </a>
+            </div>
+        </header>
+        
+<div class="tool-section active" id="trimmerTool">
+            
+            <!-- Tool Breadcrumb -->
+            <div class="tool-breadcrumb-nav" style="margin-bottom: 24px; display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                <a href="/" style="color: var(--accent-dim); text-decoration: none; display: flex; align-items: center; gap: 4px; transition: color var(--transition-fast);">
+                    <i class="fas fa-house" style="font-size: 11px;"></i> Hub
+                </a>
+                <span style="color: var(--border-active); font-size: 10px;">/</span>
+                <span style="color: var(--text-muted); font-weight: 500;">PNG Transparency Trimmer & Border Cropper</span>
+            </div>
+    <main class="main-content">
+                <!-- Hero Section -->
+                <section class="hero">
+                    <h1 class="hero-title">
+                        <span class="gradient-text">Trim</span> All Sides
+                    </h1>
+                    <p class="hero-subtitle">
+                        Automatically remove transparent or solid color borders. Perfect for assets and logos.
+                    </p>
+                </section>
+
+                <!-- Upload Area -->
+                <div class="upload-section">
+                    <div class="upload-area" id="trimmerUploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-compress-arrows-alt"></i>
+                        </div>
+                        <h3 class="upload-title">Drop image to trim</h3>
+                        <p class="upload-text">or click to browse • Ctrl+V to paste</p>
+                        <p class="upload-formats">Supports: PNG, JPG, WebP</p>
+                        <input type="file" id="trimmerFileInput" accept="image/*" hidden>
+                    </div>
+                </div>
+
+                <!-- Trimmer Settings Panel -->
+                <div class="settings-panel" id="trimmerSettingsPanel">
+                    <h3 class="settings-title">
+                        <i class="fas fa-sliders"></i>
+                        Trim Settings
+                    </h3>
+                    <div class="settings-grid">
+                        <div class="setting-group">
+                            <label class="setting-label">
+                                Trim Tolerance: <span id="trimToleranceValue">5</span>
+                            </label>
+                            <input type="range" id="trimToleranceSlider" min="0" max="100" value="5" class="quality-slider">
+                            <p class="slider-hint">Increase if background has slight noise.</p>
+                        </div>
+
+                        <div class="setting-group">
+                            <label class="setting-label">Background Color</label>
+                            <div class="toggle-buttons" id="trimColorTypeToggle">
+                                <button class="toggle-btn active" data-value="auto">
+                                    Auto Detect
+                                </button>
+                                <button class="toggle-btn" data-value="transparent">
+                                    Transparent
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="crop-apply-row">
+                        <button class="btn btn-primary" id="trimApplyBtn">
+                            <i class="fas fa-compress-arrows-alt"></i> Trim & Download
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Trim Preview Workspace -->
+                <div class="preview-section" id="trimmerPreviewSection">
+                    <div class="preview-header">
+                        <h3 class="preview-title">
+                            <i class="fas fa-image"></i>
+                            Preview Trimmed Image
+                        </h3>
+                    </div>
+                    <div class="trim-preview-container">
+                        <canvas id="trimPreviewCanvas"></canvas>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
+                    </div>
+                    <p class="footer-tagline">Process unlimited images for free. No watermarks. No sign-up required.</p>
+                </div>
+                <div class="footer-socials">
+                    <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="social-link" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="https://twitter.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="X / Twitter">
+                        <i class="fab fa-x-twitter"></i>
+                    </a>
+                    <a href="https://instagram.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://linkedin.com/in/itxrishabh" target="_blank" rel="noopener" class="social-link" title="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://youtube.com" target="_blank" rel="noopener" class="social-link" title="YouTube">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="https://discord.com" target="_blank" rel="noopener" class="social-link" title="Discord">
+                        <i class="fab fa-discord"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-divider"></div>
+            <div class="footer-bottom">
+                <p>Developed by <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="footer-dev-link">Rishabh Dev</a></p>
+                <p class="footer-handle">@itxrishabh</p>
+            </div>
+        </footer>
+    </div>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>Processing your images...</p>
+        </div>
+    </div>
+
+    <!-- JSZip for ZIP downloads -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+    <script src="app.js" defer></script>
+</body>
+</html>

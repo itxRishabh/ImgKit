@@ -2614,4 +2614,110 @@ body {
     }
 }
 
+/* ===== Cross-Document View Transitions (Smooth Page Navigations) ===== */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+
+/* ===== Central Tools Hub Grid ===== */
+.tools-hub-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 48px;
+    width: 100%;
+}
+
+.hub-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 28px;
+    text-decoration: none;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.hub-card:hover {
+    border-color: var(--border-active);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+.hub-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-bottom: 4px;
+    transition: transform var(--transition-normal);
+}
+
+.hub-card:hover .hub-card-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.hub-card-title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    color: var(--text);
+}
+
+.hub-card-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    flex-grow: 1;
+}
+
+.hub-card-link {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    transition: color var(--transition-fast);
+}
+
+/* Card Accents Colors matching design system */
+.hub-card.accent-converter .hub-card-icon { background: rgba(59, 130, 246, 0.08); color: var(--accent-converter, #3b82f6); }
+.hub-card.accent-svg .hub-card-icon { background: rgba(139, 92, 246, 0.08); color: var(--accent-svg, #8b5cf6); }
+.hub-card.accent-sizemanager .hub-card-icon { background: rgba(16, 185, 129, 0.08); color: var(--primary, #10b981); }
+.hub-card.accent-remover .hub-card-icon { background: rgba(236, 72, 153, 0.08); color: var(--accent-remover, #ec4899); }
+.hub-card.accent-watermark .hub-card-icon { background: rgba(245, 158, 11, 0.08); color: var(--accent-watermark, #f59e0b); }
+.hub-card.accent-cropper .hub-card-icon { background: rgba(239, 68, 68, 0.08); color: var(--accent-cropper, #ef4444); }
+.hub-card.accent-favicon .hub-card-icon { background: rgba(6, 182, 212, 0.08); color: var(--accent-favicon, #06b6d4); }
+.hub-card.accent-trimmer .hub-card-icon { background: rgba(14, 165, 233, 0.08); color: var(--accent-trimmer, #0ea5e9); }
+.hub-card.accent-ocr .hub-card-icon { background: rgba(236, 72, 153, 0.08); color: var(--accent-ocr, #ec4899); }
+.hub-card.accent-video .hub-card-icon { background: rgba(244, 63, 94, 0.08); color: var(--accent-video, #f43f5e); }
+.hub-card.accent-square .hub-card-icon { background: rgba(16, 185, 129, 0.08); color: var(--accent-square, #10b981); }
+
+.hub-card:hover.accent-converter .hub-card-link { color: var(--accent-converter, #3b82f6); }
+.hub-card:hover.accent-svg .hub-card-link { color: var(--accent-svg, #8b5cf6); }
+.hub-card:hover.accent-sizemanager .hub-card-link { color: var(--primary, #10b981); }
+.hub-card:hover.accent-remover .hub-card-link { color: var(--accent-remover, #ec4899); }
+.hub-card:hover.accent-watermark .hub-card-link { color: var(--accent-watermark, #f59e0b); }
+.hub-card:hover.accent-cropper .hub-card-link { color: var(--accent-cropper, #ef4444); }
+.hub-card:hover.accent-favicon .hub-card-link { color: var(--accent-favicon, #06b6d4); }
+.hub-card:hover.accent-trimmer .hub-card-link { color: var(--accent-trimmer, #0ea5e9); }
+.hub-card:hover.accent-ocr .hub-card-link { color: var(--accent-ocr, #ec4899); }
+.hub-card:hover.accent-video .hub-card-link { color: var(--accent-video, #f43f5e); }
+.hub-card:hover.accent-square .hub-card-link { color: var(--accent-square, #10b981); }
+
+
 

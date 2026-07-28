@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Image to OCR Text Extractor | WebToolkitBox</title>
+    <meta name="description" content="Extract editable text from scanned images, screenshots, and PDFs. High-accuracy multi-lingual OCR converter running locally in your browser.">
+    <meta name="keywords" content="extract text from image, image ocr converter, copy text from photo, scan image to text">
+    <link rel="canonical" href="https://webtoolkitbox.com/image-to-text-ocr">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://webtoolkitbox.com/image-to-text-ocr">
+    <meta property="og:site_name" content="WebToolkitBox">
+    <meta property="og:title" content="Image to OCR Text Extractor | WebToolkitBox">
+    <meta property="og:description" content="Extract editable text from scanned images, screenshots, and PDFs. High-accuracy multi-lingual OCR converter running locally in your browser.">
+    <meta property="og:image" content="https://webtoolkitbox.com/images/logo.png">
+    
+    <!-- Schema Markup -->
+    <script type="application/ld+json">
+    {
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "WebToolkitBox Image OCR",
+            "url": "https://webtoolkitbox.com/image-to-text-ocr",
+            "description": "Extract structured text from images using high-accuracy local OCR.",
+            "applicationCategory": "MultimediaApplication",
+            "operatingSystem": "All"
+        }
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Rishabh Dev (@itxrishabh)">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="icon" type="image/webp" href="images/logo.webp">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <a href="/" class="logo" style="text-decoration: none; color: inherit;">
+                <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
+            </a>
+            <div class="header-right">
+                <span class="header-tagline">Your All-in-One Image Toolkit</span>
+                <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Light/Dark Mode">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <a href="seo-audit.html" class="seo-audit-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>SEO Audit</span>
+                </a>
+            </div>
+        </header>
+        
+<div class="tool-section active" id="ocrTool">
+            
+            <!-- Tool Breadcrumb -->
+            <div class="tool-breadcrumb-nav" style="margin-bottom: 24px; display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                <a href="/" style="color: var(--accent-dim); text-decoration: none; display: flex; align-items: center; gap: 4px; transition: color var(--transition-fast);">
+                    <i class="fas fa-house" style="font-size: 11px;"></i> Hub
+                </a>
+                <span style="color: var(--border-active); font-size: 10px;">/</span>
+                <span style="color: var(--text-muted); font-weight: 500;">Image to OCR Text Extractor</span>
+            </div>
+    <main class="main-content">
+                <!-- Hero Section -->
+                <section class="hero">
+                    <h1 class="hero-title">
+                        <span class="gradient-text">Image to OCR</span> Converter
+                    </h1>
+                    <p class="hero-subtitle">
+                        Extract text from images with AI. 100% private, accurate, and runs entirely in your browser.
+                    </p>
+                </section>
+
+                <!-- Upload Area -->
+                <div class="upload-section" id="ocrUploadSection">
+                    <div class="upload-area" id="ocrUploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-file-invoice"></i>
+                        </div>
+                        <h3 class="upload-title">Drop image to extract text</h3>
+                        <p class="upload-text">or click to browse • Ctrl+V to paste</p>
+                        <p class="upload-formats">Supports: PNG, JPG, WebP, BMP</p>
+                        <input type="file" id="ocrFileInput" accept="image/*" hidden>
+                    </div>
+                </div>
+
+                <!-- OCR Settings Panel -->
+                <div class="settings-panel" id="ocrSettingsPanel">
+                    <h3 class="settings-title">
+                        <i class="fas fa-sliders"></i>
+                        OCR Settings
+                    </h3>
+                    <div class="settings-grid">
+                        <div class="setting-group">
+                            <label class="setting-label">Language</label>
+                            <select id="ocrLanguage" class="text-input">
+                                <option value="eng">English</option>
+                                <option value="spa">Spanish</option>
+                                <option value="fra">French</option>
+                                <option value="deu">German</option>
+                                <option value="hin">Hindi</option>
+                                <option value="ara">Arabic</option>
+                                <option value="chi_sim">Chinese Simplified</option>
+                                <option value="jpn">Japanese</option>
+                                <option value="rus">Russian</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Processing</label>
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="ocrAutoContrast" checked>
+                                <span class="checkmark"></span>
+                                <span>Auto Contrast (Better Accuracy)</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Processing Progress -->
+                <div class="ocr-progress-container" id="ocrProgressContainer" style="display: none;">
+                    <div class="ocr-progress-header">
+                        <span id="ocrStatusText">Initializing OCR...</span>
+                        <span id="ocrProgressValue">0%</span>
+                    </div>
+                    <div class="ocr-progress-bar">
+                        <div class="ocr-progress-fill" id="ocrProgressFill"></div>
+                    </div>
+                </div>
+
+                <!-- OCR Result Workspace -->
+                <div class="preview-section" id="ocrResultSection" style="display: none;">
+                    <div class="preview-header">
+                        <h3 class="preview-title">
+                            <i class="fas fa-file-lines"></i>
+                            Extracted Text
+                        </h3>
+                        <div class="preview-actions">
+                            <button class="btn btn-secondary btn-sm" id="copyOcrText">
+                                <i class="fas fa-copy"></i> Copy Text
+                            </button>
+                            <button class="btn btn-primary btn-sm" id="downloadOcrText">
+                                <i class="fas fa-download"></i> Download .txt
+                            </button>
+                        </div>
+                    </div>
+                    <div class="ocr-result-container">
+                        <textarea id="ocrResultText" class="ocr-textarea" readonly placeholder="Extracted text will appear here..."></textarea>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
+                    </div>
+                    <p class="footer-tagline">Process unlimited images for free. No watermarks. No sign-up required.</p>
+                </div>
+                <div class="footer-socials">
+                    <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="social-link" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="https://twitter.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="X / Twitter">
+                        <i class="fab fa-x-twitter"></i>
+                    </a>
+                    <a href="https://instagram.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://linkedin.com/in/itxrishabh" target="_blank" rel="noopener" class="social-link" title="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://youtube.com" target="_blank" rel="noopener" class="social-link" title="YouTube">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="https://discord.com" target="_blank" rel="noopener" class="social-link" title="Discord">
+                        <i class="fab fa-discord"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-divider"></div>
+            <div class="footer-bottom">
+                <p>Developed by <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="footer-dev-link">Rishabh Dev</a></p>
+                <p class="footer-handle">@itxrishabh</p>
+            </div>
+        </footer>
+    </div>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>Processing your images...</p>
+        </div>
+    </div>
+
+    <!-- JSZip for ZIP downloads -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+    <script src="app.js" defer></script>
+</body>
+</html>

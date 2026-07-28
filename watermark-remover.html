@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Watermark & Object Remover Online | WebToolkitBox</title>
+    <meta name="description" content="Remove watermarks, stamps, text, or unwanted objects from photos. Brush over objects or search text to erase elements cleanly with in-browser AI canvas drawing.">
+    <meta name="keywords" content="remove watermark from image, object remover photo, photo eraser tool, clear watermark">
+    <link rel="canonical" href="https://webtoolkitbox.com/watermark-remover">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://webtoolkitbox.com/watermark-remover">
+    <meta property="og:site_name" content="WebToolkitBox">
+    <meta property="og:title" content="Watermark & Object Remover Online | WebToolkitBox">
+    <meta property="og:description" content="Remove watermarks, stamps, text, or unwanted objects from photos. Brush over objects or search text to erase elements cleanly with in-browser AI canvas drawing.">
+    <meta property="og:image" content="https://webtoolkitbox.com/images/logo.png">
+    
+    <!-- Schema Markup -->
+    <script type="application/ld+json">
+    {
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "WebToolkitBox Watermark Remover",
+            "url": "https://webtoolkitbox.com/watermark-remover",
+            "description": "Brush over and erase watermarks, text, or objects from your images.",
+            "applicationCategory": "MultimediaApplication",
+            "operatingSystem": "All"
+        }
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Rishabh Dev (@itxrishabh)">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="icon" type="image/webp" href="images/logo.webp">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <a href="/" class="logo" style="text-decoration: none; color: inherit;">
+                <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
+            </a>
+            <div class="header-right">
+                <span class="header-tagline">Your All-in-One Image Toolkit</span>
+                <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Light/Dark Mode">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <a href="seo-audit.html" class="seo-audit-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>SEO Audit</span>
+                </a>
+            </div>
+        </header>
+        
+<div class="tool-section active" id="watermarkTool">
+            
+            <!-- Tool Breadcrumb -->
+            <div class="tool-breadcrumb-nav" style="margin-bottom: 24px; display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                <a href="/" style="color: var(--accent-dim); text-decoration: none; display: flex; align-items: center; gap: 4px; transition: color var(--transition-fast);">
+                    <i class="fas fa-house" style="font-size: 11px;"></i> Hub
+                </a>
+                <span style="color: var(--border-active); font-size: 10px;">/</span>
+                <span style="color: var(--text-muted); font-weight: 500;">Watermark & Object Remover Online</span>
+            </div>
+    <main class="main-content">
+                <!-- Hero Section -->
+                <section class="hero">
+                    <h1 class="hero-title">
+                        <span class="gradient-text">Watermark</span> & Object Remover
+                    </h1>
+                    <p class="hero-subtitle">
+                        Remove watermarks, logos, stamps, and unwanted objects automatically or using manual brush.
+                    </p>
+                </section>
+
+                <!-- Upload Area -->
+                <div class="upload-section">
+                    <div class="upload-area" id="watermarkUploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-eraser"></i>
+                        </div>
+                        <h3 class="upload-title">Drop your image here</h3>
+                        <p class="upload-text">or click to browse • Ctrl+V to paste</p>
+                        <p class="upload-formats">Supports: JPG, PNG, WebP</p>
+                        <input type="file" id="watermarkFileInput" accept="image/*" hidden>
+                    </div>
+                </div>
+
+                <!-- Preview Area & Canvas editor -->
+                <div class="preview-section" id="watermarkPreviewSection" style="display: none;">
+                    <div class="watermark-editor-container">
+                        <!-- Canvas Viewport -->
+                        <div class="watermark-canvas-viewport">
+                            <div class="watermark-canvas-wrapper">
+                                <canvas id="watermarkCanvas"></canvas>
+                                <canvas id="watermarkMaskCanvas"></canvas>
+                            </div>
+                        </div>
+                        <!-- Canvas Tools Overlay -->
+                        <div class="canvas-controls-bar">
+                            <div class="control-group">
+                                <button class="btn-icon active" id="watermarkBrushTool" title="Brush Mask">
+                                    <i class="fas fa-paint-brush"></i>
+                                </button>
+                                <button class="btn-icon" id="watermarkEraserTool" title="Eraser">
+                                    <i class="fas fa-eraser"></i>
+                                </button>
+                                <button class="btn" id="watermarkClearMaskBtn" title="Clear Mask">
+                                    Clear Mask
+                                </button>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Brush Size: <span id="watermarkBrushSizeVal">25px</span></label>
+                                <input type="range" id="watermarkBrushSize" min="5" max="100" value="25" class="quality-slider" style="width: 120px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Watermark Settings Panel -->
+                <div class="settings-panel" id="watermarkSettingsPanel">
+                    <h3 class="settings-title">
+                        <i class="fas fa-sliders"></i>
+                        Remover Settings
+                    </h3>
+                    <div class="settings-grid">
+                        <!-- Mode Selector -->
+                        <div class="setting-group">
+                            <label class="setting-label">Removal Engine</label>
+                            <div class="toggle-buttons" id="watermarkEngineToggle">
+                                <button class="toggle-btn active" data-value="fast">
+                                    <i class="fas fa-bolt"></i> Fast (Local)
+                                </button>
+                                <button class="toggle-btn" data-value="ai">
+                                    <i class="fas fa-wand-magic-sparkles"></i> AI Pro
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Auto-Text guided watermark input -->
+                        <div class="setting-group setting-group-wide">
+                            <label class="setting-label">Auto-Detect Text (Optional)</label>
+                            <div class="input-with-action">
+                                <input type="text" id="watermarkTextPrompt" placeholder="Type text to auto-remove (e.g. 'gemini', 'logo', 'draft')..." class="text-input">
+                                <button class="btn btn-primary btn-sm" id="watermarkAutoDetectBtn">
+                                    <i class="fas fa-magnifying-glass"></i> Detect
+                                </button>
+                            </div>
+                            <p class="slider-hint">Uses on-device OCR to automatically locate and mask the watermark text.</p>
+                        </div>
+                    </div>
+
+                    <div class="crop-apply-row" style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
+                        <button class="btn btn-primary" id="watermarkApplyBtn">
+                            <i class="fas fa-wand-magic-sparkles"></i> Remove Watermark
+                        </button>
+                        <button class="btn btn-success" id="watermarkDownloadBtn" style="display: none;">
+                            <i class="fas fa-download"></i> Download Image
+                        </button>
+                        <button class="btn" id="watermarkResetBtn" style="background: rgba(255,255,255,0.05); color: var(--text); border: 1px solid var(--border);">
+                            <i class="fas fa-arrow-rotate-left"></i> Reset
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Statistics Section -->
+                <div class="stats-section" id="watermarkStatsSection">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="watermarkProcessTime">0.0s</span>
+                            <span class="stat-label">Processing Time</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-expand"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="watermarkMaskArea">0%</span>
+                            <span class="stat-label">Area Restored</span>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
+                    </div>
+                    <p class="footer-tagline">Process unlimited images for free. No watermarks. No sign-up required.</p>
+                </div>
+                <div class="footer-socials">
+                    <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="social-link" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="https://twitter.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="X / Twitter">
+                        <i class="fab fa-x-twitter"></i>
+                    </a>
+                    <a href="https://instagram.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://linkedin.com/in/itxrishabh" target="_blank" rel="noopener" class="social-link" title="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://youtube.com" target="_blank" rel="noopener" class="social-link" title="YouTube">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="https://discord.com" target="_blank" rel="noopener" class="social-link" title="Discord">
+                        <i class="fab fa-discord"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-divider"></div>
+            <div class="footer-bottom">
+                <p>Developed by <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="footer-dev-link">Rishabh Dev</a></p>
+                <p class="footer-handle">@itxrishabh</p>
+            </div>
+        </footer>
+    </div>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>Processing your images...</p>
+        </div>
+    </div>
+
+    <!-- JSZip for ZIP downloads -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+    <script src="app.js" defer></script>
+</body>
+</html>

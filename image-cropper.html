@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Free Online Image Cropper - Aspect Ratios | WebToolkitBox</title>
+    <meta name="description" content="Crop images online with interactive grid controls. Lock aspect ratio presets (1:1, 16:9, 4:3, 3:2, 9:16) for social media profile pictures, banners, and thumbnails.">
+    <meta name="keywords" content="crop image online free, photo cropper, crop photo grid, crop image custom ratio">
+    <link rel="canonical" href="https://webtoolkitbox.com/image-cropper">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://webtoolkitbox.com/image-cropper">
+    <meta property="og:site_name" content="WebToolkitBox">
+    <meta property="og:title" content="Free Online Image Cropper - Aspect Ratios | WebToolkitBox">
+    <meta property="og:description" content="Crop images online with interactive grid controls. Lock aspect ratio presets (1:1, 16:9, 4:3, 3:2, 9:16) for social media profile pictures, banners, and thumbnails.">
+    <meta property="og:image" content="https://webtoolkitbox.com/images/logo.png">
+    
+    <!-- Schema Markup -->
+    <script type="application/ld+json">
+    {
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "WebToolkitBox Image Cropper",
+            "url": "https://webtoolkitbox.com/image-cropper",
+            "description": "Precise image cropping with custom preset aspect ratios.",
+            "applicationCategory": "MultimediaApplication",
+            "operatingSystem": "All"
+        }
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Rishabh Dev (@itxrishabh)">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="icon" type="image/webp" href="images/logo.webp">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <a href="/" class="logo" style="text-decoration: none; color: inherit;">
+                <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
+            </a>
+            <div class="header-right">
+                <span class="header-tagline">Your All-in-One Image Toolkit</span>
+                <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Light/Dark Mode">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <a href="seo-audit.html" class="seo-audit-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>SEO Audit</span>
+                </a>
+            </div>
+        </header>
+        
+<div class="tool-section active" id="cropperTool">
+            
+            <!-- Tool Breadcrumb -->
+            <div class="tool-breadcrumb-nav" style="margin-bottom: 24px; display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                <a href="/" style="color: var(--accent-dim); text-decoration: none; display: flex; align-items: center; gap: 4px; transition: color var(--transition-fast);">
+                    <i class="fas fa-house" style="font-size: 11px;"></i> Hub
+                </a>
+                <span style="color: var(--border-active); font-size: 10px;">/</span>
+                <span style="color: var(--text-muted); font-weight: 500;">Free Online Image Cropper - Aspect Ratios</span>
+            </div>
+    <main class="main-content">
+                <!-- Hero Section -->
+                <section class="hero">
+                    <h1 class="hero-title">
+                        <span class="gradient-text">Crop</span> Your Images Perfectly
+                    </h1>
+                    <p class="hero-subtitle">
+                        Precise cropping with aspect ratio presets. Free, fast, and runs entirely in your browser.
+                    </p>
+                </section>
+
+                <!-- Upload Area -->
+                <div class="upload-section" id="cropperUploadSection">
+                    <div class="upload-area" id="cropperUploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-crop-alt"></i>
+                        </div>
+                        <h3 class="upload-title">Drop your image here</h3>
+                        <p class="upload-text">or click to browse • Ctrl+V to paste</p>
+                        <p class="upload-formats">Supports: JPG, PNG, WebP, GIF, BMP</p>
+                        <input type="file" id="cropperFileInput" accept="image/*" hidden>
+                    </div>
+                </div>
+
+                <!-- Crop Workspace -->
+                <div class="crop-workspace" id="cropWorkspace">
+                    <div class="crop-toolbar">
+                        <div class="crop-toolbar-left">
+                            <span class="crop-dimensions" id="cropDimensions">0 × 0</span>
+                        </div>
+                        <div class="crop-toolbar-right">
+                            <button class="btn btn-secondary btn-sm" id="cropResetBtn">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                            <button class="btn btn-secondary btn-sm" id="cropNewImageBtn">
+                                <i class="fas fa-image"></i> New Image
+                            </button>
+                        </div>
+                    </div>
+                    <div class="crop-canvas-container" id="cropCanvasContainer">
+                        <img id="cropSourceImage" class="crop-source-image" alt="Source">
+                        <div class="crop-overlay" id="cropOverlay">
+                            <div class="crop-selection" id="cropSelection">
+                                <div class="crop-handle" data-handle="nw"></div>
+                                <div class="crop-handle" data-handle="n"></div>
+                                <div class="crop-handle" data-handle="ne"></div>
+                                <div class="crop-handle" data-handle="w"></div>
+                                <div class="crop-handle" data-handle="e"></div>
+                                <div class="crop-handle" data-handle="sw"></div>
+                                <div class="crop-handle" data-handle="s"></div>
+                                <div class="crop-handle" data-handle="se"></div>
+                                <div class="crop-grid"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Crop Settings Panel -->
+                <div class="settings-panel" id="cropperSettingsPanel">
+                    <h3 class="settings-title">
+                        <i class="fas fa-sliders"></i>
+                        Crop Settings
+                    </h3>
+                    <div class="settings-grid">
+                        <!-- Aspect Ratio -->
+                        <div class="setting-group setting-group-wide">
+                            <label class="setting-label">Aspect Ratio</label>
+                            <div class="toggle-buttons toggle-buttons-wrap" id="cropAspectToggle">
+                                <button class="toggle-btn active" data-value="free">
+                                    <i class="fas fa-expand"></i> Free
+                                </button>
+                                <button class="toggle-btn" data-value="1:1">
+                                    <i class="fas fa-square"></i> 1:1
+                                </button>
+                                <button class="toggle-btn" data-value="4:3">
+                                    4:3
+                                </button>
+                                <button class="toggle-btn" data-value="3:2">
+                                    3:2
+                                </button>
+                                <button class="toggle-btn" data-value="16:9">
+                                    16:9
+                                </button>
+                                <button class="toggle-btn" data-value="9:16">
+                                    9:16
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Output Format -->
+                        <div class="setting-group">
+                            <label class="setting-label">Output Format</label>
+                            <div class="toggle-buttons" id="cropFormatToggle">
+                                <button class="toggle-btn active" data-value="png">PNG</button>
+                                <button class="toggle-btn" data-value="jpeg">JPG</button>
+                                <button class="toggle-btn" data-value="webp">WebP</button>
+                            </div>
+                        </div>
+
+                        <!-- Quality Slider -->
+                        <div class="setting-group" id="cropQualitySetting" style="display: none;">
+                            <label class="setting-label">
+                                Quality: <span id="cropQualityValue">92</span>%
+                            </label>
+                            <input type="range" id="cropQualitySlider" min="10" max="100" value="92"
+                                class="quality-slider">
+                        </div>
+                    </div>
+
+                    <div class="crop-apply-row">
+                        <button class="btn btn-primary" id="cropApplyBtn">
+                            <i class="fas fa-check"></i> Apply Crop & Download
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
+                    </div>
+                    <p class="footer-tagline">Process unlimited images for free. No watermarks. No sign-up required.</p>
+                </div>
+                <div class="footer-socials">
+                    <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="social-link" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="https://twitter.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="X / Twitter">
+                        <i class="fab fa-x-twitter"></i>
+                    </a>
+                    <a href="https://instagram.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://linkedin.com/in/itxrishabh" target="_blank" rel="noopener" class="social-link" title="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://youtube.com" target="_blank" rel="noopener" class="social-link" title="YouTube">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="https://discord.com" target="_blank" rel="noopener" class="social-link" title="Discord">
+                        <i class="fab fa-discord"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-divider"></div>
+            <div class="footer-bottom">
+                <p>Developed by <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="footer-dev-link">Rishabh Dev</a></p>
+                <p class="footer-handle">@itxrishabh</p>
+            </div>
+        </footer>
+    </div>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>Processing your images...</p>
+        </div>
+    </div>
+
+    <!-- JSZip for ZIP downloads -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+    <script src="app.js" defer></script>
+</body>
+</html>
