@@ -1,7 +1,7 @@
 {
-  "name": "imgkit",
+  "name": "webtoolkitbox",
   "version": "1.0.0",
-  "description": "ImgKit - Image conversion toolkit with server-side HEIC support",
+  "description": "WebToolkitBox - Free Online Image Converter, Background Remover, SVG to PNG & Editor Tool",
   "private": true,
   "scripts": {
     "start": "node server.js"

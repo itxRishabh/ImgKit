@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="https://img.icons8.com/fluency/96/crop.png" alt="ImgKit Logo" width="80" height="80">
+  <img src="images/logo.webp" alt="WebToolkitBox Logo" width="80" height="80">
 </p>
 
-<h1 align="center">ImgKit</h1>
+<h1 align="center">WebToolkitBox</h1>
 
 <p align="center">
   <strong>Your All-in-One Free Online Image Toolkit</strong>
@@ -122,7 +122,7 @@ Analyze any website's SEO health with a comprehensive, professional-grade auditi
 - 🔗 **Link Profile Scrubber** - Reports internal/external link maps and flags dead/empty anchors.
 - 🖼️ **Image Accessibility** - Audits missing alt attributes across image libraries.
 - ⚙️ **Technical & Schema Check** - Verifies JSON-LD structured schemas, Open Graph sharing cards, and crawl directives (`robots.txt`, `sitemap.xml`).
-- 📄 **Export PDF Reports** - Print-optimized layout converter compiling all details, branded under the ImgKit ecosystem and credits.
+- 📄 **Export PDF Reports** - Print-optimized layout converter compiling all details, branded under the WebToolkitBox ecosystem and credits.
 ---
 
 ### 6. SVG to Image Converter 🎨
@@ -155,13 +155,13 @@ Convert vector SVG code or SVG files into high-quality raster formats (PNG, JPEG
 
 ## 🚀 Usage
 
-ImgKit includes both browser-based image tools and a server-proxied SEO Auditor. To run the complete application suite locally:
+WebToolkitBox includes both browser-based image tools and a server-proxied SEO Auditor. To run the complete application suite locally:
 
 ### 📦 Setup & Run Locally
 1. Clone the repository:
    ```bash
-   git clone https://github.com/itxRishabh/ImgKit.git
-   cd ImgKit
+   git clone https://github.com/itxRishabh/WebToolkitBox.git
+   cd WebToolkitBox
    ```
 2. Install the required Node.js dependencies:
    ```bash
@@ -195,7 +195,7 @@ ImgKit includes both browser-based image tools and a server-proxied SEO Auditor.
 ## 📁 Project Structure
 
 ```
-ImgKit/
+WebToolkitBox/
 ├── api/
 │   └── seo-audit.js  # Serverless backend function for Vercel deploy
 ├── index.html        # Main dashboard panel (Image Tools)
