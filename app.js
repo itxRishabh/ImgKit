@@ -225,6 +225,7 @@ class ImageSquare {
     }
 
     initEventListeners() {
+        if (!this.uploadArea && !this.dropZone) return;
         // Upload area click
         this.uploadArea.addEventListener('click', () => this.fileInput.click());
 
@@ -1305,6 +1306,7 @@ class ImageConverter {
     }
 
     initEventListeners() {
+        if (!this.uploadArea && !this.dropZone) return;
         // Upload area click
         this.uploadArea.addEventListener('click', () => this.fileInput.click());
 
@@ -2499,6 +2501,7 @@ class BackgroundRemover {
     }
 
     initEventListeners() {
+        if (!this.uploadArea && !this.dropZone) return;
         // Upload area click
         this.uploadArea.addEventListener('click', () => this.fileInput.click());
 
@@ -2979,6 +2982,7 @@ class ImageCropper {
     }
 
     initEventListeners() {
+        if (!this.uploadArea && !this.dropZone) return;
         // Upload
         this.uploadArea.addEventListener('click', () => this.fileInput.click());
         this.fileInput.addEventListener('change', (e) => {
@@ -3341,6 +3345,7 @@ class FaviconGenerator {
     }
 
     initEventListeners() {
+        if (!this.uploadArea && !this.dropZone) return;
         this.uploadArea.addEventListener('click', () => this.fileInput.click());
         this.fileInput.addEventListener('change', (e) => this.handleFile(e.target.files[0]));
         
@@ -3540,6 +3545,7 @@ class ImageTrimmer {
     }
 
     initEventListeners() {
+        if (!this.uploadArea && !this.dropZone) return;
         this.uploadArea.addEventListener('click', () => this.fileInput.click());
         this.fileInput.addEventListener('change', (e) => this.handleFile(e.target.files[0]));
         
@@ -3714,6 +3720,7 @@ class ImageOCR {
     }
 
     initEventListeners() {
+        if (!this.uploadArea && !this.dropZone) return;
         // Upload
         this.uploadArea.addEventListener('click', () => this.fileInput.click());
         this.fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
@@ -4082,6 +4089,7 @@ class WatermarkRemover {
     }
 
     initEventListeners() {
+        if (!this.uploadArea && !this.dropZone) return;
         // Upload trigger
         this.uploadArea.addEventListener('click', () => this.fileInput.click());
         this.fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
@@ -4664,6 +4672,7 @@ class VideoTool {
     }
 
     initEventListeners() {
+        if (!this.uploadArea && !this.dropZone) return;
         // Drop area click
         this.uploadArea.addEventListener('click', () => this.fileInput.click());
         this.fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
