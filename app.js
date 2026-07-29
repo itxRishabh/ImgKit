@@ -1,14 +1,69 @@
 
-// Universal Window Drag & Drop and Clipboard Paste Helper
+// Universal Window Drag & Drop and Clipboard Paste Engine
 (function() {
-    window.addEventListener('dragover', (e) => { e.preventDefault(); }, false);
-    window.addEventListener('drop', (e) => {
-        // Prevent default browser behavior (opening file in tab)
-        if (e.target.tagName !== 'INPUT') {
-            e.preventDefault();
-        }
-    }, false);
+    function initUniversalDragAndDrop() {
+        // Prevent default browser behavior (file navigation) across entire window
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            window.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }, false);
+        });
+
+        // Handle drop anywhere on the page
+        window.addEventListener('drop', (e) => {
+            const files = e.dataTransfer ? e.dataTransfer.files : null;
+            if (!files || files.length === 0) return;
+
+            // Find visible file input on the current page
+            const visibleFileInput = document.querySelector('input[type="file"]:not([webkitdirectory])');
+            if (visibleFileInput) {
+                try {
+                    const dataTransfer = new DataTransfer();
+                    Array.from(files).forEach(f => dataTransfer.items.add(f));
+                    visibleFileInput.files = dataTransfer.files;
+                    visibleFileInput.dispatchEvent(new Event('change', { bubbles: true }));
+                } catch (err) {
+                    console.log('Fallback file handling:', err);
+                }
+            }
+        });
+
+        // Handle Paste (Ctrl+V / Cmd+V) anywhere on the page
+        window.addEventListener('paste', (e) => {
+            const items = e.clipboardData ? e.clipboardData.items : null;
+            if (!items) return;
+
+            const imageFiles = [];
+            for (const item of items) {
+                if (item.type.startsWith('image/')) {
+                    const file = item.getAsFile();
+                    if (file) imageFiles.push(file);
+                }
+            }
+
+            if (imageFiles.length > 0) {
+                e.preventDefault();
+                const visibleFileInput = document.querySelector('input[type="file"]:not([webkitdirectory])');
+                if (visibleFileInput) {
+                    const dataTransfer = new DataTransfer();
+                    imageFiles.forEach(f => dataTransfer.items.add(f));
+                    visibleFileInput.files = dataTransfer.files;
+                    visibleFileInput.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            }
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initUniversalDragAndDrop);
+    } else {
+        initUniversalDragAndDrop();
+    }
 })();
+
+
+
 
 /**
  * ImgKit - All-in-One Image Toolkit
