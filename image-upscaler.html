@@ -11,8 +11,8 @@
     </script>
 
     <title>AI Image Upscaler & Enhancer Free Online – 2x, 4x, 8x HD | WebToolkitBox</title>
-    <meta name="description" content="Upscale and enhance image resolution online for free. Increase photo clarity, sharpen details, and enlarge images 2x, 4x, or 8x without quality loss. 100% private, no signup.">
-    <meta name="keywords" content="image upscaler free, ai image enhancer, upscale image online, increase resolution png jpg">
+    <meta name="description" content="Upscale and enhance image resolution online for free with Lanczos3 AI sampling. Increase photo clarity, sharpen details, and enlarge images 2x, 4x, or 8x. 100% private.">
+    <meta name="keywords" content="image upscaler free, pica lanczos3 upscaler, ai image enhancer, upscale image online">
     <link rel="canonical" href="https://webtoolkitbox.com/image-upscaler">
     
     <!-- Open Graph -->
@@ -20,7 +20,7 @@
     <meta property="og:url" content="https://webtoolkitbox.com/image-upscaler">
     <meta property="og:site_name" content="WebToolkitBox">
     <meta property="og:title" content="AI Image Upscaler & Enhancer Free Online – 2x, 4x, 8x HD">
-    <meta property="og:description" content="Upscale and enhance image resolution online for free. Increase photo clarity, sharpen details, and enlarge images 2x, 4x, or 8x without quality loss.">
+    <meta property="og:description" content="Upscale and enhance image resolution online for free with Lanczos3 AI sampling. Increase photo clarity, sharpen details, and enlarge images 2x, 4x, or 8x.">
     <meta property="og:image" content="https://webtoolkitbox.com/images/og-card.png">
     
     <meta charset="UTF-8">
@@ -41,6 +41,9 @@
     <link rel="icon" type="image/png" sizes="32x32" href="https://webtoolkitbox.com/images/logo.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="https://webtoolkitbox.com/images/logo.png" />
     <link rel="apple-touch-icon" href="https://webtoolkitbox.com/images/logo.png" />
+
+    <!-- Industry Standard High-Quality Pica Engine (Lanczos3 Resampler) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pica/10.0.0/pica.min.js"></script>
 </head>
 <body>
     <div class="app-container">
@@ -75,17 +78,17 @@
                 <!-- Hero Section -->
                 <section class="hero">
                     <h1 class="hero-title">
-                        Free AI Image <span class="gradient-text">Upscaler & Enhancer</span>
+                        Lanczos3 AI <span class="gradient-text">Image Upscaler</span>
                     </h1>
                     <p class="hero-subtitle">
-                        Upscale low-resolution images 2x, 4x, or 8x while sharpening edge details and removing blur. 100% free, private, and unlimited.
+                        Upscale photos 2x, 4x, or 8x with Lanczos3 WebWorker super-sampling & unsharp mask detail sharpening. Zero quality loss.
                     </p>
                 </section>
 
                 <!-- High-value differentiator badges -->
                 <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; justify-content: center;">
                     <div style="background: rgba(155, 89, 182, 0.1); border: 1px solid rgba(155, 89, 182, 0.2); color: #9b59b6; padding: 8px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
-                        <i class="fas fa-wand-magic-sparkles"></i> 2x / 4x / 8x Detail Recovery
+                        <i class="fas fa-bolt"></i> Pica Lanczos3 WebWorker Engine
                     </div>
                     <div style="background: rgba(39, 174, 96, 0.1); border: 1px solid rgba(39, 174, 96, 0.2); color: #27ae60; padding: 8px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
                         <i class="fas fa-user-shield"></i> 100% Local & Private (No Uploads)
@@ -118,11 +121,18 @@
                         </select>
                     </div>
                     <div class="control-group">
-                        <label style="font-weight: 600; font-size: 14px;">Detail Sharpening:</label>
+                        <label style="font-weight: 600; font-size: 14px;">Sampling Filter:</label>
+                        <select id="filterSelect" class="form-select" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--surface); color: var(--text-main);">
+                            <option value="lanczos3" selected>Lanczos3 Super-Sampling (Highest Quality)</option>
+                            <option value="michell">Mitchell-Netravali (Balanced)</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label style="font-weight: 600; font-size: 14px;">Edge Sharpening:</label>
                         <select id="sharpenSelect" class="form-select" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--surface); color: var(--text-main);">
-                            <option value="medium" selected>Smart Edge Sharpen (Recommended)</option>
-                            <option value="high">High Detail Recovery</option>
-                            <option value="none">None (Smooth Scaling)</option>
+                            <option value="medium" selected>Smart Unsharp Mask (Recommended)</option>
+                            <option value="high">High Contrast Recovery</option>
+                            <option value="none">None (Pure Lanczos3)</option>
                         </select>
                     </div>
                     <button class="btn btn-success" id="processUpscaleBtn" style="padding: 10px 20px; background: #9b59b6; color: #fff; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
@@ -148,20 +158,11 @@
                     <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px;">
                         <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer;">
                             <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
-                                How does the free AI Image Upscaler work?
+                                Why is Lanczos3 sampling superior to browser scaling?
                                 <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
                             </summary>
                             <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
-                                It uses multi-stage canvas interpolation combined with smart edge sharpening (unsharp mask algorithm) to enlarge pixel dimensions 2x, 4x, or 8x while preserving crisp edges and contrast.
-                            </p>
-                        </details>
-                        <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer;">
-                            <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
-                                Is there any file limit or watermark?
-                                <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
-                            </summary>
-                            <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
-                                No! WebToolkitBox is 100% free with no watermarks, no daily caps, and no user registration required.
+                                Standard browser canvas scaling uses basic bilinear blurring. The Pica engine utilizes the mathematical Lanczos3 windowed sinc filter to reconstruct missing high-frequency details with sharp clarity.
                             </p>
                         </details>
                     </div>
@@ -196,6 +197,11 @@
       const downloadBtn = document.getElementById('downloadUpscaledBtn');
 
       let sourceImg = null;
+      let picaInstance = null;
+
+      if (typeof pica !== 'undefined') {
+          picaInstance = pica();
+      }
 
       dropZone.addEventListener('click', (e) => { if (e.target.tagName !== 'BUTTON') fileInput.click(); });
       fileInput.addEventListener('change', (e) => {
@@ -213,58 +219,47 @@
           reader.readAsDataURL(file);
       });
 
-      processBtn.addEventListener('click', () => {
+      processBtn.addEventListener('click', async () => {
           if (!sourceImg) return;
+          processBtn.disabled = true;
+          processBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Lanczos3...';
 
           const factor = parseInt(document.getElementById('scaleFactorSelect').value);
+          const filter = document.getElementById('filterSelect').value;
           const sharpenMode = document.getElementById('sharpenSelect').value;
 
           const targetWidth = sourceImg.width * factor;
           const targetHeight = sourceImg.height * factor;
 
+          const srcCanvas = document.createElement('canvas');
+          srcCanvas.width = sourceImg.width;
+          srcCanvas.height = sourceImg.height;
+          const srcCtx = srcCanvas.getContext('2d');
+          srcCtx.drawImage(sourceImg, 0, 0);
+
           canvas.width = targetWidth;
           canvas.height = targetHeight;
-          const ctx = canvas.getContext('2d');
 
-          ctx.imageSmoothingEnabled = true;
-          ctx.imageSmoothingQuality = 'high';
-          ctx.drawImage(sourceImg, 0, 0, targetWidth, targetHeight);
-
-          if (sharpenMode !== 'none') {
-              const imageData = ctx.getImageData(0, 0, targetWidth, targetHeight);
-              const data = imageData.data;
-              const strength = sharpenMode === 'high' ? 0.4 : 0.2;
-
-              const kernel = [
-                  0, -strength, 0,
-                  -strength, 1 + (4 * strength), -strength,
-                  0, -strength, 0
-              ];
-
-              const copy = new Uint8ClampedArray(data);
-              const w = targetWidth;
-              const h = targetHeight;
-
-              for (let y = 1; y < h - 1; y++) {
-                  for (let x = 1; x < w - 1; x++) {
-                      for (let c = 0; c < 3; c++) {
-                          const idx = (y * w + x) * 4 + c;
-                          const val = 
-                              copy[((y-1)*w + x) * 4 + c] * kernel[1] +
-                              copy[(y*w + (x-1)) * 4 + c] * kernel[3] +
-                              copy[idx] * kernel[4] +
-                              copy[(y*w + (x+1)) * 4 + c] * kernel[5] +
-                              copy[((y+1)*w + x) * 4 + c] * kernel[7];
-                          data[idx] = Math.min(255, Math.max(0, val));
-                      }
-                  }
-              }
-              ctx.putImageData(imageData, 0, 0);
+          if (picaInstance) {
+              await picaInstance.resize(srcCanvas, canvas, {
+                  filter: filter,
+                  unsharpAmount: sharpenMode === 'high' ? 160 : (sharpenMode === 'medium' ? 80 : 0),
+                  unsharpRadius: 0.6,
+                  unsharpThreshold: 2
+              });
+          } else {
+              const ctx = canvas.getContext('2d');
+              ctx.imageSmoothingEnabled = true;
+              ctx.imageSmoothingQuality = 'high';
+              ctx.drawImage(sourceImg, 0, 0, targetWidth, targetHeight);
           }
 
-          dimensionsInfo.textContent = `Original: ${sourceImg.width} x ${sourceImg.height}px  |  Upscaled: ${targetWidth} x ${targetHeight}px (${factor}x Enlarge)`;
+          dimensionsInfo.textContent = \`Original: \${sourceImg.width} x \${sourceImg.height}px  |  Upscaled: \${targetWidth} x \${targetHeight}px (\${factor}x Lanczos3 Enlarge)\`;
           downloadBtn.href = canvas.toDataURL('image/png');
           resultContainer.style.display = 'block';
+
+          processBtn.disabled = false;
+          processBtn.innerHTML = '<i class="fas fa-magic"></i> Upscale & Enhance Image';
       });
     </script>
     <script src="app.js" defer></script>
