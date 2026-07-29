@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
+    <meta name="google-site-verification" content="d0OdByg6j4ZbXrYq_O7SLN5kcx58VtFDakc5TRUElB4" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-406KB1Z1V6"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -9,21 +9,32 @@
       gtag('js', new Date());
       gtag('config', 'G-406KB1Z1V6');
     </script>
-    <meta name="google-site-verification" content="d0OdByg6j4ZbXrYq_O7SLN5kcx58VtFDakc5TRUElB4" />
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JPG to PDF Converter Free Online – Combine Images into PDF | WebToolkitBox</title>
     <meta name="description" content="Convert JPG, PNG, and WebP images to PDF document online for free. Combine multiple photos into a single PDF document. 100% private, browser-based.">
+    <meta name="keywords" content="jpg to pdf, convert image to pdf, combine images to pdf, png to pdf online">
     <link rel="canonical" href="https://webtoolkitbox.com/jpg-to-pdf">
-
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- jsPDF library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://webtoolkitbox.com/jpg-to-pdf">
+    <meta property="og:site_name" content="WebToolkitBox">
+    <meta property="og:title" content="JPG to PDF Converter Free Online – Combine Images into PDF">
+    <meta property="og:description" content="Convert JPG, PNG, and WebP images to PDF document online for free. Combine multiple photos into a single PDF document.">
+    <meta property="og:image" content="https://webtoolkitbox.com/images/og-card.png">
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="theme-color" content="#0a0a0a">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="style.css">
 
     <!-- Favicon & Search Result Icons -->
     <link rel="icon" href="https://webtoolkitbox.com/favicon.ico" sizes="any" />
@@ -31,87 +42,141 @@
     <link rel="icon" type="image/png" sizes="192x192" href="https://webtoolkitbox.com/images/logo.png" />
     <link rel="apple-touch-icon" href="https://webtoolkitbox.com/images/logo.png" />
 
+    <!-- jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-    <!-- Navigation Header -->
-    <header class="header">
-        <div class="nav-container">
-            <a href="/" class="logo">
-                <img src="images/logo.webp" alt="WebToolkitBox Logo" class="logo-img">
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <a href="/" class="logo" style="text-decoration: none; color: inherit;">
+                <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
             </a>
-            <nav class="nav-menu">
-                <a href="/" class="nav-link">All Tools</a>
-                <a href="/promo" class="nav-link">Features</a>
-                <a href="/seo-audit" class="nav-link">SEO Audit</a>
-            </nav>
-        </div>
-    </header>
-
-    <!-- Main Container -->
-    <main class="main-content">
-        <div class="tool-header">
-            <h1 class="tool-title">JPG to PDF Converter Free Online</h1>
-            <p class="tool-subtitle">Convert JPG, PNG & WebP images into a clean PDF document directly in your browser. 100% private & secure.</p>
-        </div>
-
-        <!-- Tool Card -->
-        <div class="tool-card">
-            <!-- Dropzone -->
-            <div class="drop-zone" id="jpgPdfDropZone">
-                <i class="fas fa-file-image drop-icon" style="color: #3498db; font-size: 40px; margin-bottom: 12px;"></i>
-                <h3>Drag & Drop your images here</h3>
-                <p>Supports JPG, PNG, WebP & HEIC images</p>
-                <input type="file" id="jpgPdfFileInput" accept="image/*" multiple style="display: none;">
-                <button class="btn btn-primary" onclick="document.getElementById('jpgPdfFileInput').click()" style="margin-top: 12px;">
-                    <i class="fas fa-folder-open"></i> Select Images
+            <div class="header-right">
+                <span class="header-tagline">Your All-in-One Image Toolkit</span>
+                <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Light/Dark Mode">
+                    <i class="fas fa-sun"></i>
                 </button>
+                <a href="seo-audit.html" class="seo-audit-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>SEO Audit</span>
+                </a>
+            </div>
+        </header>
+        
+        <div class="tool-section active">
+            <!-- Tool Breadcrumb -->
+            <div class="tool-breadcrumb-nav" style="margin-bottom: 24px; display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                <a href="/" style="color: var(--accent-dim); text-decoration: none; display: flex; align-items: center; gap: 4px;">
+                    <i class="fas fa-house" style="font-size: 11px;"></i> Hub
+                </a>
+                <span style="color: var(--border-active); font-size: 10px;">/</span>
+                <span style="color: var(--text-muted); font-weight: 500;">JPG to PDF Converter</span>
             </div>
 
-            <!-- Options & Action Bar -->
-            <div class="controls-panel" id="jpgPdfControls" style="display: none; margin-top: 20px; flex-wrap: wrap; gap: 16px; align-items: center;">
-                <div class="control-group">
-                    <label style="font-weight: 600; font-size: 14px;">Page Orientation:</label>
-                    <select id="pdfOrientationSelect" class="form-select" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border);">
-                        <option value="p">Portrait</option>
-                        <option value="l">Landscape</option>
-                    </select>
-                </div>
-                <div class="control-group">
-                    <label style="font-weight: 600; font-size: 14px;">Margin:</label>
-                    <select id="pdfMarginSelect" class="form-select" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border);">
-                        <option value="0">No Margin</option>
-                        <option value="10" selected>Small Margin (10px)</option>
-                        <option value="20">Big Margin (20px)</option>
-                    </select>
-                </div>
-                <button class="btn btn-success" id="createPdfBtn" style="padding: 10px 20px; background: #27ae60; color: #fff; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
-                    <i class="fas fa-file-pdf"></i> Download PDF
-                </button>
-            </div>
+            <main class="main-content">
+                <!-- Hero Section -->
+                <section class="hero">
+                    <h1 class="hero-title">
+                        JPG to PDF <span class="gradient-text">Converter Free</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Convert and merge multiple JPG, PNG, or WebP images into a single clean PDF document directly in your browser.
+                    </p>
+                </section>
 
-            <!-- Loaded Files List -->
-            <div id="jpgPdfFilesList" style="margin-top: 24px; display: flex; flex-wrap: wrap; gap: 12px;"></div>
+                <!-- High-value differentiator badges -->
+                <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; justify-content: center;">
+                    <div style="background: rgba(52, 152, 219, 0.1); border: 1px solid rgba(52, 152, 219, 0.2); color: #3498db; padding: 8px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+                        <i class="fas fa-layer-group"></i> Multi-Image Merge
+                    </div>
+                    <div style="background: rgba(39, 174, 96, 0.1); border: 1px solid rgba(39, 174, 96, 0.2); color: #27ae60; padding: 8px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+                        <i class="fas fa-user-shield"></i> 100% Local & Private (No Uploads)
+                    </div>
+                </div>
+
+                <!-- Upload Area -->
+                <div class="upload-section">
+                    <div class="upload-area" id="jpgPdfDropZone">
+                        <div class="upload-icon" style="color: #3498db;">
+                            <i class="fas fa-file-image"></i>
+                        </div>
+                        <h3 class="upload-title">Drop your images here</h3>
+                        <p class="upload-text">Supports JPG, PNG, WebP & HEIC photos</p>
+                        <input type="file" id="jpgPdfFileInput" accept="image/*" multiple hidden>
+                        <button class="btn btn-primary" onclick="document.getElementById('jpgPdfFileInput').click()" style="margin-top: 12px;">
+                            <i class="fas fa-folder-open"></i> Select Images
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Options & Action Bar -->
+                <div class="settings-panel" id="jpgPdfControls" style="display: none; margin-top: 20px; flex-wrap: wrap; gap: 16px; align-items: center;">
+                    <div class="control-group">
+                        <label style="font-weight: 600; font-size: 14px;">Orientation:</label>
+                        <select id="pdfOrientationSelect" class="form-select" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--surface); color: var(--text-main);">
+                            <option value="p">Portrait</option>
+                            <option value="l">Landscape</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label style="font-weight: 600; font-size: 14px;">Margin:</label>
+                        <select id="pdfMarginSelect" class="form-select" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--surface); color: var(--text-main);">
+                            <option value="0">No Margin</option>
+                            <option value="10" selected>Small Margin (10px)</option>
+                            <option value="20">Big Margin (20px)</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-success" id="createPdfBtn" style="padding: 10px 20px; background: #27ae60; color: #fff; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                        <i class="fas fa-file-pdf"></i> Download Combined PDF
+                    </button>
+                </div>
+
+                <!-- Loaded Files List -->
+                <div id="jpgPdfFilesList" style="margin-top: 24px; display: flex; flex-wrap: wrap; gap: 12px;"></div>
+
+                <!-- SEO Content & FAQ -->
+                <section class="features-section" style="padding: 40px 0 60px;">
+                    <h2 class="features-title">Frequently Asked Questions</h2>
+                    <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px;">
+                        <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer;">
+                            <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                                How do I convert JPG images to PDF for free?
+                                <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
+                            </summary>
+                            <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+                                Drag and drop your images into the box above, arrange them if needed, select your page orientation, and click "Download Combined PDF".
+                            </p>
+                        </details>
+                        <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer;">
+                            <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                                Is there a file limit for converting images to PDF?
+                                <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
+                            </summary>
+                            <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+                                No! WebToolkitBox is 100% free with unlimited batch processing directly inside your browser.
+                            </p>
+                        </details>
+                    </div>
+                </section>
+            </main>
         </div>
 
-        <!-- FAQ Section -->
-        <section class="seo-content" style="margin-top: 40px;">
-            <h2>Frequently Asked Questions</h2>
-            <div class="faq-accordion">
-                <details class="faq-item">
-                    <summary>How do I convert JPG images to PDF for free?</summary>
-                    <p>Drag and drop your images into the box above, arrange them if needed, select your page orientation, and click "Download PDF".</p>
-                </details>
-                <details class="faq-item">
-                    <summary>Is there a file limit for converting images to PDF?</summary>
-                    <p>No! WebToolkitBox is 100% free with unlimited batch processing directly inside your browser.</p>
-                </details>
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
+                    <p class="footer-desc">Free, private, browser-based web tools for developers, designers, and creators.</p>
+                </div>
             </div>
-        </section>
-    </main>
-
-    <footer class="footer" style="margin-top: 60px; padding: 24px 0; border-top: 1px solid var(--border); text-align: center; font-size: 13px; color: var(--text-m);">
-        <p>&copy; 2026 WebToolkitBox — Free Online JPG to PDF Converter.</p>
-    </footer>
+            <div class="footer-divider"></div>
+            <div class="footer-bottom">
+                <p>Developed by <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="footer-dev-link">Rishabh Dev</a></p>
+                <p class="footer-handle">@itxrishabh</p>
+            </div>
+        </footer>
+    </div>
 
     <script>
       const fileInput = document.getElementById('jpgPdfFileInput');
@@ -140,10 +205,10 @@
           filesList.innerHTML = '';
           loadedImages.forEach((src, idx) => {
               const thumb = document.createElement('div');
-              thumb.style.cssText = 'position: relative; width: 100px; height: 100px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border);';
+              thumb.style.cssText = 'position: relative; width: 100px; height: 100px; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border);';
               thumb.innerHTML = `
                   <img src="${src}" style="width: 100%; height: 100%; object-fit: cover;">
-                  <button onclick="removeImg(${idx})" style="position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.6); color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer;">&times;</button>
+                  <button onclick="removeImg(${idx})" style="position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.6); color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
               `;
               filesList.appendChild(thumb);
           });
@@ -175,5 +240,6 @@
           doc.save('converted-images.pdf');
       });
     </script>
+    <script src="app.js" defer></script>
 </body>
 </html>

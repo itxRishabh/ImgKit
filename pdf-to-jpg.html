@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
+    <meta name="google-site-verification" content="d0OdByg6j4ZbXrYq_O7SLN5kcx58VtFDakc5TRUElB4" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-406KB1Z1V6"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -9,21 +9,32 @@
       gtag('js', new Date());
       gtag('config', 'G-406KB1Z1V6');
     </script>
-    <meta name="google-site-verification" content="d0OdByg6j4ZbXrYq_O7SLN5kcx58VtFDakc5TRUElB4" />
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF to JPG Converter Free Online – Extract Images from PDF | WebToolkitBox</title>
     <meta name="description" content="Convert PDF to JPG online for free. Extract high quality images from PDF pages. 100% private, browser-based PDF to image converter with zero uploads.">
+    <meta name="keywords" content="pdf to jpg, convert pdf to image, extract images from pdf, pdf to png free">
     <link rel="canonical" href="https://webtoolkitbox.com/pdf-to-jpg">
-
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- PDF.js library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://webtoolkitbox.com/pdf-to-jpg">
+    <meta property="og:site_name" content="WebToolkitBox">
+    <meta property="og:title" content="PDF to JPG Converter Free Online – Extract Images from PDF">
+    <meta property="og:description" content="Convert PDF to JPG online for free. Extract high quality images from PDF pages. 100% private, browser-based.">
+    <meta property="og:image" content="https://webtoolkitbox.com/images/og-card.png">
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="theme-color" content="#0a0a0a">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="style.css">
 
     <!-- Favicon & Search Result Icons -->
     <link rel="icon" href="https://webtoolkitbox.com/favicon.ico" sizes="any" />
@@ -31,88 +42,143 @@
     <link rel="icon" type="image/png" sizes="192x192" href="https://webtoolkitbox.com/images/logo.png" />
     <link rel="apple-touch-icon" href="https://webtoolkitbox.com/images/logo.png" />
 
+    <!-- PDF.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 <body>
-    <!-- Navigation Header -->
-    <header class="header">
-        <div class="nav-container">
-            <a href="/" class="logo">
-                <img src="images/logo.webp" alt="WebToolkitBox Logo" class="logo-img">
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <a href="/" class="logo" style="text-decoration: none; color: inherit;">
+                <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
             </a>
-            <nav class="nav-menu">
-                <a href="/" class="nav-link">All Tools</a>
-                <a href="/promo" class="nav-link">Features</a>
-                <a href="/seo-audit" class="nav-link">SEO Audit</a>
-            </nav>
-        </div>
-    </header>
-
-    <!-- Main Container -->
-    <main class="main-content">
-        <div class="tool-header">
-            <h1 class="tool-title">PDF to JPG Converter Free Online</h1>
-            <p class="tool-subtitle">Convert PDF document pages into high-resolution JPG or PNG images directly in your browser. 100% private & secure.</p>
-        </div>
-
-        <!-- Tool Card -->
-        <div class="tool-card">
-            <!-- Dropzone -->
-            <div class="drop-zone" id="pdfDropZone">
-                <i class="fas fa-file-pdf drop-icon" style="color: #e74c3c; font-size: 40px; margin-bottom: 12px;"></i>
-                <h3>Drag & Drop your PDF file here</h3>
-                <p>or click to browse from your device</p>
-                <input type="file" id="pdfFileInput" accept="application/pdf" style="display: none;">
-                <button class="btn btn-primary" onclick="document.getElementById('pdfFileInput').click()" style="margin-top: 12px;">
-                    <i class="fas fa-folder-open"></i> Select PDF File
+            <div class="header-right">
+                <span class="header-tagline">Your All-in-One Image Toolkit</span>
+                <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Light/Dark Mode">
+                    <i class="fas fa-sun"></i>
                 </button>
+                <a href="seo-audit.html" class="seo-audit-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>SEO Audit</span>
+                </a>
+            </div>
+        </header>
+        
+        <div class="tool-section active">
+            <!-- Tool Breadcrumb -->
+            <div class="tool-breadcrumb-nav" style="margin-bottom: 24px; display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                <a href="/" style="color: var(--accent-dim); text-decoration: none; display: flex; align-items: center; gap: 4px;">
+                    <i class="fas fa-house" style="font-size: 11px;"></i> Hub
+                </a>
+                <span style="color: var(--border-active); font-size: 10px;">/</span>
+                <span style="color: var(--text-muted); font-weight: 500;">PDF to JPG Converter</span>
             </div>
 
-            <!-- Options & Action Bar -->
-            <div class="controls-panel" id="pdfControls" style="display: none; margin-top: 20px; flex-wrap: wrap; gap: 16px; align-items: center;">
-                <div class="control-group">
-                    <label style="font-weight: 600; font-size: 14px;">Output Format:</label>
-                    <select id="pdfFormatSelect" class="form-select" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border);">
-                        <option value="jpeg">JPG / JPEG</option>
-                        <option value="png">PNG</option>
-                        <option value="webp">WebP</option>
-                    </select>
-                </div>
-                <div class="control-group">
-                    <label style="font-weight: 600; font-size: 14px;">Resolution / Scale:</label>
-                    <select id="pdfScaleSelect" class="form-select" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border);">
-                        <option value="1.5">Standard (150 DPI)</option>
-                        <option value="2.0" selected>High Quality (200 DPI)</option>
-                        <option value="3.0">Ultra HD (300 DPI)</option>
-                    </select>
-                </div>
-                <button class="btn btn-success" id="startPdfRenderBtn" style="padding: 10px 20px; background: #27ae60; color: #fff; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
-                    <i class="fas fa-magic"></i> Convert PDF to Images
-                </button>
-            </div>
+            <main class="main-content">
+                <!-- Hero Section -->
+                <section class="hero">
+                    <h1 class="hero-title">
+                        PDF to JPG <span class="gradient-text">Converter Free</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Convert PDF document pages into high-resolution JPG or PNG images instantly in your browser. 100% private.
+                    </p>
+                </section>
 
-            <!-- Preview & Download Grid -->
-            <div id="pdfResultsContainer" style="margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;"></div>
+                <!-- High-value differentiator badges -->
+                <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; justify-content: center;">
+                    <div style="background: rgba(231, 76, 60, 0.1); border: 1px solid rgba(231, 76, 60, 0.2); color: #e74c3c; padding: 8px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+                        <i class="fas fa-file-pdf"></i> High Resolution Render
+                    </div>
+                    <div style="background: rgba(39, 174, 96, 0.1); border: 1px solid rgba(39, 174, 96, 0.2); color: #27ae60; padding: 8px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+                        <i class="fas fa-user-shield"></i> 100% Local & Private (No Uploads)
+                    </div>
+                </div>
+
+                <!-- Upload Area -->
+                <div class="upload-section">
+                    <div class="upload-area" id="pdfDropZone">
+                        <div class="upload-icon" style="color: #e74c3c;">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <h3 class="upload-title">Drop your PDF file here</h3>
+                        <p class="upload-text">or click to browse from your device</p>
+                        <p class="upload-formats">Supports: PDF documents (all page lengths)</p>
+                        <input type="file" id="pdfFileInput" accept="application/pdf" hidden>
+                        <button class="btn btn-primary" onclick="document.getElementById('pdfFileInput').click()" style="margin-top: 12px;">
+                            <i class="fas fa-folder-open"></i> Select PDF File
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Options & Action Bar -->
+                <div class="settings-panel" id="pdfControls" style="display: none; margin-top: 20px; flex-wrap: wrap; gap: 16px; align-items: center;">
+                    <div class="control-group">
+                        <label style="font-weight: 600; font-size: 14px;">Output Format:</label>
+                        <select id="pdfFormatSelect" class="form-select" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--surface); color: var(--text-main);">
+                            <option value="jpeg">JPG / JPEG</option>
+                            <option value="png">PNG</option>
+                            <option value="webp">WebP</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label style="font-weight: 600; font-size: 14px;">Resolution Scale:</label>
+                        <select id="pdfScaleSelect" class="form-select" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--surface); color: var(--text-main);">
+                            <option value="1.5">Standard (150 DPI)</option>
+                            <option value="2.0" selected>High Quality (200 DPI)</option>
+                            <option value="3.0">Ultra HD (300 DPI)</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-success" id="startPdfRenderBtn" style="padding: 10px 20px; background: #27ae60; color: #fff; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                        <i class="fas fa-magic"></i> Convert PDF to Images
+                    </button>
+                </div>
+
+                <!-- Results Grid -->
+                <div id="pdfResultsContainer" style="margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px;"></div>
+
+                <!-- SEO Content & FAQ -->
+                <section class="features-section" style="padding: 40px 0 60px;">
+                    <h2 class="features-title">Frequently Asked Questions</h2>
+                    <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px;">
+                        <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer;">
+                            <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                                How do I convert a PDF to JPG for free?
+                                <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
+                            </summary>
+                            <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+                                Select or drag your PDF into the box above, choose your output resolution, and click Convert. All pages will be rendered into high-resolution JPG images.
+                            </p>
+                        </details>
+                        <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer;">
+                            <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                                Are my PDF files uploaded to any server?
+                                <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
+                            </summary>
+                            <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+                                No. WebToolkitBox processes your PDF directly in your browser using client-side JavaScript (PDF.js). Your documents never leave your computer.
+                            </p>
+                        </details>
+                    </div>
+                </section>
+            </main>
         </div>
 
-        <!-- FAQ Section -->
-        <section class="seo-content" style="margin-top: 40px;">
-            <h2>Frequently Asked Questions</h2>
-            <div class="faq-accordion">
-                <details class="faq-item">
-                    <summary>How do I convert a PDF to JPG for free?</summary>
-                    <p>Select or drag your PDF into the box above, choose your desired output resolution, and click Convert. All pages will be extracted as individual JPG images ready for download.</p>
-                </details>
-                <details class="faq-item">
-                    <summary>Are my PDF files uploaded to any server?</summary>
-                    <p>No. WebToolkitBox uses client-side WebAssembly technology (PDF.js) to process your files directly inside your browser. Your documents never leave your computer.</p>
-                </details>
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
+                    <p class="footer-desc">Free, private, browser-based web tools for developers, designers, and creators.</p>
+                </div>
             </div>
-        </section>
-    </main>
-
-    <footer class="footer" style="margin-top: 60px; padding: 24px 0; border-top: 1px solid var(--border); text-align: center; font-size: 13px; color: var(--text-m);">
-        <p>&copy; 2026 WebToolkitBox — Free Online PDF to JPG Converter.</p>
-    </footer>
+            <div class="footer-divider"></div>
+            <div class="footer-bottom">
+                <p>Developed by <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="footer-dev-link">Rishabh Dev</a></p>
+                <p class="footer-handle">@itxrishabh</p>
+            </div>
+        </footer>
+    </div>
 
     <script>
       pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -135,12 +201,12 @@
           const arrayBuffer = await file.arrayBuffer();
           currentPdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
           controls.style.display = 'flex';
-          resultsContainer.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-m);">PDF Loaded! Click "Convert PDF to Images" above.</p>`;
+          resultsContainer.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">PDF Loaded (${currentPdfDoc.numPages} pages)! Click "Convert PDF to Images" above.</p>`;
       }
 
       renderBtn.addEventListener('click', async () => {
           if (!currentPdfDoc) return;
-          resultsContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Rendering pages...</p>';
+          resultsContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">Rendering pages...</p>';
           
           const scale = parseFloat(document.getElementById('pdfScaleSelect').value);
           const format = document.getElementById('pdfFormatSelect').value;
@@ -159,12 +225,11 @@
               const imgUrl = canvas.toDataURL(`image/${format}`, 0.92);
 
               const card = document.createElement('div');
-              card.className = 'preview-card';
-              card.style.cssText = 'border: 1px solid var(--border); padding: 12px; border-radius: 8px; text-align: center; background: #fff;';
+              card.style.cssText = 'border: 1px solid var(--border); padding: 14px; border-radius: var(--radius-lg); text-align: center; background: var(--surface);';
               card.innerHTML = `
-                  <img src="${imgUrl}" style="max-width: 100%; height: auto; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
-                  <p style="font-size: 13px; font-weight: 600; margin: 8px 0 4px;">Page ${pageNum}</p>
-                  <a href="${imgUrl}" download="page-${pageNum}.${format === 'jpeg' ? 'jpg' : format}" class="btn btn-sm btn-primary" style="padding: 6px 12px; background: #1a73e8; color: #fff; border-radius: 4px; text-decoration: none; display: inline-block; font-size: 12px;">
+                  <img src="${imgUrl}" style="max-width: 100%; height: auto; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                  <p style="font-size: 13px; font-weight: 600; margin: 10px 0 6px; color: var(--text-main);">Page ${pageNum}</p>
+                  <a href="${imgUrl}" download="page-${pageNum}.${format === 'jpeg' ? 'jpg' : format}" class="btn btn-primary" style="padding: 6px 14px; font-size: 12px; text-decoration: none; display: inline-block;">
                       <i class="fas fa-download"></i> Download
                   </a>
               `;
@@ -172,5 +237,6 @@
           }
       });
     </script>
+    <script src="app.js" defer></script>
 </body>
 </html>
