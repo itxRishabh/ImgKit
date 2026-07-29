@@ -44,6 +44,7 @@
             --success-promo: #137333; /* Google Green */
             --error-promo: #c5221f; /* Google Red */
             --radius-promo: 8px;
+            --transition-promo: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body {
@@ -53,7 +54,28 @@
             margin: 0;
             padding: 0;
             line-height: 1.5;
+            overflow-x: hidden;
         }
+
+        /* Entrance Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        
+        .delay-1 { animation-delay: 0.1s; opacity: 0; }
+        .delay-2 { animation-delay: 0.25s; opacity: 0; }
+        .delay-3 { animation-delay: 0.4s; opacity: 0; }
 
         .promo-container {
             max-width: 1100px;
@@ -72,6 +94,10 @@
         .promo-header .logo img {
             height: 48px;
             object-fit: contain;
+            transition: transform 0.2s;
+        }
+        .promo-header .logo img:hover {
+            transform: scale(1.02);
         }
         .header-tagline {
             font-size: 13px;
@@ -82,7 +108,7 @@
         /* Hero Style */
         .promo-hero {
             text-align: center;
-            padding: 80px 24px 50px;
+            padding: 90px 24px 60px;
             max-width: 850px;
             margin: 0 auto;
         }
@@ -97,12 +123,17 @@
             margin-bottom: 20px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            border: 1px solid rgba(26, 115, 232, 0.15);
+            transition: var(--transition-promo);
+        }
+        .promo-badge:hover {
+            background: #d2e3fc;
         }
         .promo-title {
-            font-size: 46px;
+            font-size: 48px;
             font-weight: 800;
             line-height: 1.2;
-            letter-spacing: -1px;
+            letter-spacing: -1.2px;
             color: var(--text-promo);
             margin-bottom: 20px;
         }
@@ -121,29 +152,39 @@
             padding: 40px 32px;
             max-width: 580px;
             margin: 0 auto;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.04);
             text-align: center;
+            transition: var(--transition-promo);
+            position: relative;
+        }
+        .cta-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(26, 115, 232, 0.08);
+            border-color: rgba(26, 115, 232, 0.3);
         }
         .cta-btn {
             background-color: var(--primary-promo);
             color: #ffffff;
             font-weight: 600;
-            padding: 15px 36px;
+            padding: 16px 38px;
             border-radius: 4px;
             font-size: 15px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             text-decoration: none;
-            transition: background-color 0.2s;
+            transition: background-color 0.2s, transform 0.2s;
+            box-shadow: 0 4px 12px rgba(26, 115, 232, 0.2);
         }
         .cta-btn:hover {
             background-color: #1557b0;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(26, 115, 232, 0.3);
         }
 
         /* Comparison Section */
         .comparison-section {
-            padding: 60px 0;
+            padding: 80px 0;
             max-width: 850px;
             margin: 0 auto;
         }
@@ -154,10 +195,14 @@
             border: 1px solid var(--border-promo);
             border-radius: var(--radius-promo);
             overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            transition: var(--transition-promo);
+        }
+        .comp-table:hover {
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
         }
         .comp-table th, .comp-table td {
-            padding: 16px 20px;
+            padding: 18px 22px;
             text-align: left;
             border-bottom: 1px solid var(--border-promo);
         }
@@ -170,19 +215,32 @@
         .comp-table td {
             font-size: 14px;
             color: var(--text-muted-promo);
+            transition: background-color 0.2s;
+        }
+        .comp-table tr:hover td {
+            background-color: rgba(248, 249, 250, 0.6);
         }
         .comp-check {
             color: var(--success-promo);
             font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
         .comp-cross {
             color: var(--error-promo);
             font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
         .highlight-col {
-            background: rgba(26, 115, 232, 0.02);
+            background: rgba(26, 115, 232, 0.015);
             font-weight: 600;
             color: var(--text-promo);
+        }
+        .comp-table tr:hover .highlight-col {
+            background-color: rgba(26, 115, 232, 0.03);
         }
 
         /* Value Section */
@@ -195,20 +253,31 @@
         .feature-card {
             background: #ffffff;
             border: 1px solid var(--border-promo);
-            padding: 30px 24px;
+            padding: 34px 28px;
             border-radius: var(--radius-promo);
             text-align: left;
+            transition: var(--transition-promo);
+        }
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
+            border-color: rgba(26, 115, 232, 0.2);
         }
         .feature-card-icon {
-            font-size: 24px;
+            font-size: 26px;
             color: var(--primary-promo);
-            margin-bottom: 16px;
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+        .feature-card:hover .feature-card-icon {
+            transform: scale(1.1) rotate(2deg);
         }
         .feature-card-title {
-            font-size: 16px;
+            font-size: 16.5px;
             font-weight: 700;
             color: var(--text-promo);
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            letter-spacing: -0.2px;
         }
         .feature-card-desc {
             font-size: 13px;
@@ -218,22 +287,22 @@
 
         /* Testimonial Widget: Google Style */
         .reviews-section {
-            background: var(--surface-promo);
+            background: #f4f8ff; /* Soft warm blue wash background */
             border-top: 1px solid var(--border-promo);
             border-bottom: 1px solid var(--border-promo);
-            padding: 80px 0;
-            margin: 60px 0;
+            padding: 90px 0;
+            margin: 80px 0;
         }
         .reviews-header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 48px;
         }
         .trust-score {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
-            margin-top: 10px;
+            margin-top: 12px;
         }
         .stars {
             color: #fbbc05; /* Google Star Yellow */
@@ -244,8 +313,8 @@
         .reviews-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            max-width: 1000px;
+            gap: 24px;
+            max-width: 1050px;
             margin: 0 auto;
             padding: 0 24px;
         }
@@ -253,14 +322,20 @@
             background: #ffffff;
             border: 1px solid var(--border-promo);
             border-radius: 8px;
-            padding: 24px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            padding: 28px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            transition: var(--transition-promo);
+        }
+        .google-review-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            border-color: rgba(26, 115, 232, 0.15);
         }
         .review-user-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
         .user-info {
             display: flex;
@@ -268,16 +343,14 @@
             gap: 12px;
         }
         .user-avatar-google {
-            width: 38px;
-            height: 38px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background: #e8eaed;
-            color: #5f6368;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 15px;
+            font-size: 16px;
         }
         .user-name {
             font-weight: 600;
@@ -295,13 +368,13 @@
         }
         .google-icon {
             color: #4285f4;
-            font-size: 16px;
+            font-size: 17px;
         }
         .review-text {
             font-size: 13.5px;
             color: var(--text-muted-promo);
             line-height: 1.6;
-            margin: 12px 0 0;
+            margin: 14px 0 0;
         }
 
         /* FAQ Section */
@@ -313,18 +386,23 @@
         .faq-accordion {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
         }
         .faq-item {
             background: #ffffff;
             border: 1px solid var(--border-promo);
             border-radius: var(--radius-promo);
-            padding: 18px 24px;
+            padding: 20px 24px;
             cursor: pointer;
+            transition: var(--transition-promo);
+        }
+        .faq-item:hover {
+            border-color: rgba(26, 115, 232, 0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
         }
         .faq-item summary {
             font-weight: 600;
-            font-size: 14.5px;
+            font-size: 15px;
             color: var(--text-promo);
             list-style: none;
             display: flex;
@@ -335,7 +413,7 @@
             display: none;
         }
         .faq-item p {
-            margin-top: 12px;
+            margin-top: 14px;
             font-size: 13.5px;
             color: var(--text-muted-promo);
             line-height: 1.7;
@@ -361,10 +439,10 @@
 
         @media (max-width: 768px) {
             .promo-title {
-                font-size: 30px;
+                font-size: 32px;
             }
             .promo-hero {
-                padding: 40px 24px;
+                padding: 50px 24px;
             }
             .promo-footer {
                 flex-direction: column;
@@ -377,7 +455,7 @@
 <body>
     <div class="promo-container">
         <!-- Header -->
-        <header class="promo-header">
+        <header class="promo-header animate-fade-in">
             <div class="logo">
                 <img src="images/logo.webp" alt="WebToolkitBox">
             </div>
@@ -387,7 +465,7 @@
         </header>
 
         <!-- Hero Section -->
-        <section class="promo-hero">
+        <section class="promo-hero animate-fade-in delay-1">
             <span class="promo-badge">Free & Unlimited</span>
             <h1 class="promo-title">
                 Stop Paying For Basic Image & HEIC Converters
@@ -397,7 +475,7 @@
             </p>
 
             <!-- CTA Card -->
-            <div class="cta-card">
+            <div class="cta-card animate-fade-in delay-2">
                 <h2 style="font-size: 22px; color: var(--text-promo); font-weight: 700; margin-top: 0; margin-bottom: 12px; letter-spacing: -0.5px;">Launch WebToolkitBox</h2>
                 <p style="font-size: 14px; color: var(--text-muted-promo); line-height: 1.6; margin-bottom: 24px;">
                     Get instant access to all 11+ converter and editor tools directly in your browser.
@@ -409,7 +487,7 @@
         </section>
 
         <!-- Comparison Table Section -->
-        <section class="comparison-section">
+        <section class="comparison-section animate-fade-in delay-3">
             <h2 style="font-size: 24px; color: var(--text-promo); font-weight: 700; text-align: center; margin-bottom: 8px; letter-spacing: -0.5px;">Compare WebToolkitBox</h2>
             <p style="font-size: 14px; color: var(--text-muted-promo); text-align: center; margin-bottom: 32px;">Why users are switching from expensive subscription tools to our local tools.</p>
             
@@ -484,7 +562,7 @@
     <section class="reviews-section">
         <div class="promo-container">
             <div class="reviews-header">
-                <h2 style="font-size: 24px; color: var(--text-promo); font-weight: 700; margin-bottom: 0; letter-spacing: -0.5px;">User Reviews</h2>
+                <h2 style="font-size: 26px; color: var(--text-promo); font-weight: 700; margin-bottom: 0; letter-spacing: -0.5px;">User Reviews</h2>
                 <div class="trust-score">
                     <span style="font-weight: 700; font-size: 18px;">4.9 out of 5</span>
                     <div class="stars">
@@ -566,58 +644,60 @@
     </section>
 
     <!-- FAQ Section -->
-    <div class="promo-container">
-        <section class="faq-section">
-            <h2 style="font-size: 24px; color: var(--text-promo); font-weight: 700; text-align: center; margin-bottom: 32px; letter-spacing: -0.5px;">Frequently Asked Questions</h2>
-            <div class="faq-accordion">
-                <details class="faq-item">
-                    <summary>
-                        How can WebToolkitBox be 100% free with no limits?
-                        <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted-promo);"></i>
-                    </summary>
-                    <p>
-                        Unlike traditional websites that process files on expensive cloud servers, WebToolkitBox uses modern client-side JavaScript and WebAssembly to process images directly inside your own browser. Since we don't have to pay for massive file hosting and cloud computation, we can pass 100% of the savings back to you and keep the tools unlimited.
-                    </p>
-                </details>
-                <details class="faq-item">
-                    <summary>
-                        Do my images get saved on any server?
-                        <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted-promo);"></i>
-                    </summary>
-                    <p>
-                        No. Your images are never uploaded to our servers. All conversions, cropping, compression, and AI background removal tasks run locally on your device. Your privacy is fully secured.
-                    </p>
-                </details>
-                <details class="faq-item">
-                    <summary>
-                        How do I convert HEIC photos from my iPhone?
-                        <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted-promo);"></i>
-                    </summary>
-                    <p>
-                        Simply upload your HEIC files inside the Image Converter tool, select your target output format (JPG, PNG, or WebP), and click download. You can upload dozens of HEIC files at once to convert them in batch.
-                    </p>
-                </details>
-                <details class="faq-item">
-                    <summary>
-                        Does the background remover support high-resolution output?
-                        <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted-promo);"></i>
-                    </summary>
-                    <p>
-                        Yes. While other sites downscale your images to standard resolution on free tiers, WebToolkitBox preserves your original file dimensions and downloads your transparent cutouts at full resolution.
-                    </p>
-                </details>
-            </div>
-        </section>
+    <div class="faq-container" style="background-color: #ffffff; padding: 40px 0 20px;">
+        <div class="promo-container">
+            <section class="faq-section">
+                <h2 style="font-size: 26px; color: var(--text-promo); font-weight: 700; text-align: center; margin-bottom: 32px; letter-spacing: -0.5px;">Frequently Asked Questions</h2>
+                <div class="faq-accordion">
+                    <details class="faq-item">
+                        <summary>
+                            How can WebToolkitBox be 100% free with no limits?
+                            <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted-promo);"></i>
+                        </summary>
+                        <p>
+                            Unlike traditional websites that process files on expensive cloud servers, WebToolkitBox uses modern client-side JavaScript and WebAssembly to process images directly inside your own browser. Since we don't have to pay for massive file hosting and cloud computation, we can pass 100% of the savings back to you and keep the tools unlimited.
+                        </p>
+                    </details>
+                    <details class="faq-item">
+                        <summary>
+                            Do my images get saved on any server?
+                            <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted-promo);"></i>
+                        </summary>
+                        <p>
+                            No. Your images are never uploaded to our servers. All conversions, cropping, compression, and AI background removal tasks run locally on your device. Your privacy is fully secured.
+                        </p>
+                    </details>
+                    <details class="faq-item">
+                        <summary>
+                            How do I convert HEIC photos from my iPhone?
+                            <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted-promo);"></i>
+                        </summary>
+                        <p>
+                            Simply upload your HEIC files inside the Image Converter tool, select your target output format (JPG, PNG, or WebP), and click download. You can upload dozens of HEIC files at once to convert them in batch.
+                        </p>
+                    </details>
+                    <details class="faq-item">
+                        <summary>
+                            Does the background remover support high-resolution output?
+                            <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted-promo);"></i>
+                        </summary>
+                        <p>
+                            Yes. While other sites downscale your images to standard resolution on free tiers, WebToolkitBox preserves your original file dimensions and downloads your transparent cutouts at full resolution.
+                        </p>
+                    </details>
+                </div>
+            </section>
 
-        <!-- Footer -->
-        <footer class="promo-footer">
-            <div class="footer-logo">
-                <img src="images/logo.webp" alt="WebToolkitBox">
-            </div>
-            <div class="footer-copy">
-                &copy; 2026 WebToolkitBox. Process unlimited images for free. No watermarks. No sign-up required.
-            </div>
-        </footer>
+            <!-- Footer -->
+            <footer class="promo-footer">
+                <div class="footer-logo">
+                    <img src="images/logo.webp" alt="WebToolkitBox">
+                </div>
+                <div class="footer-copy">
+                    &copy; 2026 WebToolkitBox. Process unlimited images for free. No watermarks. No sign-up required.
+                </div>
+            </footer>
+        </div>
     </div>
 </body>
 </html>
