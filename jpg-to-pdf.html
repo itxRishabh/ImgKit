@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-406KB1Z1V6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-406KB1Z1V6');
+    </script>
+    <meta name="google-site-verification" content="d0OdByg6j4ZbXrYq_O7SLN5kcx58VtFDakc5TRUElB4" />
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JPG to PDF Converter Free Online – Combine Images into PDF | WebToolkitBox</title>
+    <meta name="description" content="Convert JPG, PNG, and WebP images to PDF document online for free. Combine multiple photos into a single PDF document. 100% private, browser-based.">
+    <link rel="canonical" href="https://webtoolkitbox.com/jpg-to-pdf">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <img src="images/logo.webp" alt="WebToolkitBox Logo" class="logo-img">
+            </a>
+            <nav class="nav-menu">
+                <a href="/" class="nav-link">All Tools</a>
+                <a href="/promo" class="nav-link">Features</a>
+                <a href="/seo-audit" class="nav-link">SEO Audit</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-content">
+        <div class="tool-header">
+            <h1 class="tool-title">JPG to PDF Converter Free Online</h1>
+            <p class="tool-subtitle">Convert JPG, PNG & WebP images into a clean PDF document directly in your browser. 100% private & secure.</p>
+        </div>
+
+        <!-- Tool Card -->
+        <div class="tool-card">
+            <!-- Dropzone -->
+            <div class="drop-zone" id="jpgPdfDropZone">
+                <i class="fas fa-file-image drop-icon" style="color: #3498db; font-size: 40px; margin-bottom: 12px;"></i>
+                <h3>Drag & Drop your images here</h3>
+                <p>Supports JPG, PNG, WebP & HEIC images</p>
+                <input type="file" id="jpgPdfFileInput" accept="image/*" multiple style="display: none;">
+                <button class="btn btn-primary" onclick="document.getElementById('jpgPdfFileInput').click()" style="margin-top: 12px;">
+                    <i class="fas fa-folder-open"></i> Select Images
+                </button>
+            </div>
+
+            <!-- Options & Action Bar -->
+            <div class="controls-panel" id="jpgPdfControls" style="display: none; margin-top: 20px; flex-wrap: wrap; gap: 16px; align-items: center;">
+                <div class="control-group">
+                    <label style="font-weight: 600; font-size: 14px;">Page Orientation:</label>
+                    <select id="pdfOrientationSelect" class="form-select" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border);">
+                        <option value="p">Portrait</option>
+                        <option value="l">Landscape</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label style="font-weight: 600; font-size: 14px;">Margin:</label>
+                    <select id="pdfMarginSelect" class="form-select" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border);">
+                        <option value="0">No Margin</option>
+                        <option value="10" selected>Small Margin (10px)</option>
+                        <option value="20">Big Margin (20px)</option>
+                    </select>
+                </div>
+                <button class="btn btn-success" id="createPdfBtn" style="padding: 10px 20px; background: #27ae60; color: #fff; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                    <i class="fas fa-file-pdf"></i> Download PDF
+                </button>
+            </div>
+
+            <!-- Loaded Files List -->
+            <div id="jpgPdfFilesList" style="margin-top: 24px; display: flex; flex-wrap: wrap; gap: 12px;"></div>
+        </div>
+
+        <!-- FAQ Section -->
+        <section class="seo-content" style="margin-top: 40px;">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-accordion">
+                <details class="faq-item">
+                    <summary>How do I convert JPG images to PDF for free?</summary>
+                    <p>Drag and drop your images into the box above, arrange them if needed, select your page orientation, and click "Download PDF".</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Is there a file limit for converting images to PDF?</summary>
+                    <p>No! WebToolkitBox is 100% free with unlimited batch processing directly inside your browser.</p>
+                </details>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer" style="margin-top: 60px; padding: 24px 0; border-top: 1px solid var(--border); text-align: center; font-size: 13px; color: var(--text-m);">
+        <p>&copy; 2026 WebToolkitBox — Free Online JPG to PDF Converter.</p>
+    </footer>
+
+    <script>
+      const fileInput = document.getElementById('jpgPdfFileInput');
+      const dropZone = document.getElementById('jpgPdfDropZone');
+      const controls = document.getElementById('jpgPdfControls');
+      const filesList = document.getElementById('jpgPdfFilesList');
+      const createPdfBtn = document.getElementById('createPdfBtn');
+
+      let loadedImages = [];
+
+      dropZone.addEventListener('click', (e) => { if (e.target.tagName !== 'BUTTON') fileInput.click(); });
+      fileInput.addEventListener('change', (e) => {
+          const files = Array.from(e.target.files);
+          files.forEach(file => {
+              const reader = new FileReader();
+              reader.onload = (event) => {
+                  loadedImages.push(event.target.result);
+                  renderThumbnails();
+              };
+              reader.readAsDataURL(file);
+          });
+      });
+
+      function renderThumbnails() {
+          if (loadedImages.length > 0) controls.style.display = 'flex';
+          filesList.innerHTML = '';
+          loadedImages.forEach((src, idx) => {
+              const thumb = document.createElement('div');
+              thumb.style.cssText = 'position: relative; width: 100px; height: 100px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border);';
+              thumb.innerHTML = `
+                  <img src="${src}" style="width: 100%; height: 100%; object-fit: cover;">
+                  <button onclick="removeImg(${idx})" style="position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.6); color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer;">&times;</button>
+              `;
+              filesList.appendChild(thumb);
+          });
+      }
+
+      window.removeImg = function(idx) {
+          loadedImages.splice(idx, 1);
+          if (loadedImages.length === 0) controls.style.display = 'none';
+          renderThumbnails();
+      };
+
+      createPdfBtn.addEventListener('click', () => {
+          if (loadedImages.length === 0) return;
+          const { jsPDF } = window.jspdf;
+          const orientation = document.getElementById('pdfOrientationSelect').value;
+          const margin = parseInt(document.getElementById('pdfMarginSelect').value);
+          
+          const doc = new jsPDF({ orientation: orientation, unit: 'mm', format: 'a4' });
+          const pageWidth = doc.internal.pageSize.getWidth();
+          const pageHeight = doc.internal.pageSize.getHeight();
+
+          loadedImages.forEach((imgData, idx) => {
+              if (idx > 0) doc.addPage();
+              const availableWidth = pageWidth - (margin * 2);
+              const availableHeight = pageHeight - (margin * 2);
+              doc.addImage(imgData, 'JPEG', margin, margin, availableWidth, availableHeight);
+          });
+
+          doc.save('converted-images.pdf');
+      });
+    </script>
+</body>
+</html>
