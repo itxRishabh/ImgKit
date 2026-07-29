@@ -39,6 +39,41 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="style.css">
+
+    <!-- Structured Schema Markup: FAQPage (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+                {
+                    "@type": "Question",
+                    "name": "How can I convert HEIC to JPG for free?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Simply upload your HEIC files to our free online Image Converter, select JPG/JPEG as the output format, and click download. It converts your iPhone photos instantly."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "Are my images safe when using this converter?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Yes. Our Image Converter operates 100% locally in your web browser. Your photos are never uploaded to any server, keeping them completely secure and private."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "Does this tool support batch image conversion?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Yes, you can drag and drop multiple images at once to convert them in batches, saving you time. You can download all converted files in a single ZIP package."
+                    }
+                }
+            ]
+        }
+    </script>
+        
 </head>
 <body>
     <div class="app-container">
@@ -242,6 +277,41 @@
             <p style="margin-bottom: 24px; font-size: 15px;">Our online format converter supports input files from almost all formats including standard WebP, PNG, JPEG, GIF, BMP, high-fidelity TIFF, and mobile Apple HEIC/HEIF pictures. All files are processed 100% locally inside your web browser, ensuring complete privacy.</p>
         </section>
     
+        
+        <!-- FAQ Accordion Section -->
+        <section class="features-section" style="padding: 40px 0 60px; max-width: 1000px; margin: 0 auto;">
+            <h2 class="features-title" style="margin-bottom: 32px; font-size: 24px; color: var(--text); font-weight: 700;">Frequently Asked Questions</h2>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer;">
+                    <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        How can I convert HEIC to JPG for free?
+                        <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
+                    </summary>
+                    <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+                        Simply upload your HEIC files to our free online Image Converter, select JPG/JPEG as the output format, and click download. It converts your iPhone photos instantly.
+                    </p>
+                </details>
+                <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer;">
+                    <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        Are my images safe when using this converter?
+                        <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
+                    </summary>
+                    <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+                        Yes. Our Image Converter operates 100% locally in your web browser. Your photos are never uploaded to any server, keeping them completely secure and private.
+                    </p>
+                </details>
+                <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer;">
+                    <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        Does this tool support batch image conversion?
+                        <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
+                    </summary>
+                    <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+                        Yes, you can drag and drop multiple images at once to convert them in batches, saving you time. You can download all converted files in a single ZIP package.
+                    </p>
+                </details>
+            </div>
+        </section>
+        
                 <!-- Footer -->
         <footer class="footer">
             <div class="footer-top">

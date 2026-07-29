@@ -39,6 +39,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="style.css">
+
+    <!-- Structured Schema Markup: FAQPage (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+                {
+                    "@type": "Question",
+                    "name": "Can I remove watermarks and text automatically?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Yes, type the text keyword in the search query box to automatically highlight overlays, or brush over the watermark to erase it."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "Does object removal leave blurry spots?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Our smart inpainting engine fills the highlighted area using surrounding textures, making the removal look seamless."
+                    }
+                }
+            ]
+        }
+    </script>
+        
 </head>
 <body>
     <div class="app-container">
@@ -207,6 +234,32 @@
             </ol>
         </section>
     
+        
+        <!-- FAQ Accordion Section -->
+        <section class="features-section" style="padding: 40px 0 60px; max-width: 1000px; margin: 0 auto;">
+            <h2 class="features-title" style="margin-bottom: 32px; font-size: 24px; color: var(--text); font-weight: 700;">Frequently Asked Questions</h2>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer;">
+                    <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        Can I remove watermarks and text automatically?
+                        <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
+                    </summary>
+                    <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+                        Yes, type the text keyword in the search query box to automatically highlight overlays, or brush over the watermark to erase it.
+                    </p>
+                </details>
+                <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer;">
+                    <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        Does object removal leave blurry spots?
+                        <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
+                    </summary>
+                    <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+                        Our smart inpainting engine fills the highlighted area using surrounding textures, making the removal look seamless.
+                    </p>
+                </details>
+            </div>
+        </section>
+        
                 <!-- Footer -->
         <footer class="footer">
             <div class="footer-top">

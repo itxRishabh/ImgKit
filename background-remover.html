@@ -39,6 +39,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="style.css">
+
+    <!-- Structured Schema Markup: FAQPage (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+                {
+                    "@type": "Question",
+                    "name": "How does the AI remove backgrounds?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "The tool loads a lightweight machine learning model directly in your browser. It detects the primary subject and turns background pixels transparent."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "Is background removal free?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Yes, it is 100% free with no limits, no signups, and no watermarks."
+                    }
+                }
+            ]
+        }
+    </script>
+        
 </head>
 <body>
     <div class="app-container">
@@ -198,6 +225,32 @@
             </ol>
         </section>
     
+        
+        <!-- FAQ Accordion Section -->
+        <section class="features-section" style="padding: 40px 0 60px; max-width: 1000px; margin: 0 auto;">
+            <h2 class="features-title" style="margin-bottom: 32px; font-size: 24px; color: var(--text); font-weight: 700;">Frequently Asked Questions</h2>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer;">
+                    <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        How does the AI remove backgrounds?
+                        <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
+                    </summary>
+                    <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+                        The tool loads a lightweight machine learning model directly in your browser. It detects the primary subject and turns background pixels transparent.
+                    </p>
+                </details>
+                <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer;">
+                    <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        Is background removal free?
+                        <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
+                    </summary>
+                    <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+                        Yes, it is 100% free with no limits, no signups, and no watermarks.
+                    </p>
+                </details>
+            </div>
+        </section>
+        
                 <!-- Footer -->
         <footer class="footer">
             <div class="footer-top">

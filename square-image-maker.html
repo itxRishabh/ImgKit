@@ -39,6 +39,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="style.css">
+
+    <!-- Structured Schema Markup: FAQPage (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+                {
+                    "@type": "Question",
+                    "name": "How can I make an image square without cropping it?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Our Make Image Square tool extends the canvas margins of rectangular images to a 1:1 square ratio. You can choose to extend borders with a blur, solid colors, or transparent padding."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "What is Smart AI Edge Extend?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "It is an intelligent edge padding mode that extends your image borders seamlessly using neighboring pixels, preventing blank border lines."
+                    }
+                }
+            ]
+        }
+    </script>
+        
 </head>
 <body>
     <div class="app-container">
@@ -297,6 +324,32 @@
             </ol>
         </section>
     
+        
+        <!-- FAQ Accordion Section -->
+        <section class="features-section" style="padding: 40px 0 60px; max-width: 1000px; margin: 0 auto;">
+            <h2 class="features-title" style="margin-bottom: 32px; font-size: 24px; color: var(--text); font-weight: 700;">Frequently Asked Questions</h2>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer;">
+                    <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        How can I make an image square without cropping it?
+                        <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
+                    </summary>
+                    <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+                        Our Make Image Square tool extends the canvas margins of rectangular images to a 1:1 square ratio. You can choose to extend borders with a blur, solid colors, or transparent padding.
+                    </p>
+                </details>
+                <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer;">
+                    <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        What is Smart AI Edge Extend?
+                        <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
+                    </summary>
+                    <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+                        It is an intelligent edge padding mode that extends your image borders seamlessly using neighboring pixels, preventing blank border lines.
+                    </p>
+                </details>
+            </div>
+        </section>
+        
                 <!-- Footer -->
         <footer class="footer">
             <div class="footer-top">
