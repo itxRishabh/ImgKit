@@ -1,3 +1,15 @@
+
+// Universal Window Drag & Drop and Clipboard Paste Helper
+(function() {
+    window.addEventListener('dragover', (e) => { e.preventDefault(); }, false);
+    window.addEventListener('drop', (e) => {
+        // Prevent default browser behavior (opening file in tab)
+        if (e.target.tagName !== 'INPUT') {
+            e.preventDefault();
+        }
+    }, false);
+})();
+
 /**
  * ImgKit - All-in-One Image Toolkit
  * Converts images to 1:1 aspect ratio by extending canvas
@@ -180,11 +192,9 @@ class ImageSquare {
             this.handleFiles(e.dataTransfer.files);
         });
 
-        // Paste from clipboard (Ctrl+V / Cmd+V) - only when square tool is active
+        // Paste from clipboard (Ctrl+V / Cmd+V)
         document.addEventListener('paste', (e) => {
-            if (document.getElementById('squareTool').classList.contains('active')) {
-                this.handlePaste(e);
-            }
+            this.handlePaste(e);
         });
 
         // Background type toggle
@@ -1279,9 +1289,7 @@ class ImageConverter {
 
         // Paste from clipboard (Ctrl+V / Cmd+V) - only when converter tool is active
         document.addEventListener('paste', (e) => {
-            if (document.getElementById('converterTool').classList.contains('active')) {
-                this.handlePaste(e);
-            }
+            this.handlePaste(e);
         });
 
         // Format toggle
@@ -2460,9 +2468,7 @@ class BackgroundRemover {
 
         // Paste from clipboard
         document.addEventListener('paste', (e) => {
-            if (document.getElementById('removerTool').classList.contains('active')) {
-                this.handlePaste(e);
-            }
+            this.handlePaste(e);
         });
 
         // Background type toggle
