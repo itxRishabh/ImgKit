@@ -81,14 +81,14 @@
                         Lanczos3 AI <span class="gradient-text">Image Upscaler</span>
                     </h1>
                     <p class="hero-subtitle">
-                        Upscale photos 2x, 4x, or 8x with Lanczos3 WebWorker super-sampling & unsharp mask detail sharpening. Zero quality loss.
+                        Upscale photos 2x, 4x, or 8x with Lanczos3 WebWorker & WASM super-sampling & unsharp mask detail sharpening. Zero quality loss.
                     </p>
                 </section>
 
                 <!-- High-value differentiator badges -->
                 <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; justify-content: center;">
                     <div style="background: rgba(155, 89, 182, 0.1); border: 1px solid rgba(155, 89, 182, 0.2); color: #9b59b6; padding: 8px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
-                        <i class="fas fa-bolt"></i> Pica Lanczos3 WebWorker Engine
+                        <i class="fas fa-bolt"></i> Pica WASM + WebWorker Engine (Peak Performance)
                     </div>
                     <div style="background: rgba(39, 174, 96, 0.1); border: 1px solid rgba(39, 174, 96, 0.2); color: #27ae60; padding: 8px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
                         <i class="fas fa-user-shield"></i> 100% Local & Private (No Uploads)
@@ -162,7 +162,7 @@
                                 <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
                             </summary>
                             <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
-                                Standard browser canvas scaling uses basic bilinear blurring. The Pica engine utilizes the mathematical Lanczos3 windowed sinc filter to reconstruct missing high-frequency details with sharp clarity.
+                                Standard browser canvas scaling uses basic bilinear blurring. The Pica WASM engine utilizes the mathematical Lanczos3 windowed sinc filter with WebWorker multi-threading to reconstruct missing high-frequency details with sharp clarity.
                             </p>
                         </details>
                     </div>
@@ -199,8 +199,12 @@
       let sourceImg = null;
       let picaInstance = null;
 
+      // Unlocks PEAK PERFORMANCE: Enable WebAssembly + Concurrent WebWorkers (CWW) + Multi-threading
       if (typeof pica !== 'undefined') {
-          picaInstance = pica();
+          picaInstance = pica({
+              features: ['js', 'wasm', 'cww'],
+              idle: 2000
+          });
       }
 
       dropZone.addEventListener('click', (e) => { if (e.target.tagName !== 'BUTTON') fileInput.click(); });
@@ -222,7 +226,7 @@
       processBtn.addEventListener('click', async () => {
           if (!sourceImg) return;
           processBtn.disabled = true;
-          processBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Lanczos3...';
+          processBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Peak Lanczos3 WASM...';
 
           const factor = parseInt(document.getElementById('scaleFactorSelect').value);
           const filter = document.getElementById('filterSelect').value;
@@ -243,6 +247,7 @@
           if (picaInstance) {
               await picaInstance.resize(srcCanvas, canvas, {
                   filter: filter,
+                  alpha: true,
                   unsharpAmount: sharpenMode === 'high' ? 160 : (sharpenMode === 'medium' ? 80 : 0),
                   unsharpRadius: 0.6,
                   unsharpThreshold: 2
@@ -254,7 +259,7 @@
               ctx.drawImage(sourceImg, 0, 0, targetWidth, targetHeight);
           }
 
-          dimensionsInfo.textContent = \`Original: \${sourceImg.width} x \${sourceImg.height}px  |  Upscaled: \${targetWidth} x \${targetHeight}px (\${factor}x Lanczos3 Enlarge)\`;
+          dimensionsInfo.textContent = \`Original: \${sourceImg.width} x \${sourceImg.height}px  |  Upscaled: \${targetWidth} x \${targetHeight}px (\${factor}x Peak Lanczos3 WASM Enlarge)\`;
           downloadBtn.href = canvas.toDataURL('image/png');
           resultContainer.style.display = 'block';
 
