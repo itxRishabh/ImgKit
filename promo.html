@@ -12,16 +12,16 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Online Image Converter & AI Editor | WebToolkitBox</title>
-    <meta name="description" content="100% free, secure, and private browser-based image toolkit. Convert HEIC to JPG, PNG to WebP, remove backgrounds with AI, compress, crop & edit. No signup required.">
+    <title>100% Free Online Image Converter & AI Editor | WebToolkitBox</title>
+    <meta name="description" content="Stop paying for image converters & background removers. WebToolkitBox is 100% free, secure, and private in-browser image tools. Unlimited conversions. No signup.">
     <link rel="canonical" href="https://webtoolkitbox.com/promo">
     
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://webtoolkitbox.com/promo">
     <meta property="og:site_name" content="WebToolkitBox">
-    <meta property="og:title" content="Free Online Image Converter & AI Editor | WebToolkitBox">
-    <meta property="og:description" content="100% free, secure, and private browser-based image toolkit. Convert HEIC to JPG, PNG to WebP, remove backgrounds with AI, compress, crop & edit. No signup required.">
+    <meta property="og:title" content="100% Free Online Image Converter & AI Editor | WebToolkitBox">
+    <meta property="og:description" content="Stop paying for image converters & background removers. WebToolkitBox is 100% free, secure, and private in-browser image tools. Unlimited conversions. No signup.">
     <meta property="og:image" content="https://webtoolkitbox.com/images/og-card.png">
     
     <!-- Preconnect -->
@@ -37,13 +37,13 @@
     <style>
         .promo-hero {
             text-align: center;
-            padding: 80px 24px 40px;
-            max-width: 900px;
+            padding: 90px 24px 50px;
+            max-width: 950px;
             margin: 0 auto;
         }
         .promo-badge {
-            background: rgba(59, 130, 246, 0.1);
-            color: #3b82f6;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary);
             padding: 6px 14px;
             border-radius: 30px;
             font-size: 13px;
@@ -51,24 +51,73 @@
             display: inline-block;
             margin-bottom: 20px;
             letter-spacing: 0.5px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
         }
         .promo-title {
-            font-size: 48px;
+            font-size: 52px;
             font-weight: 800;
             line-height: 1.15;
-            letter-spacing: -1px;
+            letter-spacing: -1.5px;
             color: var(--text);
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
         .promo-subtitle {
-            font-size: 17px;
+            font-size: 18px;
             color: var(--text-muted);
             line-height: 1.6;
             margin-bottom: 40px;
+            max-width: 750px;
+            margin-left: auto;
+            margin-right: auto;
         }
+        
+        /* Comparison Table styles */
+        .comparison-section {
+            max-width: 900px;
+            margin: 60px auto;
+            padding: 0 24px;
+        }
+        .comp-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .comp-table th, .comp-table td {
+            padding: 18px 24px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .comp-table th {
+            background: rgba(255,255,255,0.02);
+            font-weight: 700;
+            color: var(--text);
+            font-size: 15px;
+        }
+        .comp-table td {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        .comp-check {
+            color: var(--primary);
+            font-weight: bold;
+        }
+        .comp-cross {
+            color: var(--error);
+            font-weight: bold;
+        }
+        .highlight-col {
+            background: rgba(16, 185, 129, 0.02);
+            font-weight: 600;
+            color: var(--text);
+        }
+
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 24px;
             margin: 60px 0;
         }
@@ -88,8 +137,6 @@
             width: 44px;
             height: 44px;
             border-radius: 10px;
-            background: rgba(16, 185, 129, 0.08);
-            color: var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -111,7 +158,7 @@
             background: rgba(255, 255, 255, 0.01);
             border-top: 1px solid var(--border);
             border-bottom: 1px solid var(--border);
-            padding: 60px 24px;
+            padding: 80px 24px;
             margin: 60px 0;
             text-align: center;
         }
@@ -125,8 +172,8 @@
         .testimonial-card {
             background: var(--surface);
             border: 1px solid var(--border);
-            padding: 24px;
-            border-radius: var(--radius-lg);
+            padding: 28px;
+            border-radius: var(--radius-xl);
             text-align: left;
             font-size: 14px;
             line-height: 1.6;
@@ -138,23 +185,25 @@
             margin-top: 16px;
         }
         .testimonial-avatar {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
-            background: var(--border);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 13px;
-            color: var(--text);
+            font-size: 14px;
         }
         @media (max-width: 768px) {
             .promo-title {
-                font-size: 32px;
+                font-size: 36px;
             }
             .promo-hero {
-                padding-top: 40px;
+                padding-top: 50px;
+            }
+            .comp-table th, .comp-table td {
+                padding: 12px 14px;
+                font-size: 13px;
             }
         }
     </style>
@@ -176,24 +225,74 @@
 
         <!-- Hero Section -->
         <section class="promo-hero">
-            <span class="promo-badge">⚡ 100% Free & Secure Online Tool</span>
+            <span class="promo-badge">🎉 Free & Unlimited — No Monthly Fees</span>
             <h1 class="promo-title">
-                The Private Image Toolkit <br><span class="gradient-text">Designed for Content Creators</span>
+                Stop Paying For Basic <br><span class="gradient-text">Image & AI Editing Tools</span>
             </h1>
             <p class="promo-subtitle">
-                No signups. No watermarks. No cloud uploads. Convert, compress, crop, remove backgrounds, and extract text privately in your browser using local machine learning.
+                Most online tools limit your batch size, put watermarks on your cutouts, or charge monthly subscriptions. WebToolkitBox does it all for free, 100% privately in your web browser.
             </p>
 
             <!-- Quick Start CTA Card -->
-            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 40px 24px; max-width: 600px; margin: 0 auto; box-shadow: 0 20px 40px rgba(0,0,0,0.3);">
+            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 40px 24px; max-width: 600px; margin: 0 auto; box-shadow: 0 20px 40px rgba(0,0,0,0.3); border-top: 3px solid var(--primary);">
                 <i class="fas fa-cubes" style="font-size: 40px; color: var(--primary); margin-bottom: 20px; display: inline-block;"></i>
-                <h2 style="font-size: 22px; color: var(--text); font-weight: 700; margin-bottom: 12px;">Launch WebToolkitBox Hub</h2>
+                <h2 style="font-size: 24px; color: var(--text); font-weight: 700; margin-bottom: 12px; letter-spacing: -0.5px;">Launch the Free Toolkit</h2>
                 <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px;">
-                    Access all 11+ image and video tools directly from a centralized, lightning-fast dashboard.
+                    Instant access to all 11+ image, vector, and video converters. No credit card required. No signup pages.
                 </p>
-                <a href="/" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 600; padding: 14px 28px; border-radius: var(--radius-md); font-size: 15px;">
-                    Enter Dashboard Hub <i class="fas fa-arrow-right"></i>
+                <a href="/" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 600; padding: 16px 32px; border-radius: var(--radius-md); font-size: 15px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);">
+                    Start Processing Free <i class="fas fa-arrow-right"></i>
                 </a>
+            </div>
+        </section>
+
+        <!-- Comparison Table Section -->
+        <section class="comparison-section">
+            <h2 style="font-size: 26px; color: var(--text); font-weight: 700; text-align: center; margin-bottom: 10px; letter-spacing: -0.5px;">How We Compare</h2>
+            <p style="font-size: 14px; color: var(--text-muted); text-align: center; margin-bottom: 32px;">Why users are switching from expensive subscription tools to WebToolkitBox.</p>
+            
+            <div style="overflow-x: auto; width: 100%;">
+                <table class="comp-table">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th class="highlight-col" style="color: var(--primary);">WebToolkitBox</th>
+                            <th>Paid Alternatives</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Monthly Cost</strong></td>
+                            <td class="highlight-col" style="color: var(--primary);">$0 (Free Forever)</td>
+                            <td>$9 - $19 / month</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Batch HEIC to JPG</strong></td>
+                            <td class="highlight-col"><span class="comp-check"><i class="fas fa-check"></i></span> Unlimited Files</td>
+                            <td>Max 5-10 files / day</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Background Remover AI</strong></td>
+                            <td class="highlight-col"><span class="comp-check"><i class="fas fa-check"></i></span> Free (Full Resolution)</td>
+                            <td>Paid credits / Low-res only</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Your Image Privacy</strong></td>
+                            <td class="highlight-col"><span class="comp-check"><i class="fas fa-check"></i></span> Local (Never uploaded)</td>
+                            <td>Stored on cloud servers</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Watermarks</strong></td>
+                            <td class="highlight-col"><span class="comp-check"><i class="fas fa-check"></i></span> None</td>
+                            <td>Forced on free tiers</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Account Signup</strong></td>
+                            <td class="highlight-col"><span class="comp-check"><i class="fas fa-check"></i></span> Not required</td>
+                            <td>Mandatory registration</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </section>
 
@@ -201,56 +300,56 @@
         <section style="max-width: 1000px; margin: 0 auto; padding: 0 24px;">
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-card-icon" style="background: rgba(59, 130, 246, 0.08); color: #3b82f6;"><i class="fas fa-lock"></i></div>
-                    <h3 class="feature-card-title">100% Client-Side Privacy</h3>
-                    <p class="feature-card-desc">Unlike traditional converters, our tools process your images locally on your device. Your sensitive photos never touch any server.</p>
+                    <div class="feature-card-icon" style="background: rgba(59, 130, 246, 0.08); color: #3b82f6;"><i class="fas fa-shield-halved"></i></div>
+                    <h3 class="feature-card-title">Bank-Grade Privacy</h3>
+                    <p class="feature-card-desc">Your photos, logos, and sensitive data are processed entirely inside your web browser. They never touch external cloud servers, keeping your data 100% private.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-card-icon" style="background: rgba(16, 185, 129, 0.08); color: var(--primary);"><i class="fas fa-bolt"></i></div>
-                    <h3 class="feature-card-title">WASM Powered Speed</h3>
-                    <p class="feature-card-desc">Experience lightning-fast file exports. Leveraging client WebAssembly, large batch operations compile in seconds.</p>
+                    <div class="feature-card-icon" style="background: rgba(16, 185, 129, 0.08); color: var(--primary);"><i class="fas fa-layer-group"></i></div>
+                    <h3 class="feature-card-title">Batch Processing Support</h3>
+                    <p class="feature-card-desc">Convert or remove backgrounds from dozens of images at once. Save time with our high-speed client WebAssembly pipeline and download as a single ZIP.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-card-icon" style="background: rgba(245, 158, 11, 0.08); color: #f59e0b;"><i class="fas fa-ban"></i></div>
-                    <h3 class="feature-card-title">No Signups or Watermarks</h3>
-                    <p class="feature-card-desc">Zero paywalls, registration blockades, or logo overlays on your files. Enjoy unrestricted usage for creators and businesses.</p>
+                    <div class="feature-card-icon" style="background: rgba(236, 72, 153, 0.08); color: #ec4899;"><i class="fas fa-sliders"></i></div>
+                    <h3 class="feature-card-title">Precise Quality Control</h3>
+                    <p class="feature-card-desc">Adjust compression bitrates, export resolutions up to 8x for vector SVGs, and control quality parameters dynamically to fit exact KB size limits.</p>
                 </div>
             </div>
         </section>
 
         <!-- Social Proof / Review Testimonials Section -->
         <section class="testimonial-section">
-            <h2 style="font-size: 24px; color: var(--text); font-weight: 700; margin-bottom: 8px;">Loved by Content Creators & Developers</h2>
-            <p style="font-size: 14px; color: var(--text-muted);">See how our local in-browser utilities optimize daily design workflows.</p>
+            <h2 style="font-size: 26px; color: var(--text); font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px;">What Creators & Developers Say</h2>
+            <p style="font-size: 14px; color: var(--text-muted); max-width: 600px; margin: 0 auto;">See how professionals are optimizing design workflows and cutting monthly costs with WebToolkitBox.</p>
             
             <div class="testimonial-grid">
                 <div class="testimonial-card">
-                    <p style="color: var(--text-muted); font-style: italic;">"Being able to convert high-res HEIC phone pictures to JPG in bulk locally is a lifesaver. It takes 2 seconds and is completely private."</p>
+                    <p style="color: var(--text-muted); font-style: italic;">"I used to pay $12/month for a background remover subscription just to cut out product photos for my shop. WebToolkitBox does it instantly for free at full resolution!"</p>
                     <div class="testimonial-user">
-                        <div class="testimonial-avatar" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6;">S</div>
+                        <div class="testimonial-avatar" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6;">M</div>
                         <div>
-                            <strong style="color: var(--text); display: block;">Sarah M.</strong>
-                            <span style="color: var(--text-muted); font-size: 12px;">Social Media Designer</span>
+                            <strong style="color: var(--text); display: block;">Marcus T.</strong>
+                            <span style="color: var(--text-muted); font-size: 12px;">Shopify E-commerce Owner</span>
                         </div>
                     </div>
                 </div>
                 <div class="testimonial-card">
-                    <p style="color: var(--text-muted); font-style: italic;">"The target size compressor lets me hit exact image KB limits for government portal uploads. Extremely handy and works 100% locally."</p>
+                    <p style="color: var(--text-muted); font-style: italic;">"Being able to convert 50+ iPhone HEIC photos to WebP at once directly in my browser without cloud upload bottlenecks has completely optimized our assets pipeline."</p>
                     <div class="testimonial-user">
-                        <div class="testimonial-avatar" style="background: rgba(16, 185, 129, 0.2); color: var(--primary);">R</div>
+                        <div class="testimonial-avatar" style="background: rgba(16, 185, 129, 0.2); color: var(--primary);">H</div>
                         <div>
-                            <strong style="color: var(--text); display: block;">Rahul K.</strong>
-                            <span style="color: var(--text-muted); font-size: 12px;">Web Developer</span>
+                            <strong style="color: var(--text); display: block;">Hannah G.</strong>
+                            <span style="color: var(--text-muted); font-size: 12px;">Creative Lead at Agency</span>
                         </div>
                     </div>
                 </div>
                 <div class="testimonial-card">
-                    <p style="color: var(--text-muted); font-style: italic;">"An amazing collection of tools. No watermarks, no signups, and incredibly fast. WebToolkitBox is my go-to for daily quick edits."</p>
+                    <p style="color: var(--text-muted); font-style: italic;">"The target size compressor is absolute magic. I can input '200KB' and it scales and adjusts quality automatically so that government portal uploads never reject my attachments."</p>
                     <div class="testimonial-user">
-                        <div class="testimonial-avatar" style="background: rgba(236, 72, 153, 0.2); color: #ec4899;">J</div>
+                        <div class="testimonial-avatar" style="background: rgba(236, 72, 153, 0.2); color: #ec4899;">A</div>
                         <div>
-                            <strong style="color: var(--text); display: block;">James L.</strong>
-                            <span style="color: var(--text-muted); font-size: 12px;">E-commerce Owner</span>
+                            <strong style="color: var(--text); display: block;">Amit S.</strong>
+                            <span style="color: var(--text-muted); font-size: 12px;">Freelance Developer</span>
                         </div>
                     </div>
                 </div>
@@ -259,24 +358,42 @@
 
         <!-- FAQ Section -->
         <section class="features-section" style="padding: 40px 0 60px; max-width: 1000px; margin: 0 auto;">
-            <h2 class="features-title" style="margin-bottom: 32px; font-size: 24px; color: var(--text); font-weight: 700; text-align: center;">Got Questions?</h2>
+            <h2 class="features-title" style="margin-bottom: 32px; font-size: 26px; color: var(--text); font-weight: 700; text-align: center; letter-spacing: -0.5px;">Frequently Asked Questions</h2>
             <div style="display: flex; flex-direction: column; gap: 16px; padding: 0 24px;">
                 <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer; text-align: left;">
                     <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
-                        Why should I use WebToolkitBox instead of other online converters?
+                        How can WebToolkitBox be 100% free with no limits?
                         <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
                     </summary>
                     <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
-                        Unlike most tools that upload your files to external cloud servers (posing privacy risks), WebToolkitBox processes your files locally on your own computer using JavaScript and WebAssembly. Your files never leave your device.
+                        Unlike traditional websites that process files on expensive cloud servers, WebToolkitBox uses modern client-side JavaScript and WebAssembly to process images directly inside your own browser. Since we don't have to pay for massive file hosting and cloud computation, we can pass 100% of the savings back to you and keep the tools unlimited.
                     </p>
                 </details>
                 <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer; text-align: left;">
                     <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
-                        Are there any usage limits?
+                        Do my images get saved on any server?
                         <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
                     </summary>
                     <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
-                        No. There are no limitations on file sizes, batch quantities, or number of conversions. It is completely free for all personal and business uses.
+                        No. Your images are never uploaded to our servers. All conversions, cropping, compression, and AI background removal tasks run locally on your device. Your privacy is fully secured.
+                    </p>
+                </details>
+                <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer; text-align: left;">
+                    <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        How do I convert HEIC photos from my iPhone?
+                        <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
+                    </summary>
+                    <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+                        Simply upload your HEIC files inside the Image Converter tool, select your target output format (JPG, PNG, or WebP), and click download. You can upload dozens of HEIC files at once to convert them in batch.
+                    </p>
+                </details>
+                <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer; text-align: left;">
+                    <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        Does the background remover support high-resolution output?
+                        <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
+                    </summary>
+                    <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+                        Yes. While other sites downscale your images to standard resolution on free tiers, WebToolkitBox preserves your original file dimensions and downloads your transparent cutouts at full resolution.
                     </p>
                 </details>
             </div>
