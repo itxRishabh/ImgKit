@@ -3,10 +3,13 @@
 (function() {
     function initUniversalDragAndDrop() {
 
-        // Click anywhere inside drop area to open file browser
+        // Click anywhere inside drop area to open file browser (skip if page already handles it)
         document.querySelectorAll('.upload-area, .drop-zone').forEach(area => {
+            // Skip if this element already has inline click handlers attached
+            if (area.dataset.clickBound) return;
+            area.dataset.clickBound = 'true';
             area.addEventListener('click', (e) => {
-                if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'BUTTON') {
+                if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'BUTTON' && e.target.tagName !== 'I') {
                     const input = area.querySelector('input[type="file"]:not([webkitdirectory])') || 
                                   document.querySelector('input[type="file"]:not([webkitdirectory])');
                     if (input) input.click();
