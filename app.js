@@ -189,7 +189,11 @@ class ImageSquare {
     initEventListeners() {
         if (!this.uploadArea && !this.dropZone) return;
         // Upload area click
-        this.uploadArea.addEventListener('click', () => this.fileInput.click());
+        this.uploadArea.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') return;
+            e.stopPropagation();
+            this.fileInput.click();
+        });
 
         // File input change
         this.fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
@@ -1270,7 +1274,11 @@ class ImageConverter {
     initEventListeners() {
         if (!this.uploadArea && !this.dropZone) return;
         // Upload area click
-        this.uploadArea.addEventListener('click', () => this.fileInput.click());
+        this.uploadArea.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') return;
+            e.stopPropagation();
+            this.fileInput.click();
+        });
 
         // File input change
         this.fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
@@ -2465,7 +2473,11 @@ class BackgroundRemover {
     initEventListeners() {
         if (!this.uploadArea && !this.dropZone) return;
         // Upload area click
-        this.uploadArea.addEventListener('click', () => this.fileInput.click());
+        this.uploadArea.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') return;
+            e.stopPropagation();
+            this.fileInput.click();
+        });
 
         // File input change
         this.fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
@@ -2946,7 +2958,11 @@ class ImageCropper {
     initEventListeners() {
         if (!this.uploadArea && !this.dropZone) return;
         // Upload
-        this.uploadArea.addEventListener('click', () => this.fileInput.click());
+        this.uploadArea.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') return;
+            e.stopPropagation();
+            this.fileInput.click();
+        });
         this.fileInput.addEventListener('change', (e) => {
             if (e.target.files.length) this.loadImage(e.target.files[0]);
         });
@@ -3308,7 +3324,11 @@ class FaviconGenerator {
 
     initEventListeners() {
         if (!this.uploadArea && !this.dropZone) return;
-        this.uploadArea.addEventListener('click', () => this.fileInput.click());
+        this.uploadArea.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') return;
+            e.stopPropagation();
+            this.fileInput.click();
+        });
         this.fileInput.addEventListener('change', (e) => this.handleFile(e.target.files[0]));
         
         this.uploadArea.addEventListener('dragover', (e) => {
@@ -3508,7 +3528,11 @@ class ImageTrimmer {
 
     initEventListeners() {
         if (!this.uploadArea && !this.dropZone) return;
-        this.uploadArea.addEventListener('click', () => this.fileInput.click());
+        this.uploadArea.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') return;
+            e.stopPropagation();
+            this.fileInput.click();
+        });
         this.fileInput.addEventListener('change', (e) => this.handleFile(e.target.files[0]));
         
         this.uploadArea.addEventListener('dragover', (e) => {
@@ -3684,7 +3708,11 @@ class ImageOCR {
     initEventListeners() {
         if (!this.uploadArea && !this.dropZone) return;
         // Upload
-        this.uploadArea.addEventListener('click', () => this.fileInput.click());
+        this.uploadArea.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') return;
+            e.stopPropagation();
+            this.fileInput.click();
+        });
         this.fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
 
         // Drag and drop
@@ -4053,7 +4081,11 @@ class WatermarkRemover {
     initEventListeners() {
         if (!this.uploadArea && !this.dropZone) return;
         // Upload trigger
-        this.uploadArea.addEventListener('click', () => this.fileInput.click());
+        this.uploadArea.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') return;
+            e.stopPropagation();
+            this.fileInput.click();
+        });
         this.fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
 
         // Drag and drop
@@ -4636,7 +4668,11 @@ class VideoTool {
     initEventListeners() {
         if (!this.uploadArea && !this.dropZone) return;
         // Drop area click
-        this.uploadArea.addEventListener('click', () => this.fileInput.click());
+        this.uploadArea.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') return;
+            e.stopPropagation();
+            this.fileInput.click();
+        });
         this.fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
 
         // Drag/Drop handling
@@ -5031,21 +5067,28 @@ class SizeManager {
         });
 
         // Event listeners
-        this.uploadArea.addEventListener('click', () => this.fileInput.click());
+        this.uploadArea.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') return;
+            e.stopPropagation();
+            this.fileInput.click();
+        });
         this.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
 
         // Drag & Drop
         this.uploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             this.uploadArea.classList.add('dragover');
         });
 
-        this.uploadArea.addEventListener('dragleave', () => {
+        this.uploadArea.addEventListener('dragleave', (e) => {
+            e.stopPropagation();
             this.uploadArea.classList.remove('dragover');
         });
 
         this.uploadArea.addEventListener('drop', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             this.uploadArea.classList.remove('dragover');
             if (e.dataTransfer.files.length > 0) {
                 this.fileInput.files = e.dataTransfer.files;
@@ -5526,7 +5569,11 @@ class SVGToImageConverter {
         });
         
         this.codeInput.addEventListener('input', () => this.updatePreviewFromCode());
-        this.uploadArea.addEventListener('click', () => this.fileInput.click());
+        this.uploadArea.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') return;
+            e.stopPropagation();
+            this.fileInput.click();
+        });
         this.fileInput.addEventListener('change', () => this.handleFileSelect());
         
         this.uploadArea.addEventListener('dragover', (e) => {
