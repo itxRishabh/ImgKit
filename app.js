@@ -1211,8 +1211,8 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Initialize the app
-const imageSquare = new ImageSquare();
+let imageSquare;
+try { imageSquare = new ImageSquare(); } catch(e) { console.warn('ImageSquare init skipped:', e.message); }
 
 /**
  * ImageConverter - Format Converter Tool
@@ -2420,8 +2420,8 @@ class ImageConverter {
     }
 }
 
-// Initialize the converter
-const imageConverter = new ImageConverter();
+let imageConverter;
+try { imageConverter = new ImageConverter(); } catch(e) { console.warn('ImageConverter init skipped:', e.message); }
 
 /**
  * BackgroundRemover - AI-powered background removal
@@ -2905,8 +2905,8 @@ class BackgroundRemover {
     }
 }
 
-// Initialize the background remover
-const backgroundRemover = new BackgroundRemover();
+let backgroundRemover;
+try { backgroundRemover = new BackgroundRemover(); } catch(e) { console.warn('BackgroundRemover init skipped:', e.message); }
 
 /**
  * ImageCropper - Image Crop Tool
@@ -3284,8 +3284,8 @@ class ImageCropper {
     }
 }
 
-// Initialize the cropper
-const imageCropper = new ImageCropper();
+let imageCropper;
+try { imageCropper = new ImageCropper(); } catch(e) { console.warn('ImageCropper init skipped:', e.message); }
 
 /**
  * FaviconGenerator - Tool to generate favicons for all platforms
@@ -3523,7 +3523,7 @@ class ImageTrimmer {
         this.colorTypeToggle = document.getElementById('trimColorTypeToggle');
         this.applyBtn = document.getElementById('trimApplyBtn');
         this.loadingOverlay = document.getElementById('loadingOverlay');
-        this.ctx = this.canvas.getContext('2d');
+        this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
     }
 
     initEventListeners() {
@@ -4056,9 +4056,9 @@ class WatermarkRemover {
         this.statsSection = document.getElementById('watermarkStatsSection');
 
         this.mainCanvas = document.getElementById('watermarkCanvas');
-        this.mainCtx = this.mainCanvas.getContext('2d');
+        this.mainCtx = this.mainCanvas ? this.mainCanvas.getContext('2d') : null;
         this.maskCanvas = document.getElementById('watermarkMaskCanvas');
-        this.maskCtx = this.maskCanvas.getContext('2d', { willReadFrequently: true });
+        this.maskCtx = this.maskCanvas ? this.maskCanvas.getContext('2d', { willReadFrequently: true }) : null;
 
         // Brush tools
         this.brushToolBtn = document.getElementById('watermarkBrushTool');
@@ -5809,14 +5809,15 @@ class SVGToImageConverter {
     }
 }
 
-// Initialize tools
-const faviconGen = new FaviconGenerator();
-const imageTrimmer = new ImageTrimmer();
-const imageOCR = new ImageOCR();
-const watermarkRemover = new WatermarkRemover();
-const videoToolInstance = new VideoTool();
-const sizeManagerInstance = new SizeManager();
-const svgToImageInstance = new SVGToImageConverter();
+// Initialize tools — wrapped in try-catch so one failing class doesn't halt the rest
+let faviconGen, imageTrimmer, imageOCR, watermarkRemover, videoToolInstance, sizeManagerInstance, svgToImageInstance;
+try { faviconGen = new FaviconGenerator(); } catch(e) { console.warn('FaviconGenerator init skipped:', e.message); }
+try { imageTrimmer = new ImageTrimmer(); } catch(e) { console.warn('ImageTrimmer init skipped:', e.message); }
+try { imageOCR = new ImageOCR(); } catch(e) { console.warn('ImageOCR init skipped:', e.message); }
+try { watermarkRemover = new WatermarkRemover(); } catch(e) { console.warn('WatermarkRemover init skipped:', e.message); }
+try { videoToolInstance = new VideoTool(); } catch(e) { console.warn('VideoTool init skipped:', e.message); }
+try { sizeManagerInstance = new SizeManager(); } catch(e) { console.warn('SizeManager init skipped:', e.message); }
+try { svgToImageInstance = new SVGToImageConverter(); } catch(e) { console.warn('SVGToImageConverter init skipped:', e.message); }
 
 // Tool Navigation - Switch between tools
 document.querySelectorAll('.tool-tab').forEach(tab => {
