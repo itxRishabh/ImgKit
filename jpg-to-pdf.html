@@ -189,7 +189,7 @@
 
       dropZone.dataset.clickBound = 'true';
       dropZone.addEventListener('click', (e) => {
-          if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') return;
+          if (e.target.closest('button') || e.target.tagName === 'INPUT') return;
           e.stopPropagation();
           fileInput.click();
       });

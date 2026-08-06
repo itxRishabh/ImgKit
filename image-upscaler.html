@@ -237,7 +237,7 @@
         // Click to browse — single handler, prevents double-fire
         dropZone.dataset.clickBound = 'true'; // Prevent app.js from adding duplicate handler
         dropZone.addEventListener('click', (e) => {
-            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') return;
+            if (e.target.closest('button') || e.target.tagName === 'INPUT') return;
             e.stopPropagation();
             fileInput.click();
         });

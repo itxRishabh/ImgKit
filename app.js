@@ -190,7 +190,7 @@ class ImageSquare {
         if (!this.uploadArea && !this.dropZone) return;
         // Upload area click
         this.uploadArea.addEventListener('click', (e) => {
-            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') return;
+            if (e.target.closest('button') || e.target.tagName === 'INPUT') return;
             e.stopPropagation();
             this.fileInput.click();
         });
@@ -1275,7 +1275,7 @@ class ImageConverter {
         if (!this.uploadArea && !this.dropZone) return;
         // Upload area click
         this.uploadArea.addEventListener('click', (e) => {
-            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') return;
+            if (e.target.closest('button') || e.target.tagName === 'INPUT') return;
             e.stopPropagation();
             this.fileInput.click();
         });
@@ -2474,7 +2474,7 @@ class BackgroundRemover {
         if (!this.uploadArea && !this.dropZone) return;
         // Upload area click
         this.uploadArea.addEventListener('click', (e) => {
-            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') return;
+            if (e.target.closest('button') || e.target.tagName === 'INPUT') return;
             e.stopPropagation();
             this.fileInput.click();
         });
@@ -2959,7 +2959,7 @@ class ImageCropper {
         if (!this.uploadArea && !this.dropZone) return;
         // Upload
         this.uploadArea.addEventListener('click', (e) => {
-            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') return;
+            if (e.target.closest('button') || e.target.tagName === 'INPUT') return;
             e.stopPropagation();
             this.fileInput.click();
         });
@@ -3325,7 +3325,7 @@ class FaviconGenerator {
     initEventListeners() {
         if (!this.uploadArea && !this.dropZone) return;
         this.uploadArea.addEventListener('click', (e) => {
-            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') return;
+            if (e.target.closest('button') || e.target.tagName === 'INPUT') return;
             e.stopPropagation();
             this.fileInput.click();
         });
@@ -3529,7 +3529,7 @@ class ImageTrimmer {
     initEventListeners() {
         if (!this.uploadArea && !this.dropZone) return;
         this.uploadArea.addEventListener('click', (e) => {
-            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') return;
+            if (e.target.closest('button') || e.target.tagName === 'INPUT') return;
             e.stopPropagation();
             this.fileInput.click();
         });
@@ -3709,7 +3709,7 @@ class ImageOCR {
         if (!this.uploadArea && !this.dropZone) return;
         // Upload
         this.uploadArea.addEventListener('click', (e) => {
-            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') return;
+            if (e.target.closest('button') || e.target.tagName === 'INPUT') return;
             e.stopPropagation();
             this.fileInput.click();
         });
@@ -4082,7 +4082,7 @@ class WatermarkRemover {
         if (!this.uploadArea && !this.dropZone) return;
         // Upload trigger
         this.uploadArea.addEventListener('click', (e) => {
-            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') return;
+            if (e.target.closest('button') || e.target.tagName === 'INPUT') return;
             e.stopPropagation();
             this.fileInput.click();
         });
@@ -4669,7 +4669,7 @@ class VideoTool {
         if (!this.uploadArea && !this.dropZone) return;
         // Drop area click
         this.uploadArea.addEventListener('click', (e) => {
-            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') return;
+            if (e.target.closest('button') || e.target.tagName === 'INPUT') return;
             e.stopPropagation();
             this.fileInput.click();
         });
@@ -5068,7 +5068,7 @@ class SizeManager {
 
         // Event listeners
         this.uploadArea.addEventListener('click', (e) => {
-            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') return;
+            if (e.target.closest('button') || e.target.tagName === 'INPUT') return;
             e.stopPropagation();
             this.fileInput.click();
         });
@@ -5570,7 +5570,7 @@ class SVGToImageConverter {
         
         this.codeInput.addEventListener('input', () => this.updatePreviewFromCode());
         this.uploadArea.addEventListener('click', (e) => {
-            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'I') return;
+            if (e.target.closest('button') || e.target.tagName === 'INPUT') return;
             e.stopPropagation();
             this.fileInput.click();
         });
