@@ -348,64 +348,70 @@
         </footer>
     </div>
 
+    <script src="app.js"></script>
     <script>
-        const fileInput = document.getElementById('upscaleFileInput');
-        const dropZone = document.getElementById('upscaleDropZone');
-        const placeholder = document.getElementById('dropZonePlaceholder');
-        const resultContainer = document.getElementById('upscaleResultContainer');
-        const processBtn = document.getElementById('processUpscaleBtn');
-        const canvas = document.getElementById('upscaleCanvas');
-        const dimensionsInfo = document.getElementById('imageDimensionsInfo');
-        const downloadBtn = document.getElementById('downloadUpscaledBtn');
-        const statusText = document.getElementById('statusText');
+        document.addEventListener('DOMContentLoaded', () => {
+            const fileInput = document.getElementById('upscaleFileInput');
+            const dropZone = document.getElementById('upscaleDropZone');
+            const placeholder = document.getElementById('dropZonePlaceholder');
+            const resultContainer = document.getElementById('upscaleResultContainer');
+            const processBtn = document.getElementById('processUpscaleBtn');
+            const canvas = document.getElementById('upscaleCanvas');
+            const dimensionsInfo = document.getElementById('imageDimensionsInfo');
+            const downloadBtn = document.getElementById('downloadUpscaledBtn');
+            const statusText = document.getElementById('statusText');
 
-        let sourceImg = null;
-        let picaInstance = null;
+            let sourceImg = null;
+            let picaInstance = null;
 
-        // Unlocks PEAK PERFORMANCE: Enable WebAssembly + Concurrent WebWorkers (CWW) + Multi-threading
-        if (typeof pica !== 'undefined') {
-            picaInstance = pica({
-                features: ['js', 'wasm', 'cww'],
-                idle: 2000
+            // Unlocks PEAK PERFORMANCE: Enable WebAssembly + Concurrent WebWorkers (CWW) + Multi-threading
+            if (typeof pica !== 'undefined') {
+                picaInstance = pica({
+                    features: ['js', 'wasm', 'cww'],
+                    idle: 2000
+                });
+            }
+
+            // Solaris Pill Group Bindings
+            const scalePillBtns = document.querySelectorAll('#scalePillGroup .solaris-pill-btn');
+            const scaleSelect = document.getElementById('scaleFactorSelect');
+            scalePillBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    scalePillBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    scaleSelect.value = btn.getAttribute('data-val');
+                });
             });
-        }
 
-        // Solaris Pill Group Bindings
-        const scalePillBtns = document.querySelectorAll('#scalePillGroup .solaris-pill-btn');
-        const scaleSelect = document.getElementById('scaleFactorSelect');
-        scalePillBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                scalePillBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                scaleSelect.value = btn.getAttribute('data-val');
+            // Solaris Radio Cards
+            const radioCards = document.querySelectorAll('.solaris-radio-card');
+            radioCards.forEach(card => {
+                card.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    radioCards.forEach(c => c.classList.remove('active'));
+                    card.classList.add('active');
+                });
             });
-        });
 
-        // Solaris Radio Cards
-        const radioCards = document.querySelectorAll('.solaris-radio-card');
-        radioCards.forEach(card => {
-            card.addEventListener('click', () => {
-                radioCards.forEach(c => c.classList.remove('active'));
-                card.classList.add('active');
-            });
-        });
+            // Slider Value Text Updates
+            const detailSlider = document.getElementById('detailSlider');
+            if (detailSlider) {
+                detailSlider.addEventListener('input', (e) => {
+                    const v = parseInt(e.target.value);
+                    document.getElementById('detailValText').textContent = v > 75 ? 'High' : (v > 35 ? 'Moderate' : 'Low');
+                });
+            }
 
-        // Slider Value Text Updates
-        document.getElementById('detailSlider').addEventListener('input', (e) => {
-            const v = parseInt(e.target.value);
-            document.getElementById('detailValText').textContent = v > 75 ? 'High' : (v > 35 ? 'Moderate' : 'Low');
-        });
+            const noiseSlider = document.getElementById('noiseSlider');
+            if (noiseSlider) {
+                noiseSlider.addEventListener('input', (e) => {
+                    const v = parseInt(e.target.value);
+                    document.getElementById('noiseValText').textContent = v > 75 ? 'High' : (v > 35 ? 'Moderate' : 'Low');
+                });
+            }
 
-        document.getElementById('noiseSlider').addEventListener('input', (e) => {
-            const v = parseInt(e.target.value);
-            document.getElementById('noiseValText').textContent = v > 75 ? 'High' : (v > 35 ? 'Moderate' : 'Low');
-        });
-
-        ImgKitUploadEngine.bind({
-            container: dropZone,
-            fileInput: fileInput,
-            onFiles: (files) => {
-                const file = files[0];
+            function handleLoadedFile(file) {
                 if (!file) return;
                 const reader = new FileReader();
                 reader.onload = (event) => {
@@ -419,65 +425,78 @@
                 };
                 reader.readAsDataURL(file);
             }
-        });
 
-        processBtn.addEventListener('click', async () => {
-            if (!sourceImg) {
-                fileInput.click();
-                return;
-            }
-            processBtn.disabled = true;
-            processBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Upscaling WASM...';
-            statusText.textContent = 'Processing Peak Lanczos3 WASM Multi-threading...';
-
-            const factor = parseInt(scaleSelect.value);
-            const filter = document.getElementById('filterSelect').value;
-            const sharpenMode = document.getElementById('sharpenSelect').value;
-
-            const targetWidth = sourceImg.width * factor;
-            const targetHeight = sourceImg.height * factor;
-
-            const srcCanvas = document.createElement('canvas');
-            srcCanvas.width = sourceImg.width;
-            srcCanvas.height = sourceImg.height;
-            const srcCtx = srcCanvas.getContext('2d');
-            srcCtx.drawImage(sourceImg, 0, 0);
-
-            canvas.width = targetWidth;
-            canvas.height = targetHeight;
-
-            if (picaInstance) {
-                await picaInstance.resize(srcCanvas, canvas, {
-                    filter: filter,
-                    alpha: true,
-                    unsharpAmount: sharpenMode === 'high' ? 160 : (sharpenMode === 'medium' ? 80 : 0),
-                    unsharpRadius: 0.6,
-                    unsharpThreshold: 2
+            if (typeof ImgKitUploadEngine !== 'undefined') {
+                ImgKitUploadEngine.bind({
+                    container: dropZone,
+                    fileInput: fileInput,
+                    onFiles: (files) => handleLoadedFile(files[0])
                 });
             } else {
-                const ctx = canvas.getContext('2d');
-                ctx.imageSmoothingEnabled = true;
-                ctx.imageSmoothingQuality = 'high';
-                ctx.drawImage(sourceImg, 0, 0, targetWidth, targetHeight);
+                if (dropZone) dropZone.addEventListener('click', () => fileInput.click());
+                if (fileInput) fileInput.addEventListener('change', (e) => handleLoadedFile(e.target.files[0]));
             }
 
-            const activeFmtCard = document.querySelector('.solaris-radio-card.active');
-            const fmt = activeFmtCard ? activeFmtCard.getAttribute('data-fmt') : 'png';
-            const mime = fmt === 'jpeg' ? 'image/jpeg' : 'image/png';
-            const ext = fmt === 'jpeg' ? 'jpg' : 'png';
+            processBtn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                if (!sourceImg) {
+                    fileInput.click();
+                    return;
+                }
+                processBtn.disabled = true;
+                processBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Upscaling WASM...';
+                statusText.textContent = 'Processing Peak Lanczos3 WASM Multi-threading...';
 
-            dimensionsInfo.textContent = `Original: ${sourceImg.width} x ${sourceImg.height}px  |  Upscaled: ${targetWidth} x ${targetHeight}px (${factor}x Lanczos3 HD)`;
-            downloadBtn.href = canvas.toDataURL(mime, 0.92);
-            downloadBtn.download = `upscaled-image.${ext}`;
-            
-            resultContainer.style.display = 'block';
-            statusText.textContent = `Processing Complete (${targetWidth} x ${targetHeight}px)`;
+                const factor = parseInt(scaleSelect.value) || 4;
+                const filterSelect = document.getElementById('filterSelect');
+                const filter = filterSelect ? filterSelect.value : 'lanczos3';
+                const sharpenSelect = document.getElementById('sharpenSelect');
+                const sharpenMode = sharpenSelect ? sharpenSelect.value : 'medium';
 
-            processBtn.disabled = false;
-            processBtn.innerHTML = '<i class="fas fa-bolt"></i> Generate Upscale';
+                const targetWidth = sourceImg.width * factor;
+                const targetHeight = sourceImg.height * factor;
+
+                const srcCanvas = document.createElement('canvas');
+                srcCanvas.width = sourceImg.width;
+                srcCanvas.height = sourceImg.height;
+                const srcCtx = srcCanvas.getContext('2d');
+                srcCtx.drawImage(sourceImg, 0, 0);
+
+                canvas.width = targetWidth;
+                canvas.height = targetHeight;
+
+                if (picaInstance) {
+                    await picaInstance.resize(srcCanvas, canvas, {
+                        filter: filter,
+                        alpha: true,
+                        unsharpAmount: sharpenMode === 'high' ? 160 : (sharpenMode === 'medium' ? 80 : 0),
+                        unsharpRadius: 0.6,
+                        unsharpThreshold: 2
+                    });
+                } else {
+                    const ctx = canvas.getContext('2d');
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    ctx.drawImage(sourceImg, 0, 0, targetWidth, targetHeight);
+                }
+
+                const activeFmtCard = document.querySelector('.solaris-radio-card.active');
+                const fmt = activeFmtCard ? activeFmtCard.getAttribute('data-fmt') : 'png';
+                const mime = fmt === 'jpeg' ? 'image/jpeg' : 'image/png';
+                const ext = fmt === 'jpeg' ? 'jpg' : 'png';
+
+                dimensionsInfo.textContent = `Original: ${sourceImg.width} x ${sourceImg.height}px  |  Upscaled: ${targetWidth} x ${targetHeight}px (${factor}x Lanczos3 HD)`;
+                downloadBtn.href = canvas.toDataURL(mime, 0.92);
+                downloadBtn.download = `upscaled-image.${ext}`;
+                
+                resultContainer.style.display = 'block';
+                statusText.textContent = `Processing Complete (${targetWidth} x ${targetHeight}px)`;
+
+                processBtn.disabled = false;
+                processBtn.innerHTML = '<i class="fas fa-bolt"></i> Generate Upscale';
+            });
         });
     </script>
-    <script src="app.js" defer></script>
 </body>
 
 </html>
