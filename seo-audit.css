@@ -109,11 +109,10 @@ body {
 }
 
 .brand-logo-img {
-    width: 100px;
-    height: 100px;
+    height: 56px;
+    width: auto;
     object-fit: contain;
     display: block;
-    border-radius: 4px;
 }
 
 .logo-icon {
