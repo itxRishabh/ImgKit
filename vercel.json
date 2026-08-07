@@ -47,20 +47,26 @@
   "redirects": [
     {
       "source": "/(.*)",
+      "has": [{ "type": "host", "value": "webtoolkitbox.com" }],
+      "destination": "https://www.webtoolkitbox.com/$1",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
       "has": [{ "type": "host", "value": "imgkit-sigma.vercel.app" }],
-      "destination": "https://webtoolkitbox.com/$1",
+      "destination": "https://www.webtoolkitbox.com/$1",
       "permanent": true
     },
     {
       "source": "/(.*)",
       "has": [{ "type": "host", "value": "rishabhdev.site" }],
-      "destination": "https://webtoolkitbox.com/$1",
+      "destination": "https://www.webtoolkitbox.com/$1",
       "permanent": true
     },
     {
       "source": "/(.*)",
       "has": [{ "type": "host", "value": "www.rishabhdev.site" }],
-      "destination": "https://webtoolkitbox.com/$1",
+      "destination": "https://www.webtoolkitbox.com/$1",
       "permanent": true
     }
   ]
