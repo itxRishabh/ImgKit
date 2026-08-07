@@ -2307,14 +2307,38 @@ input[type="range"].solaris-slider::-webkit-slider-thumb:hover {
     }
 
     .header {
-        flex-direction: column;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 16px;
+        margin: 12px 0 24px;
         gap: 12px;
-        text-align: center;
-        padding: 24px 0 16px;
+    }
+
+    .header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .brand-logo-img {
+        height: 52px;
+        max-height: 56px;
     }
 
     .header-tagline {
-        margin-top: 4px;
+        display: none;
+    }
+
+    .header-right,
+    .header-actions {
+        gap: 10px;
+    }
+
+    .seo-audit-link {
+        padding: 6px 14px;
+        font-size: 12px;
     }
 
     .hero-title {
@@ -2522,6 +2546,22 @@ input[type="range"].solaris-slider::-webkit-slider-thumb:hover {
 
 /* Extra Small Devices */
 @media (max-width: 480px) {
+    .header {
+        padding: 10px 14px;
+        margin: 10px 0 20px;
+    }
+
+    .brand-logo-img {
+        height: 44px;
+        max-height: 48px;
+    }
+
+    .seo-audit-link {
+        padding: 6px 12px;
+        font-size: 11px;
+        gap: 4px;
+    }
+
     .tool-nav {
         gap: 6px;
         margin-bottom: 18px;
