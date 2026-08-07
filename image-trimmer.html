@@ -125,9 +125,20 @@
                 </section>
 
                 <!-- Upload Area -->
-                <div class="solaris-workspace">
-                    <!-- Left Side: Controls Panel -->
-                    <div class="settings-panel solaris-controls-panel" id="trimmerSettingsPanel">
+                <div class="upload-section">
+                    <div class="upload-area" id="trimmerUploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-compress-arrows-alt"></i>
+                        </div>
+                        <h3 class="upload-title">Drop image to trim</h3>
+                        <p class="upload-text">or click to browse • Ctrl+V to paste</p>
+                        <p class="upload-formats">Supports: PNG, JPG, WebP</p>
+                        <input type="file" id="trimmerFileInput" accept="image/*"  style="display: none;">
+                    </div>
+                </div>
+
+                <!-- Trimmer Settings Panel -->
+                <div class="settings-panel solaris-controls-panel" id="trimmerSettingsPanel">
                     <h3 class="settings-title">
                         <i class="fas fa-sliders"></i>
                         Trim Settings
@@ -162,23 +173,7 @@
                 </div>
 
                 <!-- Trim Preview Workspace -->
-
-                    <!-- Right Side: Viewport Stage & Upload Area -->
-                    <div class="solaris-right-stage" style="display: flex; flex-direction: column; gap: 24px;">
-                        <div class="upload-section">
-                    <div class="upload-area" id="trimmerUploadArea">
-                        <div class="upload-icon">
-                            <i class="fas fa-compress-arrows-alt"></i>
-                        </div>
-                        <h3 class="upload-title">Drop image to trim</h3>
-                        <p class="upload-text">or click to browse • Ctrl+V to paste</p>
-                        <p class="upload-formats">Supports: PNG, JPG, WebP</p>
-                        <input type="file" id="trimmerFileInput" accept="image/*"  style="display: none;">
-                    </div>
-                </div>
-
-                <!-- Trimmer Settings Panel -->
-                        <div class="preview-section solaris-viewport-stage" id="trimmerPreviewSection">
+                <div class="preview-section solaris-viewport-stage" id="trimmerPreviewSection">
                     <div class="preview-header">
                         <h3 class="preview-title">
                             <i class="fas fa-image"></i>
@@ -207,10 +202,7 @@
     
         
         <!-- FAQ Accordion Section -->
-                    </div>
-                </div>
-
-                <section class="features-section" style="padding: 40px 0 60px; max-width: 1000px; margin: 0 auto;">
+        <section class="features-section" style="padding: 40px 0 60px; max-width: 1000px; margin: 0 auto;">
             <h2 class="features-title" style="margin-bottom: 32px; font-size: 24px; color: var(--text); font-weight: 700;">Frequently Asked Questions</h2>
             <div style="display: flex; flex-direction: column; gap: 16px;">
                 <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer;">
