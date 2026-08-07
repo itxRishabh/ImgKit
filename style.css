@@ -1255,10 +1255,85 @@ input[type="range"].solaris-slider::-webkit-slider-thumb:hover {
     background-color: #050505;
 }
 
-/* ===== Preview Section (Redesigned Grid) ===== */
-.preview-section {
-    background: var(--surface);
+/* ===== Solaris Studio Settings Panel & Viewport Styling ===== */
+.settings-panel {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid var(--border-solar);
+    border-radius: var(--radius-xl);
+    padding: 28px 24px;
+    box-shadow: var(--solar-glass-shadow);
+    margin-bottom: 24px;
+}
+
+.settings-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 16px;
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.settings-title i {
+    color: var(--accent);
+}
+
+.setting-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text);
+    margin-bottom: 8px;
+    display: block;
+}
+
+.toggle-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.toggle-btn {
+    background: #ffffff;
     border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.toggle-btn:hover {
+    border-color: var(--accent);
+    background: rgba(250, 204, 21, 0.08);
+}
+
+.toggle-btn.active {
+    background: var(--primary) !important;
+    border-color: var(--primary-hover) !important;
+    color: var(--on-primary) !important;
+    box-shadow: 0 4px 14px rgba(250, 204, 21, 0.3);
+}
+
+.toggle-btn.active i {
+    color: var(--on-primary) !important;
+}
+
+.preview-section {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid var(--border-solar);
     border-radius: var(--radius-xl);
     padding: 24px;
     margin-bottom: 40px;
