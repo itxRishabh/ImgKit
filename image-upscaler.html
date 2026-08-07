@@ -241,6 +241,7 @@
                         </div>
 
                         <div class="solaris-canvas-wrapper" id="upscaleDropZone">
+                            <!-- Dropzone Placeholder -->
                             <div id="dropZonePlaceholder" style="text-align: center; padding: 40px;">
                                 <div class="upload-icon" style="background: rgba(250, 204, 21, 0.2); width: 64px; height: 64px; margin: 0 auto 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #735c00;">
                                     <i class="fas fa-cloud-upload-alt"></i>
@@ -249,14 +250,92 @@
                                 <p style="font-size: 14px; color: var(--text-muted); max-width: 320px; margin: 0 auto 16px;">Supports PNG, JPG, WebP & HEIC up to 8x HD enhancement.</p>
                             </div>
 
-                            <div id="upscaleResultContainer" style="display: none; width: 100%; text-align: center;">
-                                <div id="imageDimensionsInfo" style="font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 12px;"></div>
-                                <canvas id="upscaleCanvas" style="max-width: 100%; max-height: 440px; height: auto; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: 0 8px 24px rgba(0,0,0,0.08);"></canvas>
-                                <div style="margin-top: 16px; display: flex; justify-content: center; gap: 12px;">
-                                    <a id="downloadUpscaledBtn" href="#" download="upscaled-image.png" class="btn btn-primary" style="padding: 10px 24px; font-size: 14px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
-                                        <i class="fas fa-download"></i> Download Assets
+                            <!-- Instant Photo Upload Preview -->
+                            <div id="uploadPreviewContainer" style="display: none; width: 100%; text-align: center; padding: 20px;">
+                                <div style="margin-bottom: 12px; font-size: 13px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <span class="header-badge" style="background: #e2e8f0; color: #0f172a;">Loaded Original</span>
+                                    <span id="loadedDimensionsText">0 x 0px</span>
+                                </div>
+                                <div style="position: relative; display: inline-block; max-width: 100%;">
+                                    <img id="loadedPreviewImg" src="" alt="Loaded Preview" style="max-width: 100%; max-height: 360px; height: auto; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: 0 4px 16px rgba(0,0,0,0.06);">
+                                </div>
+                                <p style="margin-top: 12px; font-size: 13px; font-weight: 600; color: var(--accent);">
+                                    <i class="fas fa-arrow-left"></i> Adjust scale settings on the left sidebar & click "Generate Upscale"
+                                </p>
+                            </div>
+
+                            <!-- Upscale Result Container with Before/After Comparison & Analytics -->
+                            <div id="upscaleResultContainer" style="display: none; width: 100%; text-align: center; padding-top: 10px;">
+                                
+                                <!-- View Mode Switcher -->
+                                <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
+                                    <button class="toggle-btn active" id="btnViewSplit">
+                                        <i class="fas fa-sliders"></i> Before / After Split
+                                    </button>
+                                    <button class="toggle-btn" id="btnViewOutput">
+                                        <i class="fas fa-image"></i> Upscaled Output Only
+                                    </button>
+                                </div>
+
+                                <!-- Interactive Before / After Split Slider -->
+                                <div class="comparison-container" id="comparisonContainer">
+                                    <img id="afterImg" class="comparison-img" src="" alt="Upscaled High-Res">
+                                    <div class="comparison-before-wrapper" id="beforeWrapper">
+                                        <img id="beforeImg" class="comparison-before-img" src="" alt="Original Low-Res">
+                                    </div>
+                                    <div class="comparison-divider-line" id="comparisonDivider">
+                                        <div class="comparison-handle-badge">
+                                            <i class="fas fa-arrows-left-right"></i>
+                                        </div>
+                                    </div>
+                                    <span class="comparison-label before">Original (1x)</span>
+                                    <span class="comparison-label after" id="afterLabelText">Upscaled (4x)</span>
+                                    <input type="range" id="comparisonSliderInput" min="0" max="100" value="50" style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; z-index: 10;">
+                                </div>
+
+                                <!-- Canvas Output (Hidden for DataURL Generation) -->
+                                <canvas id="upscaleCanvas" style="display: none;"></canvas>
+
+                                <!-- Download Action Row -->
+                                <div style="margin: 20px 0; display: flex; justify-content: center; gap: 12px;">
+                                    <a id="downloadUpscaledBtn" href="#" download="upscaled-image.png" class="btn btn-primary" style="padding: 12px 28px; font-size: 15px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-download"></i> Download Upscaled Image
                                     </a>
                                 </div>
+
+                                <!-- Diagnostics & Scaled Analytics Report Card -->
+                                <div class="analytics-card" id="upscaleAnalyticsCard">
+                                    <h4 style="font-size: 15px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-chart-line" style="color: var(--accent);"></i> Upscaling Diagnostics & Metrics Report
+                                    </h4>
+                                    <div class="analytics-grid">
+                                        <div class="analytics-item">
+                                            <span class="analytics-label">Resolution Scaling</span>
+                                            <span class="analytics-value" id="analyticRes">0px ➔ 0px</span>
+                                        </div>
+                                        <div class="analytics-item">
+                                            <span class="analytics-label">Pixel Expansion</span>
+                                            <span class="analytics-value" id="analyticPixels">+0 MP</span>
+                                        </div>
+                                        <div class="analytics-item">
+                                            <span class="analytics-label">Sampling Engine</span>
+                                            <span class="analytics-value" id="analyticEngine">Lanczos3 Sinc WASM</span>
+                                        </div>
+                                        <div class="analytics-item">
+                                            <span class="analytics-label">Filter & Sharpen</span>
+                                            <span class="analytics-value" id="analyticFilter">Smart Unsharp Mask</span>
+                                        </div>
+                                        <div class="analytics-item">
+                                            <span class="analytics-label">Canvas Surface</span>
+                                            <span class="analytics-value" id="analyticScale">400% Enlargement</span>
+                                        </div>
+                                        <div class="analytics-item">
+                                            <span class="analytics-label">Output Specs</span>
+                                            <span class="analytics-value" id="analyticSpecs">PNG Lossless HD</span>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -419,6 +498,16 @@
                     sourceImg.onload = () => {
                         if (placeholder) placeholder.style.display = 'none';
                         resultContainer.style.display = 'none';
+
+                        // Display instant photo upload preview
+                        const uploadPreviewContainer = document.getElementById('uploadPreviewContainer');
+                        const loadedPreviewImg = document.getElementById('loadedPreviewImg');
+                        const loadedDimensionsText = document.getElementById('loadedDimensionsText');
+
+                        if (loadedPreviewImg) loadedPreviewImg.src = event.target.result;
+                        if (loadedDimensionsText) loadedDimensionsText.textContent = `${sourceImg.width} x ${sourceImg.height}px (${(sourceImg.width * sourceImg.height / 1000000).toFixed(2)} MP)`;
+                        if (uploadPreviewContainer) uploadPreviewContainer.style.display = 'block';
+
                         statusText.textContent = `Photo Loaded (${sourceImg.width} x ${sourceImg.height}px) • Click Generate Upscale`;
                     };
                     sourceImg.src = event.target.result;
@@ -435,6 +524,41 @@
             } else {
                 if (dropZone) dropZone.addEventListener('click', () => fileInput.click());
                 if (fileInput) fileInput.addEventListener('change', (e) => handleLoadedFile(e.target.files[0]));
+            }
+
+            // Interactive Before / After Split Slider Bindings
+            const comparisonSliderInput = document.getElementById('comparisonSliderInput');
+            const beforeWrapper = document.getElementById('beforeWrapper');
+            const comparisonDivider = document.getElementById('comparisonDivider');
+
+            if (comparisonSliderInput) {
+                comparisonSliderInput.addEventListener('input', (e) => {
+                    const val = e.target.value;
+                    if (beforeWrapper) beforeWrapper.style.width = val + '%';
+                    if (comparisonDivider) comparisonDivider.style.left = val + '%';
+                });
+            }
+
+            // View Mode Buttons
+            const btnViewSplit = document.getElementById('btnViewSplit');
+            const btnViewOutput = document.getElementById('btnViewOutput');
+
+            if (btnViewSplit && btnViewOutput) {
+                btnViewSplit.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    btnViewSplit.classList.add('active');
+                    btnViewOutput.classList.remove('active');
+                    if (beforeWrapper) beforeWrapper.style.display = 'block';
+                    if (comparisonDivider) comparisonDivider.style.display = 'block';
+                });
+
+                btnViewOutput.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    btnViewOutput.classList.add('active');
+                    btnViewSplit.classList.remove('active');
+                    if (beforeWrapper) beforeWrapper.style.display = 'none';
+                    if (comparisonDivider) comparisonDivider.style.display = 'none';
+                });
             }
 
             processBtn.addEventListener('click', async (e) => {
@@ -484,10 +608,40 @@
                 const fmt = activeFmtCard ? activeFmtCard.getAttribute('data-fmt') : 'png';
                 const mime = fmt === 'jpeg' ? 'image/jpeg' : 'image/png';
                 const ext = fmt === 'jpeg' ? 'jpg' : 'png';
+                const dataUrl = canvas.toDataURL(mime, 0.92);
 
-                dimensionsInfo.textContent = `Original: ${sourceImg.width} x ${sourceImg.height}px  |  Upscaled: ${targetWidth} x ${targetHeight}px (${factor}x Lanczos3 HD)`;
-                downloadBtn.href = canvas.toDataURL(mime, 0.92);
+                // Populate Before / After Images
+                const beforeImg = document.getElementById('beforeImg');
+                const afterImg = document.getElementById('afterImg');
+                const afterLabelText = document.getElementById('afterLabelText');
+
+                if (beforeImg) beforeImg.src = sourceImg.src;
+                if (afterImg) afterImg.src = dataUrl;
+                if (afterLabelText) afterLabelText.textContent = `Upscaled (${factor}x HD)`;
+
+                // Ensure before wrapper matches full image width
+                if (beforeImg && afterImg) {
+                    beforeImg.style.width = afterImg.clientWidth + 'px';
+                }
+
+                // Populate Diagnostics Analytics
+                const origMp = (sourceImg.width * sourceImg.height / 1000000).toFixed(2);
+                const upscaledMp = (targetWidth * targetHeight / 1000000).toFixed(2);
+                const addedMp = (upscaledMp - origMp).toFixed(2);
+
+                document.getElementById('analyticRes').textContent = `${sourceImg.width}x${sourceImg.height} ➔ ${targetWidth}x${targetHeight}px`;
+                document.getElementById('analyticPixels').textContent = `${origMp} MP ➔ ${upscaledMp} MP (+${addedMp} MP)`;
+                document.getElementById('analyticEngine').textContent = 'Pica Lanczos3 WASM';
+                document.getElementById('analyticFilter').textContent = `Unsharp Mask (${sharpenMode})`;
+                document.getElementById('analyticScale').textContent = `${factor * 100}% Surface (${factor}x)`;
+                document.getElementById('analyticSpecs').textContent = `${fmt.toUpperCase()} (${fmt === 'jpeg' ? '92% Quality' : 'Lossless HD'})`;
+
+                downloadBtn.href = dataUrl;
                 downloadBtn.download = `upscaled-image.${ext}`;
+                
+                // Hide instant upload preview and show comparison result
+                const uploadPreviewContainer = document.getElementById('uploadPreviewContainer');
+                if (uploadPreviewContainer) uploadPreviewContainer.style.display = 'none';
                 
                 resultContainer.style.display = 'block';
                 statusText.textContent = `Processing Complete (${targetWidth} x ${targetHeight}px)`;

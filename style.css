@@ -3409,5 +3409,134 @@ input[type="range"].solaris-slider::-webkit-slider-thumb:hover {
     margin-bottom: 12px;
 }
 
+/* ===== Image Upscaler Before/After Split Comparison Slider ===== */
+.comparison-container {
+    position: relative;
+    width: 100%;
+    max-width: 720px;
+    height: 440px;
+    margin: 0 auto 20px;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: #000000;
+    user-select: none;
+    touch-action: none;
+}
+
+.comparison-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.comparison-before-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 2;
+}
+
+.comparison-before-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    max-width: none;
+    object-fit: contain;
+}
+
+.comparison-divider-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 3px;
+    background: var(--primary);
+    box-shadow: 0 0 10px rgba(250, 204, 21, 0.8);
+    z-index: 3;
+    cursor: ew-resize;
+    transform: translateX(-50%);
+}
+
+.comparison-handle-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: var(--on-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    cursor: ew-resize;
+}
+
+.comparison-label {
+    position: absolute;
+    bottom: 12px;
+    padding: 4px 12px;
+    background: rgba(15, 23, 42, 0.85);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: var(--radius-full);
+    z-index: 4;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.comparison-label.before { left: 12px; }
+.comparison-label.after { right: 12px; }
+
+/* Analytics Diagnostics Report Card */
+.analytics-card {
+    background: #f8fafc;
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-top: 20px;
+    text-align: left;
+}
+
+.analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.analytics-item {
+    background: #ffffff;
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.analytics-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.analytics-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+}
+
 
 
