@@ -149,69 +149,116 @@
                     </div>
                 </div>
 
-                <!-- Upload Area -->
-                <div class="upload-section">
-                    <div class="upload-area" id="upscaleDropZone">
-                        <div class="upload-icon" style="color: #9b59b6;">
-                            <i class="fas fa-expand-arrows-alt"></i>
+                <!-- 2-Column Solaris Studio Workstation -->
+                <div class="solaris-workspace">
+                    <!-- Left Sidebar Controls Studio -->
+                    <div class="solaris-controls-panel">
+                        <div>
+                            <h2 class="solaris-tool-title">Image Upscaler</h2>
+                            <p class="solaris-tool-desc">Enhance photo resolution & fine structural details with Lanczos3 WASM AI precision.</p>
                         </div>
-                        <h3 class="upload-title">Drop your image here to upscale</h3>
-                        <p class="upload-text">Supports JPG, PNG, WebP & HEIC photos</p>
-                        <input type="file" id="upscaleFileInput" accept="image/*" style="display: none;">
-                        <button class="btn btn-primary" onclick="document.getElementById('upscaleFileInput').click()"
-                            style="margin-top: 12px;">
-                            <i class="fas fa-folder-open"></i> Select Image
+
+                        <div class="solaris-divider"></div>
+
+                        <!-- Scale Factor Pills -->
+                        <div class="solaris-control-group">
+                            <label class="solaris-label">Scale Factor</label>
+                            <div class="solaris-pill-grid" id="scalePillGroup">
+                                <button class="solaris-pill-btn" data-val="2">2x</button>
+                                <button class="solaris-pill-btn active" data-val="4">4x</button>
+                                <button class="solaris-pill-btn" data-val="8">8x</button>
+                                <button class="solaris-pill-btn" data-val="16">Max</button>
+                            </div>
+                            <select id="scaleFactorSelect" style="display: none;">
+                                <option value="2">2x</option>
+                                <option value="4" selected>4x</option>
+                                <option value="8">8x</option>
+                                <option value="16">Max</option>
+                            </select>
+                        </div>
+
+                        <!-- Detail Enhancement Slider -->
+                        <div class="solaris-control-group">
+                            <label class="solaris-label">
+                                Detail Enhancement
+                                <span class="solaris-label-val" id="detailValText">High</span>
+                            </label>
+                            <input type="range" class="solaris-slider" id="detailSlider" min="1" max="100" value="80">
+                            <select id="filterSelect" style="display: none;">
+                                <option value="lanczos3" selected>Lanczos3</option>
+                                <option value="michell">Mitchell-Netravali</option>
+                            </select>
+                        </div>
+
+                        <!-- Noise Reduction Slider -->
+                        <div class="solaris-control-group">
+                            <label class="solaris-label">
+                                Noise Reduction
+                                <span class="solaris-label-val" id="noiseValText">Moderate</span>
+                            </label>
+                            <input type="range" class="solaris-slider" id="noiseSlider" min="1" max="100" value="45">
+                            <select id="sharpenSelect" style="display: none;">
+                                <option value="medium" selected>Smart Unsharp Mask</option>
+                                <option value="high">High Contrast</option>
+                                <option value="none">None</option>
+                            </select>
+                        </div>
+
+                        <!-- Output Format Radio Group -->
+                        <div class="solaris-control-group">
+                            <label class="solaris-label">Output Format</label>
+                            <div class="solaris-radio-card active" data-fmt="png">
+                                <div class="solaris-radio-dot"></div>
+                                <span>PNG (Lossless HD)</span>
+                            </div>
+                            <div class="solaris-radio-card" data-fmt="jpeg" style="margin-top: 6px;">
+                                <div class="solaris-radio-dot"></div>
+                                <span>JPEG (High Quality)</span>
+                            </div>
+                        </div>
+
+                        <div class="solaris-divider"></div>
+
+                        <!-- Generate Action Button -->
+                        <button class="btn-solaris-action" id="processUpscaleBtn">
+                            <i class="fas fa-bolt"></i> Generate Upscale
                         </button>
                     </div>
-                </div>
 
-                <!-- Controls Panel -->
-                <div class="settings-panel" id="upscaleControls"
-                    style="display: none; margin-top: 20px; flex-wrap: wrap; gap: 16px; align-items: center;">
-                    <div class="control-group">
-                        <label style="font-weight: 600; font-size: 14px;">Upscale Factor:</label>
-                        <select id="scaleFactorSelect" class="form-select"
-                            style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--surface); color: var(--text-main);">
-                            <option value="2">2x HD Enlarge</option>
-                            <option value="4" selected>4x Ultra HD Enlarge</option>
-                            <option value="8">8x Maximum Resolution</option>
-                        </select>
-                    </div>
-                    <div class="control-group">
-                        <label style="font-weight: 600; font-size: 14px;">Sampling Filter:</label>
-                        <select id="filterSelect" class="form-select"
-                            style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--surface); color: var(--text-main);">
-                            <option value="lanczos3" selected>Lanczos3 Super-Sampling (Highest Quality)</option>
-                            <option value="michell">Mitchell-Netravali (Balanced)</option>
-                        </select>
-                    </div>
-                    <div class="control-group">
-                        <label style="font-weight: 600; font-size: 14px;">Edge Sharpening:</label>
-                        <select id="sharpenSelect" class="form-select"
-                            style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--surface); color: var(--text-main);">
-                            <option value="medium" selected>Smart Unsharp Mask (Recommended)</option>
-                            <option value="high">High Contrast Recovery</option>
-                            <option value="none">None (Pure Lanczos3)</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-success" id="processUpscaleBtn"
-                        style="padding: 10px 20px; background: #9b59b6; color: #fff; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
-                        <i class="fas fa-magic"></i> Upscale & Enhance Image
-                    </button>
-                </div>
+                    <!-- Right Viewport Stage Card -->
+                    <div class="solaris-viewport-stage">
+                        <div class="solaris-viewport-bar">
+                            <div class="solaris-viewport-status">
+                                <div class="solaris-status-dot"></div>
+                                <span id="statusText">System Ready • Drop image or configure settings</span>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-outline btn-sm" onclick="document.getElementById('upscaleFileInput').click()" style="padding: 6px 14px; font-size: 12px; font-weight: 600;">
+                                    <i class="fas fa-upload"></i> Upload Photo
+                                </button>
+                                <input type="file" id="upscaleFileInput" accept="image/*" style="display: none;">
+                            </div>
+                        </div>
 
-                <!-- Result Box -->
-                <div id="upscaleResultContainer" style="margin-top: 24px; text-align: center; display: none;">
-                    <h4 style="margin-bottom: 12px; color: var(--text-main);">Enhanced Result</h4>
-                    <div id="imageDimensionsInfo"
-                        style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;"></div>
-                    <canvas id="upscaleCanvas"
-                        style="max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></canvas>
-                    <div style="margin-top: 16px;">
-                        <a id="downloadUpscaledBtn" href="#" download="upscaled-image.png" class="btn btn-primary"
-                            style="padding: 10px 24px; font-weight: 600; text-decoration: none; display: inline-block;">
-                            <i class="fas fa-download"></i> Download High-Res Image
-                        </a>
+                        <div class="solaris-canvas-wrapper" id="upscaleDropZone">
+                            <div id="dropZonePlaceholder" style="text-align: center; padding: 40px;">
+                                <div class="upload-icon" style="background: rgba(250, 204, 21, 0.2); width: 64px; height: 64px; margin: 0 auto 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #735c00;">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 6px;">Drag and drop photo here</h3>
+                                <p style="font-size: 14px; color: var(--text-muted); max-width: 320px; margin: 0 auto 16px;">Supports PNG, JPG, WebP & HEIC up to 8x HD enhancement.</p>
+                            </div>
+
+                            <div id="upscaleResultContainer" style="display: none; width: 100%; text-align: center;">
+                                <div id="imageDimensionsInfo" style="font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 12px;"></div>
+                                <canvas id="upscaleCanvas" style="max-width: 100%; max-height: 440px; height: auto; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: 0 8px 24px rgba(0,0,0,0.08);"></canvas>
+                                <div style="margin-top: 16px; display: flex; justify-content: center; gap: 12px;">
+                                    <a id="downloadUpscaledBtn" href="#" download="upscaled-image.png" class="btn btn-primary" style="padding: 10px 24px; font-size: 14px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-download"></i> Download Assets
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -304,12 +351,13 @@
     <script>
         const fileInput = document.getElementById('upscaleFileInput');
         const dropZone = document.getElementById('upscaleDropZone');
-        const controls = document.getElementById('upscaleControls');
+        const placeholder = document.getElementById('dropZonePlaceholder');
         const resultContainer = document.getElementById('upscaleResultContainer');
         const processBtn = document.getElementById('processUpscaleBtn');
         const canvas = document.getElementById('upscaleCanvas');
         const dimensionsInfo = document.getElementById('imageDimensionsInfo');
         const downloadBtn = document.getElementById('downloadUpscaledBtn');
+        const statusText = document.getElementById('statusText');
 
         let sourceImg = null;
         let picaInstance = null;
@@ -322,6 +370,37 @@
             });
         }
 
+        // Solaris Pill Group Bindings
+        const scalePillBtns = document.querySelectorAll('#scalePillGroup .solaris-pill-btn');
+        const scaleSelect = document.getElementById('scaleFactorSelect');
+        scalePillBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                scalePillBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                scaleSelect.value = btn.getAttribute('data-val');
+            });
+        });
+
+        // Solaris Radio Cards
+        const radioCards = document.querySelectorAll('.solaris-radio-card');
+        radioCards.forEach(card => {
+            card.addEventListener('click', () => {
+                radioCards.forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+            });
+        });
+
+        // Slider Value Text Updates
+        document.getElementById('detailSlider').addEventListener('input', (e) => {
+            const v = parseInt(e.target.value);
+            document.getElementById('detailValText').textContent = v > 75 ? 'High' : (v > 35 ? 'Moderate' : 'Low');
+        });
+
+        document.getElementById('noiseSlider').addEventListener('input', (e) => {
+            const v = parseInt(e.target.value);
+            document.getElementById('noiseValText').textContent = v > 75 ? 'High' : (v > 35 ? 'Moderate' : 'Low');
+        });
+
         ImgKitUploadEngine.bind({
             container: dropZone,
             fileInput: fileInput,
@@ -332,8 +411,9 @@
                 reader.onload = (event) => {
                     sourceImg = new Image();
                     sourceImg.onload = () => {
-                        controls.style.display = 'flex';
+                        if (placeholder) placeholder.style.display = 'none';
                         resultContainer.style.display = 'none';
+                        statusText.textContent = `Photo Loaded (${sourceImg.width} x ${sourceImg.height}px) • Click Generate Upscale`;
                     };
                     sourceImg.src = event.target.result;
                 };
@@ -342,11 +422,15 @@
         });
 
         processBtn.addEventListener('click', async () => {
-            if (!sourceImg) return;
+            if (!sourceImg) {
+                fileInput.click();
+                return;
+            }
             processBtn.disabled = true;
-            processBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Peak Lanczos3 WASM...';
+            processBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Upscaling WASM...';
+            statusText.textContent = 'Processing Peak Lanczos3 WASM Multi-threading...';
 
-            const factor = parseInt(document.getElementById('scaleFactorSelect').value);
+            const factor = parseInt(scaleSelect.value);
             const filter = document.getElementById('filterSelect').value;
             const sharpenMode = document.getElementById('sharpenSelect').value;
 
@@ -377,13 +461,21 @@
                 ctx.drawImage(sourceImg, 0, 0, targetWidth, targetHeight);
             }
 
-            dimensionsInfo.textContent = \`Original: \${sourceImg.width} x \${sourceImg.height}px  |  Upscaled: \${targetWidth} x \${targetHeight}px (\${factor}x Peak Lanczos3 WASM Enlarge)\`;
-          downloadBtn.href = canvas.toDataURL('image/png');
-          resultContainer.style.display = 'block';
+            const activeFmtCard = document.querySelector('.solaris-radio-card.active');
+            const fmt = activeFmtCard ? activeFmtCard.getAttribute('data-fmt') : 'png';
+            const mime = fmt === 'jpeg' ? 'image/jpeg' : 'image/png';
+            const ext = fmt === 'jpeg' ? 'jpg' : 'png';
 
-          processBtn.disabled = false;
-          processBtn.innerHTML = '<i class="fas fa-magic"></i> Upscale & Enhance Image';
-      });
+            dimensionsInfo.textContent = `Original: ${sourceImg.width} x ${sourceImg.height}px  |  Upscaled: ${targetWidth} x ${targetHeight}px (${factor}x Lanczos3 HD)`;
+            downloadBtn.href = canvas.toDataURL(mime, 0.92);
+            downloadBtn.download = `upscaled-image.${ext}`;
+            
+            resultContainer.style.display = 'block';
+            statusText.textContent = `Processing Complete (${targetWidth} x ${targetHeight}px)`;
+
+            processBtn.disabled = false;
+            processBtn.innerHTML = '<i class="fas fa-bolt"></i> Generate Upscale';
+        });
     </script>
     <script src="app.js" defer></script>
 </body>
