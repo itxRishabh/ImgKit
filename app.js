@@ -16,17 +16,23 @@ const ImgKitUploadEngine = {
             }, false);
         });
 
-        // Global drop fallback: if user drops outside a bound container, route files to active file input
+        // Global drop: if user drops anywhere on the page, route files directly to the active tool
         window.addEventListener('drop', (e) => {
+            e.preventDefault();
             const files = Array.from(e.dataTransfer?.files || []);
+
+            // Hide visual drag overlay if present
+            const overlay = document.getElementById('globalDragOverlay');
+            if (overlay) {
+                overlay.style.opacity = '0';
+                overlay.style.display = 'none';
+            }
+
             if (files.length === 0) return;
 
-            const targetContainer = e.target?.closest ? e.target.closest('.upload-area, .drop-zone') : null;
-            if (!targetContainer || !targetContainer.dataset.imgkitBound) {
-                const activeInput = this.findActiveFileInput();
-                if (activeInput && activeInput._imgkitFilesHandler) {
-                    activeInput._imgkitFilesHandler(files);
-                }
+            const activeInput = this.findActiveFileInput();
+            if (activeInput && activeInput._imgkitFilesHandler) {
+                activeInput._imgkitFilesHandler(files);
             }
         }, false);
 
@@ -52,10 +58,18 @@ const ImgKitUploadEngine = {
     },
 
     findActiveFileInput() {
+        // 1. Check active tool panel first
+        const activePanel = document.querySelector('.tool-panel.active, .tab-pane.active, .tool-section.active, [data-tool].active');
+        if (activePanel) {
+            const input = activePanel.querySelector('input[type="file"]');
+            if (input) return input;
+        }
+
+        // 2. Search visible file inputs
         const inputs = Array.from(document.querySelectorAll('input[type="file"]'));
         for (const input of inputs) {
             const container = input.closest('.upload-area, .drop-zone, .upload-section') || input.parentElement;
-            if (container && container.offsetParent !== null) {
+            if (container && container.offsetParent !== null && window.getComputedStyle(container).display !== 'none') {
                 return input;
             }
         }
@@ -93,7 +107,9 @@ const ImgKitUploadEngine = {
                 if (files && files.length > 0) {
                     handleFilesReceived(files);
                 }
-                fileInput.value = ''; // Reset value to allow selecting identical file again
+                setTimeout(() => {
+                    try { fileInput.value = ''; } catch(err) {}
+                }, 100);
             });
         }
 
@@ -5067,14 +5083,9 @@ class SizeManager {
             container: this.uploadArea,
             fileInput: this.fileInput,
             onFiles: (files) => {
-                if (files[0] && this.fileInput) {
-                    try {
-                        const dt = new DataTransfer();
-                        dt.items.add(files[0]);
-                        this.fileInput.files = dt.files;
-                    } catch (err) {}
+                if (files[0]) {
+                    this.handleFileSelect(files[0]);
                 }
-                this.handleFileSelect();
             }
         });
 
@@ -5095,8 +5106,8 @@ class SizeManager {
         return new Blob([blob, padding], { type: blob.type });
     }
 
-    async handleFileSelect(e) {
-        const file = this.fileInput.files[0];
+    async handleFileSelect(inputFile) {
+        const file = (inputFile && inputFile instanceof File) ? inputFile : (this.fileInput?.files[0] || this.selectedFile);
         if (!file) return;
 
         this.selectedFile = file;
@@ -5556,14 +5567,9 @@ class SVGToImageConverter {
                 container: this.uploadArea,
                 fileInput: this.fileInput,
                 onFiles: (files) => {
-                    if (files[0] && this.fileInput) {
-                        try {
-                            const dt = new DataTransfer();
-                            dt.items.add(files[0]);
-                            this.fileInput.files = dt.files;
-                        } catch (err) {}
+                    if (files[0]) {
+                        this.handleFileSelect(files[0]);
                     }
-                    this.handleFileSelect();
                 }
             });
         }
@@ -5602,8 +5608,8 @@ class SVGToImageConverter {
         }
     }
     
-    handleFileSelect() {
-        const file = this.fileInput.files[0];
+    handleFileSelect(inputFile) {
+        const file = (inputFile && inputFile instanceof File) ? inputFile : (this.fileInput?.files[0]);
         if (!file) return;
         
         const reader = new FileReader();
