@@ -3486,8 +3486,39 @@ class FaviconGenerator {
             </div>
             <div class="favicon-size-label">${asset.size}x${asset.size}</div>
             <div class="favicon-name-label">${asset.name}</div>
+            <button class="btn btn-secondary btn-sm favicon-single-download" style="margin-top: 6px; width: 100%; justify-content: center; padding: 4px 8px; font-size: 11px; gap: 4px;">
+                <i class="fas fa-download"></i> Download
+            </button>
         `;
+
+        const downloadBtn = item.querySelector('.favicon-single-download');
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.downloadSingle(asset);
+            });
+        }
+
         this.previewGrid.appendChild(item);
+    }
+
+    downloadSingle(asset) {
+        const base = this.baseNameInput.value || 'favicon';
+        let finalName = asset.name;
+        if (asset.name.includes('favicon-')) {
+            finalName = asset.name.replace('favicon', base);
+        }
+
+        const link = document.createElement('a');
+        link.href = asset.dataUrl;
+        link.download = finalName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        if (typeof showNotification === 'function') {
+            showNotification(`Downloaded ${finalName}`, 'success');
+        }
     }
 
     updateHtmlSnippet() {
