@@ -136,29 +136,9 @@
                 </section>
 
                 <!-- Upload Area -->
-                <div class="upload-section">
-                    <div class="upload-area" id="converterUploadArea">
-                        <div class="upload-icon">
-                            <i class="fas fa-cloud-arrow-up"></i>
-                        </div>
-                        <h3 class="upload-title">Drop your images here</h3>
-                        <p class="upload-text">or click to browse</p>
-                        <p class="upload-formats">Supports: JPG, PNG, WebP, GIF, BMP, TIFF, HEIC, DNG, ZIP</p>
-                        <input type="file" id="converterFileInput" accept="image/*,.heic,.heif,.dng,application/zip,.zip" multiple
-                             style="display: none;">
-                        <input type="file" id="converterFolderInput" webkitdirectory directory multiple  style="display: none;">
-                    </div>
-                    <div class="folder-upload-option">
-                        <button class="btn btn-secondary" id="converterFolderBtn">
-                            <i class="fas fa-folder-open"></i>
-                            Upload Folder
-                        </button>
-                        <span class="folder-hint">Select a folder to convert all images inside</span>
-                    </div>
-                </div>
-
-                <!-- Converter Settings Panel -->
-                <div class="settings-panel solaris-controls-panel" id="converterSettingsPanel">
+                <div class="solaris-workspace">
+                    <!-- Left Side: Controls Panel -->
+                    <div class="settings-panel solaris-controls-panel" id="converterSettingsPanel">
                     <h3 class="settings-title">
                         <i class="fas fa-sliders"></i>
                         Conversion Settings
@@ -227,7 +207,32 @@
                 </div>
 
                 <!-- Preview Section -->
-                <div class="preview-section solaris-viewport-stage" id="converterPreviewSection">
+
+                    <!-- Right Side: Viewport Stage & Upload Area -->
+                    <div class="solaris-right-stage" style="display: flex; flex-direction: column; gap: 24px;">
+                        <div class="upload-section">
+                    <div class="upload-area" id="converterUploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-arrow-up"></i>
+                        </div>
+                        <h3 class="upload-title">Drop your images here</h3>
+                        <p class="upload-text">or click to browse</p>
+                        <p class="upload-formats">Supports: JPG, PNG, WebP, GIF, BMP, TIFF, HEIC, DNG, ZIP</p>
+                        <input type="file" id="converterFileInput" accept="image/*,.heic,.heif,.dng,application/zip,.zip" multiple
+                             style="display: none;">
+                        <input type="file" id="converterFolderInput" webkitdirectory directory multiple  style="display: none;">
+                    </div>
+                    <div class="folder-upload-option">
+                        <button class="btn btn-secondary" id="converterFolderBtn">
+                            <i class="fas fa-folder-open"></i>
+                            Upload Folder
+                        </button>
+                        <span class="folder-hint">Select a folder to convert all images inside</span>
+                    </div>
+                </div>
+
+                <!-- Converter Settings Panel -->
+                        <div class="preview-section solaris-viewport-stage" id="converterPreviewSection">
                     <div class="preview-header">
                         <h3 class="preview-title">
                             <i class="fas fa-images"></i>
@@ -249,6 +254,9 @@
                 </div>
 
                 <!-- Stats Section -->
+                    </div>
+                </div>
+
                 <div class="stats-section" id="converterStatsSection">
                     <div class="stat-card">
                         <div class="stat-icon">

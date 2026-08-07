@@ -332,4 +332,219 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
     <script src="app.js" defer></script>
 </body>
-</html>
+</html<div class="solaris-workspace">
+                    <!-- Left Side: Controls Panel -->
+                    <div class="settings-panel active" style="margin-bottom: 0;">
+                            <h3 class="settings-title">
+                                <i class="fas fa-file-import"></i>
+                                Input Source
+                            </h3>
+                            <div class="toggle-buttons" id="svgInputTypeToggle" style="margin-bottom: 16px;">
+                                <button class="toggle-btn active" data-type="code">SVG Code</button>
+                                <button class="toggle-btn" data-type="file">SVG File</button>
+                            </div>
+
+                            <!-- Code Input Area -->
+                            <div id="svgCodeInputGroup">
+                                <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">Paste SVG Code here:</label>
+                                <textarea id="svgCodeInput" placeholder='&lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"&gt;
+  &lt;circle cx="50" cy="50" r="40" fill="#00c781" /&gt;
+&lt;/svg&gt;' style="width: 100%; height: 280px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; color: #34d399; font-family: &#39;Fira Code&#39;, &#39;SF Mono&#39;, monospace; font-size: 13px; resize: vertical; outline: none; transition: border-color 0.2s;" spellcheck="false"></textarea>
+                            </div>
+
+                            <!-- File Upload Area -->
+                            <div id="svgFileInputGroup" style="display: none;">
+                                <div class="upload-area" id="svgUploadArea" style="padding: 40px 20px;">
+                                    <div class="upload-icon">
+                                        <i class="fas fa-file-signature"></i>
+                                    </div>
+                                    <h3 class="upload-title">Drop your SVG file here</h3>
+                                    <p class="upload-text">or click to browse</p>
+                                    <input type="file" id="svgFileInput" accept=".svg,image/svg+xml"  style="display: none;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Settings Panel -->
+                        <div class="settings-panel active" style="margin-bottom: 0;">
+                            <h3 class="settings-title">
+                                <i class="fas fa-sliders"></i>
+                                Output Options
+                            </h3>
+                            
+                            <div class="settings-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                <!-- Format -->
+                                <div class="setting-group" style="grid-column: span 2;">
+                                    <label class="setting-label">Export Format</label>
+                                    <div class="toggle-buttons" id="svgFormatToggle">
+                                        <button class="toggle-btn active" data-format="png">PNG</button>
+                                        <button class="toggle-btn" data-format="jpeg">JPEG</button>
+                                        <button class="toggle-btn" data-format="webp">WebP</button>
+                                    </div>
+                                </div>
+
+                                <!-- Upscale Scale Factor -->
+                                <div class="setting-group">
+                                    <label class="setting-label">Resolution Scale</label>
+                                    <select id="svgScaleSelect" style="width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px; color: var(--text); outline: none;">
+                                        <option value="1">1x (Default Size)</option>
+                                        <option value="2" selected>2x (Clear)</option>
+                                        <option value="3">3x (HD)</option>
+                                        <option value="4">4x (Ultra HD)</option>
+                                        <option value="8">8x (Super High-Res)</option>
+                                    </select>
+                                </div>
+
+                                <!-- Background Color -->
+                                <div class="setting-group">
+                                    <label class="setting-label">Background Fill</label>
+                                    <div style="display: flex; gap: 8px;">
+                                        <select id="svgBgTypeSelect" style="flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px; color: var(--text); outline: none;">
+                                            <option value="transparent">Transparent</option>
+                                            <option value="solid">Solid Color</option>
+                                        </select>
+                                        <input type="color" id="svgBgColorPicker" value="#ffffff" style="display: none; width: 42px; height: 42px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: transparent; cursor: pointer; padding: 0;">
+                                    </div>
+                                </div>
+
+                                <!-- Custom Dimensions (Optional Override) -->
+                                <div class="setting-group">
+                                    <label class="setting-label">Width (px)</label>
+                                    <input type="number" id="svgCustomWidth" placeholder="Auto" style="width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px; color: var(--text); outline: none;">
+                                </div>
+                                <div class="setting-group">
+                                    <label class="setting-label">Height (px)</label>
+                                    <input type="number" id="svgCustomHeight" placeholder="Auto" style="width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px; color: var(--text); outline: none;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Live Preview & Action -->
+                    <div class="card-column" style="display: flex; flex-direction: column; gap: 24px;">
+                        <!-- Preview Card -->
+                        <div class="settings-panel active" style="flex: 1; display: flex !important; flex-direction: column; margin-bottom: 0;">
+                            <h3 class="settings-title">
+                                <i class="fas fa-eye"></i>
+                                Live SVG Preview
+                            </h3>
+                            <div id="svgPreviewContainer" style="flex: 1; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 16px 16px; border: 1px dashed var(--border); border-radius: var(--radius-md); padding: 24px; min-height: 320px; overflow: hidden; position: relative;">
+                                <div id="svgPreviewWrapper" style="max-width: 100%; max-height: 100%; display: flex; align-items: center; justify-content: center;">
+                                    <span style="color: var(--text-muted); font-size: 14px;">Paste SVG code or upload a file to preview</span>
+                                </div>
+                                <div id="svgErrorBadge" style="display: none; position: absolute; bottom: 12px; left: 12px; right: 12px; background: rgba(255,69,58,0.1); border: 1px solid var(--error); border-radius: var(--radius-sm); padding: 8px 12px; color: var(--error); font-size: 12px; text-align: center;">
+                                    <i class="fas fa-exclamation-circle"></i> Invalid SVG structure
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Render & Download Actions -->
+                        <div class="settings-panel active" style="margin-bottom: 0;">
+                            <button class="btn btn-primary" id="svgDownloadBtn" style="width: 100%; padding: 16px; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px;" disabled>
+                                <i class="fas fa-download"></i>
+                                <span>Download Rendered Image</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+
+        <!-- Dynamic SEO Content Section -->
+        <section class="seo-content-section" style="max-width: 1000px; margin: 60px auto 40px; padding: 0 24px; line-height: 1.8; color: var(--text-muted);">
+            <h2 style="font-size: 28px; color: var(--text); margin-bottom: 20px; font-weight: 700; letter-spacing: -0.5px;">Convert SVG Vectors to PNG & JPG High-Resolution Raster Graphics</h2>
+            <p style="margin-bottom: 24px; font-size: 15px;">Convert vector SVG (Scalable Vector Graphics) to crisp raster images with customizable sizes. Here is how to use the vector converter:</p>
+            <ol style="margin-bottom: 32px; padding-left: 20px; display: flex; flex-direction: column; gap: 12px; font-size: 15px;">
+                <li><strong>Upload Vector Sources:</strong> Drag and drop your <code>.svg</code> files, or paste the raw SVG XML code directly into the source text field.</li>
+                <li><strong>Customize Resolution Scale:</strong> Choose an upscale multiplier (1x, 2x, 3x, 4x, 8x) to render the vector graphics at high resolution without pixelation.</li>
+                <li><strong>Set Background Colors:</strong> Keep transparency intact or choose solid color background fills using the color selector.</li>
+                <li><strong>Export:</strong> Click "Convert to PNG/JPG" and download the rasterized graphic instantly.</li>
+            </ol>
+        </section>
+    
+        
+        <!-- FAQ Accordion Section -->
+        <section class="features-section" style="padding: 40px 0 60px; max-width: 1000px; margin: 0 auto;">
+            <h2 class="features-title" style="margin-bottom: 32px; font-size: 24px; color: var(--text); font-weight: 700;">Frequently Asked Questions</h2>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer;">
+                    <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        How do I convert SVG to PNG with high resolution?
+                        <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
+                    </summary>
+                    <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+                        Upload your .svg file or paste raw SVG code, select your target upscale multiplier (like 2x, 4x, or 8x) to ensure sharp rendering, and click Convert.
+                    </p>
+                </details>
+                <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer;">
+                    <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        Can I convert raw SVG code to an image?
+                        <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
+                    </summary>
+                    <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+                        Yes, our SVG tool allows you to paste XML SVG markup code directly. You will see a live preview of the code and can export it immediately to PNG or JPG.
+                    </p>
+                </details>
+            </div>
+        </section>
+        
+                <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
+                    </div>
+                    <p class="footer-tagline">Process unlimited images for free. No watermarks. No sign-up required.</p>
+                </div>
+                <div class="footer-socials">
+                    <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="social-link" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="https://twitter.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="X / Twitter">
+                        <i class="fab fa-x-twitter"></i>
+                    </a>
+                    <a href="https://instagram.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://linkedin.com/in/itxrishabh" target="_blank" rel="noopener" class="social-link" title="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://youtube.com" target="_blank" rel="noopener" class="social-link" title="YouTube">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="https://discord.com" target="_blank" rel="noopener" class="social-link" title="Discord">
+                        <i class="fab fa-discord"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-divider"></div>
+            <div class="footer-bottom">
+                <p>Developed by <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="footer-dev-link">Rishabh Dev</a></p>
+                <p class="footer-handle">@itxrishabh</p>
+            </div>
+        </footer>
+    </div>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>Processing your images...</p>
+        </div>
+    </div>
+
+    <!-- JSZip for ZIP downloads -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+    <script src="app.js" defer></script>
+</body>
+</html
+
+                    <!-- Right Side: Viewport Stage & Upload Area -->
+                    <div class="solaris-right-stage" style="display: flex; flex-direction: column; gap: 24px;">
+                        
+                        
+                    </div>
+                </div>
+
+                >

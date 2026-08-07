@@ -291,4 +291,278 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
     <script src="app.js" defer></script>
 </body>
-</html>
+</html<div class="solaris-workspace">
+                    <!-- Left Side: Controls Panel -->
+                    <div class="settings-panel solaris-controls-panel" id="ocrSettingsPanel">
+                    <h3 class="settings-title">
+                        <i class="fas fa-sliders"></i>
+                        OCR Settings
+                    </h3>
+                    <div class="settings-grid">
+                        <div class="setting-group">
+                            <label class="setting-label">Language</label>
+                            <select id="ocrLanguage" class="text-input">
+                                <option value="eng">English</option>
+                                <option value="spa">Spanish</option>
+                                <option value="fra">French</option>
+                                <option value="deu">German</option>
+                                <option value="hin">Hindi</option>
+                                <option value="ara">Arabic</option>
+                                <option value="chi_sim">Chinese Simplified</option>
+                                <option value="jpn">Japanese</option>
+                                <option value="rus">Russian</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label class="setting-label">Processing</label>
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="ocrAutoContrast" checked>
+                                <span class="checkmark"></span>
+                                <span>Auto Contrast (Better Accuracy)</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Processing Progress -->
+                <div class="ocr-progress-container" id="ocrProgressContainer" style="display: none;">
+                    <div class="ocr-progress-header">
+                        <span id="ocrStatusText">Initializing OCR...</span>
+                        <span id="ocrProgressValue">0%</span>
+                    </div>
+                    <div class="ocr-progress-bar">
+                        <div class="ocr-progress-fill" id="ocrProgressFill"></div>
+                    </div>
+                </div>
+
+                <!-- OCR Result Workspace -->
+                <div class="preview-section solaris-viewport-stage" id="ocrResultSection" style="display: none;">
+                    <div class="preview-header">
+                        <h3 class="preview-title">
+                            <i class="fas fa-file-lines"></i>
+                            Extracted Text
+                        </h3>
+                        <div class="preview-actions">
+                            <button class="btn btn-secondary btn-sm" id="copyOcrText">
+                                <i class="fas fa-copy"></i> Copy Text
+                            </button>
+                            <button class="btn btn-primary btn-sm" id="downloadOcrText">
+                                <i class="fas fa-download"></i> Download .txt
+                            </button>
+                        </div>
+                    </div>
+                    <div class="ocr-result-container">
+                        <textarea id="ocrResultText" class="ocr-textarea" readonly placeholder="Extracted text will appear here..."></textarea>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+
+        <!-- Dynamic SEO Content Section -->
+        <section class="seo-content-section" style="max-width: 1000px; margin: 60px auto 40px; padding: 0 24px; line-height: 1.8; color: var(--text-muted);">
+            <h2 style="font-size: 28px; color: var(--text); margin-bottom: 20px; font-weight: 700; letter-spacing: -0.5px;">Extract Editable Text Characters from Image Screenshots with OCR</h2>
+            <p style="margin-bottom: 24px; font-size: 15px;">Use Optical Character Recognition (OCR) to convert scanned images or document screenshots into copyable plain text:</p>
+            <ol style="margin-bottom: 32px; padding-left: 20px; display: flex; flex-direction: column; gap: 12px; font-size: 15px;">
+                <li><strong>Upload Document/Screenshot:</strong> Upload your file (PNG, JPG, or PDF).</li>
+                <li><strong>Select Language:</strong> Choose the target language of the text.</li>
+                <li><strong>Automatic Extraction:</strong> The OCR engine runs locally to parse letters and layout structures.</li>
+                <li><strong>Copy/Export Text:</strong> Click "Copy to Clipboard" to save the extracted text instantly.</li>
+            </ol>
+        </section>
+    
+        
+        <!-- FAQ Accordion Section -->
+        <section class="features-section" style="padding: 40px 0 60px; max-width: 1000px; margin: 0 auto;">
+            <h2 class="features-title" style="margin-bottom: 32px; font-size: 24px; color: var(--text); font-weight: 700;">Frequently Asked Questions</h2>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer;">
+                    <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        How accurate is the online OCR text extractor?
+                        <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
+                    </summary>
+                    <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+                        Highly accurate. By applying adaptive thresholding and contrast optimization to images beforehand, our engine extracts text layout structural zones accurately.
+                    </p>
+                </details>
+                <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer;">
+                    <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        What languages are supported by OCR?
+                        <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
+                    </summary>
+                    <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+                        We support English, Spanish, French, German, Chinese, Hindi, Arabic, and several other global languages.
+                    </p>
+                </details>
+            </div>
+        </section>
+        
+                <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
+                    </div>
+                    <p class="footer-tagline">Process unlimited images for free. No watermarks. No sign-up required.</p>
+                </div>
+                <div class="footer-socials">
+                    <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="social-link" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="https://twitter.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="X / Twitter">
+                        <i class="fab fa-x-twitter"></i>
+                    </a>
+                    <a href="https://instagram.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://linkedin.com/in/itxrishabh" target="_blank" rel="noopener" class="social-link" title="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://youtube.com" target="_blank" rel="noopener" class="social-link" title="YouTube">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="https://discord.com" target="_blank" rel="noopener" class="social-link" title="Discord">
+                        <i class="fab fa-discord"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-divider"></div>
+            <div class="footer-bottom">
+                <p>Developed by <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="footer-dev-link">Rishabh Dev</a></p>
+                <p class="footer-handle">@itxrishabh</p>
+            </div>
+        </footer>
+    </div>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>Processing your images...</p>
+        </div>
+    </div>
+
+    <!-- JSZip for ZIP downloads -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+    <script src="app.js" defer></script>
+</body>
+</html
+
+                    <!-- Right Side: Viewport Stage & Upload Area -->
+                    <div class="solaris-right-stage" style="display: flex; flex-direction: column; gap: 24px;">
+                        
+                        <div class="preview-section solaris-viewport-stage" id="ocrResultSection" style="display: none;">
+                    <div class="preview-header">
+                        <h3 class="preview-title">
+                            <i class="fas fa-file-lines"></i>
+                            Extracted Text
+                        </h3>
+                        <div class="preview-actions">
+                            <button class="btn btn-secondary btn-sm" id="copyOcrText">
+                                <i class="fas fa-copy"></i> Copy Text
+                            </button>
+                            <button class="btn btn-primary btn-sm" id="downloadOcrText">
+                                <i class="fas fa-download"></i> Download .txt
+                            </button>
+                        </div>
+                    </div>
+                    <div class="ocr-result-container">
+                        <textarea id="ocrResultText" class="ocr-textarea" readonly placeholder="Extracted text will appear here..."></textarea>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+
+        <!-- Dynamic SEO Content Section -->
+        <section class="seo-content-section" style="max-width: 1000px; margin: 60px auto 40px; padding: 0 24px; line-height: 1.8; color: var(--text-muted);">
+            <h2 style="font-size: 28px; color: var(--text); margin-bottom: 20px; font-weight: 700; letter-spacing: -0.5px;">Extract Editable Text Characters from Image Screenshots with OCR</h2>
+            <p style="margin-bottom: 24px; font-size: 15px;">Use Optical Character Recognition (OCR) to convert scanned images or document screenshots into copyable plain text:</p>
+            <ol style="margin-bottom: 32px; padding-left: 20px; display: flex; flex-direction: column; gap: 12px; font-size: 15px;">
+                <li><strong>Upload Document/Screenshot:</strong> Upload your file (PNG, JPG, or PDF).</li>
+                <li><strong>Select Language:</strong> Choose the target language of the text.</li>
+                <li><strong>Automatic Extraction:</strong> The OCR engine runs locally to parse letters and layout structures.</li>
+                <li><strong>Copy/Export Text:</strong> Click "Copy to Clipboard" to save the extracted text instantly.</li>
+            </ol>
+        </section>
+    
+        
+        <!-- FAQ Accordion Section -->
+        <section class="features-section" style="padding: 40px 0 60px; max-width: 1000px; margin: 0 auto;">
+            <h2 class="features-title" style="margin-bottom: 32px; font-size: 24px; color: var(--text); font-weight: 700;">Frequently Asked Questions</h2>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer;">
+                    <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        How accurate is the online OCR text extractor?
+                        <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
+                    </summary>
+                    <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+                        Highly accurate. By applying adaptive thresholding and contrast optimization to images beforehand, our engine extracts text layout structural zones accurately.
+                    </p>
+                </details>
+                <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer;">
+                    <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        What languages are supported by OCR?
+                        <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
+                    </summary>
+                    <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+                        We support English, Spanish, French, German, Chinese, Hindi, Arabic, and several other global languages.
+                    </p>
+                </details>
+            </div>
+        </section>
+        
+                <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
+                    </div>
+                    <p class="footer-tagline">Process unlimited images for free. No watermarks. No sign-up required.</p>
+                </div>
+                <div class="footer-socials">
+                    <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="social-link" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="https://twitter.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="X / Twitter">
+                        <i class="fab fa-x-twitter"></i>
+                    </a>
+                    <a href="https://instagram.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://linkedin.com/in/itxrishabh" target="_blank" rel="noopener" class="social-link" title="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://youtube.com" target="_blank" rel="noopener" class="social-link" title="YouTube">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="https://discord.com" target="_blank" rel="noopener" class="social-link" title="Discord">
+                        <i class="fab fa-discord"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-divider"></div>
+            <div class="footer-bottom">
+                <p>Developed by <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="footer-dev-link">Rishabh Dev</a></p>
+                <p class="footer-handle">@itxrishabh</p>
+            </div>
+        </footer>
+    </div>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>Processing your images...</p>
+        </div>
+    </div>
+
+    <!-- JSZip for ZIP downloads -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+    <script src="app.js" defer></script>
+</body>
+</html
+                    </div>
+                </div>
+
+                >
