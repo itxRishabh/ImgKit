@@ -1,28 +1,164 @@
+/**
+ * ImgKit Universal Upload Engine v2.0
+ * Zero-bug, high-performance, robust file handler for all tools
+ */
+const ImgKitUploadEngine = {
+    _initialized: false,
 
-// Universal Window Drag & Drop and Clipboard Paste Engine
-(function() {
-    function initUniversalDragAndDrop() {
+    initGlobalProtection() {
+        if (this._initialized) return;
+        this._initialized = true;
 
-        // NOTE: Click handlers are managed by each tool class individually.
-        // Do NOT add universal click delegation here — it causes double-fire.
-        // Prevent default browser behavior (file navigation) across entire window
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            window.addEventListener(eventName, (e) => {
+        // Prevent browser window from navigating to dropped files anywhere on the page
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
+            window.addEventListener(evt, (e) => {
                 e.preventDefault();
-                e.stopPropagation();
             }, false);
         });
 
-        // NOTE: Drop and Paste are handled by each tool class individually.
-        // Do NOT add universal drop/paste dispatchers here — they cause duplicate processing.
-    }
+        // Global drop fallback: if user drops outside a bound container, route files to active file input
+        window.addEventListener('drop', (e) => {
+            const files = Array.from(e.dataTransfer?.files || []);
+            if (files.length === 0) return;
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initUniversalDragAndDrop);
-    } else {
-        initUniversalDragAndDrop();
+            const targetContainer = e.target?.closest ? e.target.closest('.upload-area, .drop-zone') : null;
+            if (!targetContainer || !targetContainer.dataset.imgkitBound) {
+                const activeInput = this.findActiveFileInput();
+                if (activeInput && activeInput._imgkitFilesHandler) {
+                    activeInput._imgkitFilesHandler(files);
+                }
+            }
+        }, false);
+
+        // Global paste (Ctrl+V / Cmd+V)
+        window.addEventListener('paste', (e) => {
+            const items = e.clipboardData?.items;
+            if (!items) return;
+            const imageFiles = [];
+            for (const item of items) {
+                if (item.type.startsWith('image/')) {
+                    const f = item.getAsFile();
+                    if (f) imageFiles.push(f);
+                }
+            }
+            if (imageFiles.length > 0) {
+                e.preventDefault();
+                const activeInput = this.findActiveFileInput();
+                if (activeInput && activeInput._imgkitFilesHandler) {
+                    activeInput._imgkitFilesHandler(imageFiles);
+                }
+            }
+        }, false);
+    },
+
+    findActiveFileInput() {
+        const inputs = Array.from(document.querySelectorAll('input[type="file"]'));
+        for (const input of inputs) {
+            const container = input.closest('.upload-area, .drop-zone, .upload-section') || input.parentElement;
+            if (container && container.offsetParent !== null) {
+                return input;
+            }
+        }
+        return inputs[0] || null;
+    },
+
+    bind(options) {
+        if (!options) return null;
+        this.initGlobalProtection();
+
+        const container = typeof options.container === 'string' ? document.getElementById(options.container) : options.container;
+        const fileInput = typeof options.fileInput === 'string' ? document.getElementById(options.fileInput) : options.fileInput;
+        const onFiles = options.onFiles;
+
+        if (!container && !fileInput) return null;
+
+        // Guarantee single binding per container
+        if (container && container.dataset.imgkitBound === 'true') {
+            return null;
+        }
+
+        const handleFilesReceived = (files) => {
+            if (!files || files.length === 0) return;
+            const fileArray = Array.from(files);
+            if (onFiles) {
+                onFiles(fileArray);
+            }
+        };
+
+        if (fileInput) {
+            fileInput._imgkitFilesHandler = handleFilesReceived;
+
+            fileInput.addEventListener('change', (e) => {
+                const files = e.target.files;
+                if (files && files.length > 0) {
+                    handleFilesReceived(files);
+                }
+                fileInput.value = ''; // Reset value to allow selecting identical file again
+            });
+        }
+
+        if (container) {
+            container.dataset.imgkitBound = 'true';
+
+            // 1. Click to browse
+            container.addEventListener('click', (e) => {
+                // Ignore clicks on buttons, inputs, links, labels, selects, textareas inside container
+                if (e.target.closest('button, input, a, select, textarea, label')) return;
+                e.stopPropagation();
+                if (fileInput) {
+                    fileInput.click();
+                }
+            });
+
+            // 2. Drag & Drop on Container
+            let dragCounter = 0;
+
+            container.addEventListener('dragenter', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dragCounter++;
+                container.classList.add('drag-over', 'dragover');
+            });
+
+            container.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                container.classList.add('drag-over', 'dragover');
+            });
+
+            container.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dragCounter--;
+                if (dragCounter <= 0) {
+                    dragCounter = 0;
+                    container.classList.remove('drag-over', 'dragover');
+                }
+            });
+
+            container.addEventListener('drop', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dragCounter = 0;
+                container.classList.remove('drag-over', 'dragover');
+
+                const files = e.dataTransfer?.files;
+                if (files && files.length > 0) {
+                    handleFilesReceived(files);
+                }
+            });
+        }
+
+        return { container, fileInput };
     }
-})();
+};
+
+// Initialize global protection on load
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => ImgKitUploadEngine.initGlobalProtection());
+} else {
+    ImgKitUploadEngine.initGlobalProtection();
+}
 
 
 
@@ -187,36 +323,11 @@ class ImageSquare {
     }
 
     initEventListeners() {
-        if (!this.uploadArea && !this.dropZone) return;
-        // Upload area click
-        this.uploadArea.addEventListener('click', (e) => {
-            if (e.target.closest('button') || e.target.tagName === 'INPUT') return;
-            e.stopPropagation();
-            this.fileInput.click();
-        });
-
-        // File input change
-        this.fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
-
-        // Drag and drop
-        this.uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            this.uploadArea.classList.add('drag-over');
-        });
-
-        this.uploadArea.addEventListener('dragleave', () => {
-            this.uploadArea.classList.remove('drag-over');
-        });
-
-        this.uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            this.uploadArea.classList.remove('drag-over');
-            this.handleFiles(e.dataTransfer.files);
-        });
-
-        // Paste from clipboard (Ctrl+V / Cmd+V)
-        document.addEventListener('paste', (e) => {
-            this.handlePaste(e);
+        if (!this.uploadArea && !this.fileInput) return;
+        ImgKitUploadEngine.bind({
+            container: this.uploadArea,
+            fileInput: this.fileInput,
+            onFiles: (files) => this.handleFiles(files)
         });
 
         // Background type toggle
@@ -1272,47 +1383,28 @@ class ImageConverter {
     }
 
     initEventListeners() {
-        if (!this.uploadArea && !this.dropZone) return;
-        // Upload area click
-        this.uploadArea.addEventListener('click', (e) => {
-            if (e.target.closest('button') || e.target.tagName === 'INPUT') return;
-            e.stopPropagation();
-            this.fileInput.click();
+        if (!this.uploadArea && !this.fileInput) return;
+        ImgKitUploadEngine.bind({
+            container: this.uploadArea,
+            fileInput: this.fileInput,
+            onFiles: (files) => this.handleFiles(files)
         });
-
-        // File input change
-        this.fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
 
         // Folder button click
-        this.folderBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.folderInput.click();
-        });
+        if (this.folderBtn && this.folderInput) {
+            this.folderBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.folderInput.click();
+            });
 
-        // Folder input change - filter and process only image files
-        this.folderInput.addEventListener('change', (e) => {
-            const files = Array.from(e.target.files).filter(file => file.type.startsWith('image/'));
-            if (files.length > 0) {
-                this.handleFiles(files);
-            }
-            this.folderInput.value = '';
-        });
-
-        // Drag and drop
-        this.uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            this.uploadArea.classList.add('drag-over');
-        });
-
-        this.uploadArea.addEventListener('dragleave', () => {
-            this.uploadArea.classList.remove('drag-over');
-        });
-
-        this.uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            this.uploadArea.classList.remove('drag-over');
-            this.handleFiles(e.dataTransfer.files);
-        });
+            this.folderInput.addEventListener('change', (e) => {
+                const files = Array.from(e.target.files).filter(file => file.type.startsWith('image/'));
+                if (files.length > 0) {
+                    this.handleFiles(files);
+                }
+                this.folderInput.value = '';
+            });
+        }
 
         // Paste from clipboard (Ctrl+V / Cmd+V) - only when converter tool is active
         document.addEventListener('paste', (e) => {
@@ -2471,31 +2563,11 @@ class BackgroundRemover {
     }
 
     initEventListeners() {
-        if (!this.uploadArea && !this.dropZone) return;
-        // Upload area click
-        this.uploadArea.addEventListener('click', (e) => {
-            if (e.target.closest('button') || e.target.tagName === 'INPUT') return;
-            e.stopPropagation();
-            this.fileInput.click();
-        });
-
-        // File input change
-        this.fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
-
-        // Drag and drop
-        this.uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            this.uploadArea.classList.add('drag-over');
-        });
-
-        this.uploadArea.addEventListener('dragleave', () => {
-            this.uploadArea.classList.remove('drag-over');
-        });
-
-        this.uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            this.uploadArea.classList.remove('drag-over');
-            this.handleFiles(e.dataTransfer.files);
+        if (!this.uploadArea && !this.fileInput) return;
+        ImgKitUploadEngine.bind({
+            container: this.uploadArea,
+            fileInput: this.fileInput,
+            onFiles: (files) => this.handleFiles(files)
         });
 
         // Paste from clipboard
@@ -2956,30 +3028,15 @@ class ImageCropper {
     }
 
     initEventListeners() {
-        if (!this.uploadArea && !this.dropZone) return;
-        // Upload
-        this.uploadArea.addEventListener('click', (e) => {
-            if (e.target.closest('button') || e.target.tagName === 'INPUT') return;
-            e.stopPropagation();
-            this.fileInput.click();
-        });
-        this.fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length) this.loadImage(e.target.files[0]);
-        });
-
-        // Drag and drop
-        this.uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            this.uploadArea.classList.add('drag-over');
-        });
-        this.uploadArea.addEventListener('dragleave', () => {
-            this.uploadArea.classList.remove('drag-over');
-        });
-        this.uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            this.uploadArea.classList.remove('drag-over');
-            const file = e.dataTransfer.files[0];
-            if (file && file.type.startsWith('image/')) this.loadImage(file);
+        if (!this.uploadArea && !this.fileInput) return;
+        ImgKitUploadEngine.bind({
+            container: this.uploadArea,
+            fileInput: this.fileInput,
+            onFiles: (files) => {
+                if (files[0] && files[0].type.startsWith('image/')) {
+                    this.loadImage(files[0]);
+                }
+            }
         });
 
         // Paste
@@ -3323,23 +3380,13 @@ class FaviconGenerator {
     }
 
     initEventListeners() {
-        if (!this.uploadArea && !this.dropZone) return;
-        this.uploadArea.addEventListener('click', (e) => {
-            if (e.target.closest('button') || e.target.tagName === 'INPUT') return;
-            e.stopPropagation();
-            this.fileInput.click();
-        });
-        this.fileInput.addEventListener('change', (e) => this.handleFile(e.target.files[0]));
-        
-        this.uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            this.uploadArea.classList.add('drag-over');
-        });
-        this.uploadArea.addEventListener('dragleave', () => this.uploadArea.classList.remove('drag-over'));
-        this.uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            this.uploadArea.classList.remove('drag-over');
-            this.handleFile(e.dataTransfer.files[0]);
+        if (!this.uploadArea && !this.fileInput) return;
+        ImgKitUploadEngine.bind({
+            container: this.uploadArea,
+            fileInput: this.fileInput,
+            onFiles: (files) => {
+                if (files[0]) this.handleFile(files[0]);
+            }
         });
 
         this.baseNameInput.addEventListener('input', () => this.updateHtmlSnippet());
@@ -3527,23 +3574,13 @@ class ImageTrimmer {
     }
 
     initEventListeners() {
-        if (!this.uploadArea && !this.dropZone) return;
-        this.uploadArea.addEventListener('click', (e) => {
-            if (e.target.closest('button') || e.target.tagName === 'INPUT') return;
-            e.stopPropagation();
-            this.fileInput.click();
-        });
-        this.fileInput.addEventListener('change', (e) => this.handleFile(e.target.files[0]));
-        
-        this.uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            this.uploadArea.classList.add('drag-over');
-        });
-        this.uploadArea.addEventListener('dragleave', () => this.uploadArea.classList.remove('drag-over'));
-        this.uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            this.uploadArea.classList.remove('drag-over');
-            this.handleFile(e.dataTransfer.files[0]);
+        if (!this.uploadArea && !this.fileInput) return;
+        ImgKitUploadEngine.bind({
+            container: this.uploadArea,
+            fileInput: this.fileInput,
+            onFiles: (files) => {
+                if (files[0]) this.handleFile(files[0]);
+            }
         });
 
         this.toleranceSlider.addEventListener('input', (e) => {
@@ -3706,25 +3743,11 @@ class ImageOCR {
     }
 
     initEventListeners() {
-        if (!this.uploadArea && !this.dropZone) return;
-        // Upload
-        this.uploadArea.addEventListener('click', (e) => {
-            if (e.target.closest('button') || e.target.tagName === 'INPUT') return;
-            e.stopPropagation();
-            this.fileInput.click();
-        });
-        this.fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
-
-        // Drag and drop
-        this.uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            this.uploadArea.classList.add('drag-over');
-        });
-        this.uploadArea.addEventListener('dragleave', () => this.uploadArea.classList.remove('drag-over'));
-        this.uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            this.uploadArea.classList.remove('drag-over');
-            this.handleFiles(e.dataTransfer.files);
+        if (!this.uploadArea && !this.fileInput) return;
+        ImgKitUploadEngine.bind({
+            container: this.uploadArea,
+            fileInput: this.fileInput,
+            onFiles: (files) => this.handleFiles(files)
         });
 
         // Paste
@@ -4079,25 +4102,11 @@ class WatermarkRemover {
     }
 
     initEventListeners() {
-        if (!this.uploadArea && !this.dropZone) return;
-        // Upload trigger
-        this.uploadArea.addEventListener('click', (e) => {
-            if (e.target.closest('button') || e.target.tagName === 'INPUT') return;
-            e.stopPropagation();
-            this.fileInput.click();
-        });
-        this.fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
-
-        // Drag and drop
-        this.uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            this.uploadArea.classList.add('drag-over');
-        });
-        this.uploadArea.addEventListener('dragleave', () => this.uploadArea.classList.remove('drag-over'));
-        this.uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            this.uploadArea.classList.remove('drag-over');
-            this.handleFiles(e.dataTransfer.files);
+        if (!this.uploadArea && !this.fileInput) return;
+        ImgKitUploadEngine.bind({
+            container: this.uploadArea,
+            fileInput: this.fileInput,
+            onFiles: (files) => this.handleFiles(files)
         });
 
         // Brush mode buttons
@@ -4666,25 +4675,11 @@ class VideoTool {
     }
 
     initEventListeners() {
-        if (!this.uploadArea && !this.dropZone) return;
-        // Drop area click
-        this.uploadArea.addEventListener('click', (e) => {
-            if (e.target.closest('button') || e.target.tagName === 'INPUT') return;
-            e.stopPropagation();
-            this.fileInput.click();
-        });
-        this.fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
-
-        // Drag/Drop handling
-        this.uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            this.uploadArea.classList.add('drag-over');
-        });
-        this.uploadArea.addEventListener('dragleave', () => this.uploadArea.classList.remove('drag-over'));
-        this.uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            this.uploadArea.classList.remove('drag-over');
-            this.handleFiles(e.dataTransfer.files);
+        if (!this.uploadArea && !this.fileInput) return;
+        ImgKitUploadEngine.bind({
+            container: this.uploadArea,
+            fileInput: this.fileInput,
+            onFiles: (files) => this.handleFiles(files)
         });
 
         // Trigger processing
@@ -5067,31 +5062,18 @@ class SizeManager {
         });
 
         // Event listeners
-        this.uploadArea.addEventListener('click', (e) => {
-            if (e.target.closest('button') || e.target.tagName === 'INPUT') return;
-            e.stopPropagation();
-            this.fileInput.click();
-        });
-        this.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
-
-        // Drag & Drop
-        this.uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            this.uploadArea.classList.add('dragover');
-        });
-
-        this.uploadArea.addEventListener('dragleave', (e) => {
-            e.stopPropagation();
-            this.uploadArea.classList.remove('dragover');
-        });
-
-        this.uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            this.uploadArea.classList.remove('dragover');
-            if (e.dataTransfer.files.length > 0) {
-                this.fileInput.files = e.dataTransfer.files;
+        if (!this.uploadArea && !this.fileInput) return;
+        ImgKitUploadEngine.bind({
+            container: this.uploadArea,
+            fileInput: this.fileInput,
+            onFiles: (files) => {
+                if (files[0] && this.fileInput) {
+                    try {
+                        const dt = new DataTransfer();
+                        dt.items.add(files[0]);
+                        this.fileInput.files = dt.files;
+                    } catch (err) {}
+                }
                 this.handleFileSelect();
             }
         });
@@ -5569,30 +5551,22 @@ class SVGToImageConverter {
         });
         
         this.codeInput.addEventListener('input', () => this.updatePreviewFromCode());
-        this.uploadArea.addEventListener('click', (e) => {
-            if (e.target.closest('button') || e.target.tagName === 'INPUT') return;
-            e.stopPropagation();
-            this.fileInput.click();
-        });
-        this.fileInput.addEventListener('change', () => this.handleFileSelect());
-        
-        this.uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            this.uploadArea.classList.add('drag-over');
-        });
-        
-        this.uploadArea.addEventListener('dragleave', () => {
-            this.uploadArea.classList.remove('drag-over');
-        });
-        
-        this.uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            this.uploadArea.classList.remove('drag-over');
-            if (e.dataTransfer.files.length > 0) {
-                this.fileInput.files = e.dataTransfer.files;
-                this.handleFileSelect();
-            }
-        });
+        if (this.uploadArea && this.fileInput) {
+            ImgKitUploadEngine.bind({
+                container: this.uploadArea,
+                fileInput: this.fileInput,
+                onFiles: (files) => {
+                    if (files[0] && this.fileInput) {
+                        try {
+                            const dt = new DataTransfer();
+                            dt.items.add(files[0]);
+                            this.fileInput.files = dt.files;
+                        } catch (err) {}
+                    }
+                    this.handleFileSelect();
+                }
+            });
+        }
         
         this.formatToggle.querySelectorAll('.toggle-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -5912,6 +5886,7 @@ document.querySelectorAll('.tool-tab').forEach(tab => {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         opacity: 0;
+        pointer-events: none;
     `;
     
     overlay.innerHTML = `
