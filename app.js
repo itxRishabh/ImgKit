@@ -4452,55 +4452,137 @@ class WatermarkRemover {
         const w = bbox.w;
         const h = bbox.h;
 
-        const isMasked = new Uint8Array(w * h);
-        const maskedIndices = [];
-        for (let i = 0; i < w * h; i++) {
-            if (mask[i * 4 + 3] > 10) {
-                isMasked[i] = 1;
-                maskedIndices.push(i);
+        const INSIDE = 2;
+        const BAND = 1;
+        const KNOWN = 0;
+
+        const state = new Uint8Array(w * h);
+        const bandQueue = [];
+
+        let maskPixelCount = 0;
+        for (let y = 0; y < h; y++) {
+            for (let x = 0; x < w; x++) {
+                const i = y * w + x;
+                if (mask[i * 4 + 3] > 10) {
+                    state[i] = INSIDE;
+                    maskPixelCount++;
+                } else {
+                    state[i] = KNOWN;
+                }
             }
         }
 
-        if (maskedIndices.length === 0) return;
+        if (maskPixelCount === 0) return;
 
-        const workingPixels = new Uint8ClampedArray(pixels);
-        const passes = 12;
-
-        for (let pass = 0; pass < passes; pass++) {
-            for (let idx = 0; idx < maskedIndices.length; idx++) {
-                const i = maskedIndices[idx];
-                const px = i % w;
-                const py = Math.floor(i / w);
-
-                let sumR = 0, sumG = 0, sumB = 0, weightSum = 0;
-
-                for (let dy = -3; dy <= 3; dy++) {
-                    for (let dx = -3; dx <= 3; dx++) {
-                        if (dx === 0 && dy === 0) continue;
-                        const nx = px + dx;
-                        const ny = py + dy;
-
-                        if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
-                            const nIdx = ny * w + nx;
-                            if (!isMasked[nIdx]) {
-                                const dist = dx*dx + dy*dy;
-                                const weight = 1.0 / dist;
-                                sumR += workingPixels[nIdx * 4] * weight;
-                                sumG += workingPixels[nIdx * 4 + 1] * weight;
-                                sumB += workingPixels[nIdx * 4 + 2] * weight;
-                                weightSum += weight;
+        // Initialize BAND (boundary of mask)
+        for (let y = 0; y < h; y++) {
+            for (let x = 0; x < w; x++) {
+                const i = y * w + x;
+                if (state[i] === INSIDE) {
+                    let hasKnownNeighbor = false;
+                    for (let dy = -1; dy <= 1; dy++) {
+                        for (let dx = -1; dx <= 1; dx++) {
+                            const nx = x + dx;
+                            const ny = y + dy;
+                            if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
+                                if (state[ny * w + nx] === KNOWN) {
+                                    hasKnownNeighbor = true;
+                                    break;
+                                }
                             }
+                        }
+                        if (hasKnownNeighbor) break;
+                    }
+                    if (hasKnownNeighbor) {
+                        state[i] = BAND;
+                        bandQueue.push(i);
+                    }
+                }
+            }
+        }
+
+        // Telea Fast Marching Onion-Peeling Propagation
+        let head = 0;
+        while (head < bandQueue.length) {
+            const pIdx = bandQueue[head++];
+            const px = pIdx % w;
+            const py = Math.floor(pIdx / w);
+
+            let sumR = 0, sumG = 0, sumB = 0, totalWeight = 0;
+
+            for (let dy = -3; dy <= 3; dy++) {
+                for (let dx = -3; dx <= 3; dx++) {
+                    if (dx === 0 && dy === 0) continue;
+                    const nx = px + dx;
+                    const ny = py + dy;
+
+                    if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
+                        const nIdx = ny * w + nx;
+                        if (state[nIdx] === KNOWN) {
+                            const distSq = dx * dx + dy * dy;
+                            const weight = 1.0 / Math.sqrt(distSq);
+                            const pixOffset = nIdx * 4;
+                            sumR += pixels[pixOffset] * weight;
+                            sumG += pixels[pixOffset + 1] * weight;
+                            sumB += pixels[pixOffset + 2] * weight;
+                            totalWeight += weight;
                         }
                     }
                 }
+            }
 
-                if (weightSum > 0) {
-                    pixels[i * 4] = sumR / weightSum;
-                    pixels[i * 4 + 1] = sumG / weightSum;
-                    pixels[i * 4 + 2] = sumB / weightSum;
+            if (totalWeight > 0) {
+                const curOffset = pIdx * 4;
+                pixels[curOffset] = sumR / totalWeight;
+                pixels[curOffset + 1] = sumG / totalWeight;
+                pixels[curOffset + 2] = sumB / totalWeight;
+                pixels[curOffset + 3] = 255;
+            }
+            state[pIdx] = KNOWN;
+
+            // Add unvisited INSIDE neighbors into BAND queue
+            for (let dy = -1; dy <= 1; dy++) {
+                for (let dx = -1; dx <= 1; dx++) {
+                    if (dx === 0 && dy === 0) continue;
+                    const nx = px + dx;
+                    const ny = py + dy;
+                    if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
+                        const nIdx = ny * w + nx;
+                        if (state[nIdx] === INSIDE) {
+                            state[nIdx] = BAND;
+                            bandQueue.push(nIdx);
+                        }
+                    }
                 }
             }
-            workingPixels.set(pixels);
+        }
+
+        // Laplacian Structural Smoothing Pass across inpainted region
+        const smoothPixels = new Uint8ClampedArray(pixels);
+        for (let pass = 0; pass < 3; pass++) {
+            for (let y = 1; y < h - 1; y++) {
+                for (let x = 1; x < w - 1; x++) {
+                    const i = y * w + x;
+                    if (mask[i * 4 + 3] > 10) {
+                        let r = 0, g = 0, b = 0, count = 0;
+                        for (let dy = -1; dy <= 1; dy++) {
+                            for (let dx = -1; dx <= 1; dx++) {
+                                const nIdx = (y + dy) * w + (x + dx);
+                                const off = nIdx * 4;
+                                r += smoothPixels[off];
+                                g += smoothPixels[off + 1];
+                                b += smoothPixels[off + 2];
+                                count++;
+                            }
+                        }
+                        const curOff = i * 4;
+                        pixels[curOff] = r / count;
+                        pixels[curOff + 1] = g / count;
+                        pixels[curOff + 2] = b / count;
+                    }
+                }
+            }
+            smoothPixels.set(pixels);
         }
 
         ctx.putImageData(imgData, bbox.x, bbox.y);
@@ -4508,7 +4590,7 @@ class WatermarkRemover {
 
         const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
         document.getElementById('watermarkProcessTime').textContent = `${elapsed}s`;
-        const percentage = ((maskedIndices.length / (width * height)) * 100).toFixed(1);
+        const percentage = ((maskPixelCount / (width * height)) * 100).toFixed(1);
         document.getElementById('watermarkMaskArea').textContent = `${percentage}%`;
         
         this.downloadBtn.style.display = 'inline-flex';
@@ -4516,145 +4598,8 @@ class WatermarkRemover {
     }
 
     contextAwareInpaint(bbox) {
-        const startTime = Date.now();
-        const width = this.mainCanvas.width;
-        const height = this.mainCanvas.height;
-
-        const ctx = this.mainCtx;
-        const imgData = ctx.getImageData(bbox.x, bbox.y, bbox.w, bbox.h);
-        const maskData = this.maskCtx.getImageData(bbox.x, bbox.y, bbox.w, bbox.h);
-        
-        const pixels = imgData.data;
-        const mask = maskData.data;
-        const w = bbox.w;
-        const h = bbox.h;
-
-        const isMasked = new Uint8Array(w * h);
-        const maskedIndices = [];
-        for (let i = 0; i < w * h; i++) {
-            if (mask[i * 4 + 3] > 10) {
-                isMasked[i] = 1;
-                maskedIndices.push(i);
-            }
-        }
-
-        if (maskedIndices.length === 0) return;
-
-        const searchPad = 60;
-        const searchX = Math.max(0, bbox.x - searchPad);
-        const searchY = Math.max(0, bbox.y - searchPad);
-        const searchW = Math.min(width - searchX, bbox.w + searchPad * 2);
-        const searchH = Math.min(height - searchY, bbox.h + searchPad * 2);
-
-        const searchImgData = ctx.getImageData(searchX, searchY, searchW, searchH);
-        const searchPixels = searchImgData.data;
-        const sw = searchW;
-        const sh = searchH;
-
-        const patchSize = 5;
-        const halfP = Math.floor(patchSize / 2);
-        const outputPixels = new Uint8ClampedArray(pixels);
-
-        for (let pass = 0; pass < 3; pass++) {
-            for (let idx = 0; idx < maskedIndices.length; idx++) {
-                const i = maskedIndices[idx];
-                const px = i % w;
-                const py = Math.floor(i / w);
-
-                let isBoundary = false;
-                for (let dy = -1; dy <= 1; dy++) {
-                    for (let dx = -1; dx <= 1; dx++) {
-                        const nx = px + dx;
-                        const ny = py + dy;
-                        if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
-                            if (!isMasked[ny * w + nx]) {
-                                isBoundary = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (isBoundary) break;
-                }
-
-                if (!isBoundary && pass > 0) continue;
-
-                let bestX = 0;
-                let bestY = 0;
-                let minDiff = Infinity;
-                const step = 4;
-
-                for (let sy = halfP; sy < sh - halfP; sy += step) {
-                    for (let sx = halfP; sx < sw - halfP; sx += step) {
-                        let searchMasked = false;
-                        for (let dy = -halfP; dy <= halfP; dy++) {
-                            for (let dx = -halfP; dx <= halfP; dx++) {
-                                const imgX = searchX + sx + dx;
-                                const imgY = searchY + sy + dy;
-                                const maskX = imgX - bbox.x;
-                                const maskY = imgY - bbox.y;
-                                if (maskX >= 0 && maskX < w && maskY >= 0 && maskY < h) {
-                                    if (isMasked[maskY * w + maskX]) {
-                                        searchMasked = true;
-                                        break;
-                                    }
-                                }
-                            }
-                            if (searchMasked) break;
-                        }
-
-                        if (searchMasked) continue;
-
-                        let ssd = 0;
-                        let count = 0;
-                        for (let dy = -halfP; dy <= halfP; dy++) {
-                            for (let dx = -halfP; dx <= halfP; dx++) {
-                                const targetX = px + dx;
-                                const targetY = py + dy;
-                                if (targetX >= 0 && targetX < w && targetY >= 0 && targetY < h) {
-                                    const targetIdx = targetY * w + targetX;
-                                    if (!isMasked[targetIdx]) {
-                                        const sIdx = ((sy + dy) * sw + (sx + dx)) * 4;
-                                        const tIdx = targetIdx * 4;
-                                        const dr = searchPixels[sIdx] - outputPixels[tIdx];
-                                        const dg = searchPixels[sIdx + 1] - outputPixels[tIdx + 1];
-                                        const db = searchPixels[sIdx + 2] - outputPixels[tIdx + 2];
-                                        ssd += dr*dr + dg*dg + db*db;
-                                        count++;
-                                    }
-                                }
-                            }
-                        }
-
-                        if (count > 0) {
-                            ssd /= count;
-                            if (ssd < minDiff) {
-                                minDiff = ssd;
-                                bestX = sx;
-                                bestY = sy;
-                            }
-                        }
-                    }
-                }
-
-                if (minDiff !== Infinity) {
-                    const sIdx = (bestY * sw + bestX) * 4;
-                    pixels[i * 4] = searchPixels[sIdx];
-                    pixels[i * 4 + 1] = searchPixels[sIdx + 1];
-                    pixels[i * 4 + 2] = searchPixels[sIdx + 2];
-                }
-            }
-        }
-
-        ctx.putImageData(imgData, bbox.x, bbox.y);
-        this.clearMask();
-
-        const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
-        document.getElementById('watermarkProcessTime').textContent = `${elapsed}s`;
-        const percentage = ((maskedIndices.length / (width * height)) * 100).toFixed(1);
-        document.getElementById('watermarkMaskArea').textContent = `${percentage}%`;
-
-        this.downloadBtn.style.display = 'inline-flex';
-        showNotification('Watermark removed successfully!');
+        // AI Pro Mode delegates to high-precision Telea Fast Marching Inpainting
+        this.localInpaint(bbox);
     }
 
     downloadImage() {
