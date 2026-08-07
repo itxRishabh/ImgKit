@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>WebToolkitBox - Solar Future UI</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#251a00",
+                        "primary-fixed-dim": "#eec200",
+                        "tertiary-fixed-dim": "#bec6e0",
+                        "primary-container": "#facc15",
+                        "error-container": "#ffdad6",
+                        "on-surface": "#1a1c1c",
+                        "on-tertiary-container": "#51596f",
+                        "on-primary-fixed-variant": "#574500",
+                        "on-secondary-fixed-variant": "#5a4300",
+                        "primary": "#735c00",
+                        "on-error-container": "#93000a",
+                        "on-primary": "#ffffff",
+                        "surface-container-highest": "#e2e2e2",
+                        "secondary-fixed-dim": "#f7be1d",
+                        "inverse-on-surface": "#f0f1f1",
+                        "on-primary-fixed": "#231b00",
+                        "surface-dim": "#dadada",
+                        "on-tertiary-fixed": "#131b2e",
+                        "surface-variant": "#e2e2e2",
+                        "on-tertiary-fixed-variant": "#3f465c",
+                        "surface": "#f9f9f9",
+                        "on-secondary": "#ffffff",
+                        "secondary-container": "#fdc425",
+                        "surface-container": "#eeeeee",
+                        "outline": "#7f7660",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#f9f9f9",
+                        "on-primary-container": "#6c5700",
+                        "error": "#ba1a1a",
+                        "on-background": "#1a1c1c",
+                        "on-error": "#ffffff",
+                        "tertiary": "#565e74",
+                        "surface-tint": "#735c00",
+                        "primary-fixed": "#ffe083",
+                        "secondary-fixed": "#ffdf9a",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#4d4632",
+                        "background": "#f9f9f9",
+                        "on-secondary-container": "#6d5200",
+                        "tertiary-fixed": "#dae2fd",
+                        "tertiary-container": "#c9d0ea",
+                        "surface-container-high": "#e8e8e8",
+                        "secondary": "#785a00",
+                        "inverse-surface": "#2f3131",
+                        "inverse-primary": "#eec200",
+                        "outline-variant": "#d1c6ab",
+                        "surface-container-low": "#f3f3f4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "unit": "8px",
+                        "margin-desktop": "48px",
+                        "container-max": "1280px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Outfit"],
+                        "title-md": ["Outfit"],
+                        "body-md": ["Outfit"],
+                        "headline-lg-mobile": ["Outfit"],
+                        "display-lg": ["Outfit"],
+                        "body-lg": ["Outfit"],
+                        "headline-lg": ["Outfit"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["13px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "title-md": ["24px", { "lineHeight": "1.4", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "display-lg": ["64px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg": ["40px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #ffffff;
+            color: #0F172A;
+            background-image:
+                radial-gradient(circle at 15% 50%, rgba(250, 204, 21, 0.05), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(250, 204, 21, 0.05), transparent 25%);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(234, 179, 8, 0.2);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
+        }
+
+        .glass-card:hover {
+            box-shadow: 0 10px 40px rgba(250, 204, 21, 0.05);
+            border: 1px solid rgba(234, 179, 8, 0.4);
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
+
+        .solar-gradient-text {
+            background: linear-gradient(135deg, #FACC15, #0F172A);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .drop-zone {
+            border: 2px dashed rgba(234, 179, 8, 0.5);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone:hover,
+        .drop-zone.dragover {
+            border-color: #FACC15;
+            background: linear-gradient(180deg, rgba(250, 204, 21, 0.05) 0%, rgba(255, 255, 255, 0.8) 100%);
+            box-shadow: inset 0 0 30px rgba(250, 204, 21, 0.1);
+        }
+
+        .btn-primary {
+            background-color: #FACC15;
+            color: #0F172A;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 15px rgba(250, 204, 21, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #F1F5F9;
+        }
+
+        .faq-content {
+            display: none;
+        }
+
+        .faq-item.active .faq-content {
+            display: block;
+        }
+
+        .faq-item.active .material-symbols-outlined {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-body-md text-body-md">
+    <!-- TopNavBar (Simulated based on context) -->
+    <header
+        class="w-full sticky top-0 z-50 border-b border-outline-variant/20 backdrop-blur-3xl bg-surface/80 shadow-sm shadow-primary/5 flex justify-between items-center px-margin-desktop py-4 mx-auto">
+        <div class="font-display-lg text-title-md font-bold tracking-tighter text-primary">WebToolkitBox</div>
+        <nav class="hidden md:flex gap-6">
+            <a class="text-primary font-bold border-b-2 border-primary pb-1 font-body-md text-body-md"
+                href="#">Dashboard</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-body-md text-body-md"
+                href="#">Assets</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-body-md text-body-md"
+                href="#">Analytics</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-body-md text-body-md"
+                href="#">Maintenance</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-body-md text-body-md"
+                href="#">Fleet</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-body-md text-body-md"
+                href="#">Settings</a>
+        </nav>
+        <button
+            class="btn-primary px-6 py-2 rounded-full font-label-sm text-label-sm uppercase tracking-widest hidden md:block">System
+            Status</button>
+    </header>
+    <main class="flex-grow w-full max-w-container-max mx-auto px-margin-desktop py-16 space-y-32">
+        <!-- Hero Section: Drop into the Void -->
+        <section class="text-center space-y-12">
+            <h1 class="font-display-lg text-display-lg mb-6"><span class="solar-gradient-text">Solar Powered</span>
+                Utility</h1>
+            <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto mb-12">Streamline your
+                workflow with high-fidelity, client-side tools designed for modern creators.</p>
+            <div class="drop-zone rounded-xl p-16 max-w-4xl mx-auto flex flex-col items-center justify-center cursor-pointer min-h-[400px]"
+                id="dropZone">
+                <span class="material-symbols-outlined text-6xl text-primary-container mb-6"
+                    style="font-variation-settings: 'FILL' 0;">cloud_upload</span>
+                <h3 class="font-title-md text-title-md text-on-surface mb-2">Drop into the Void</h3>
+                <p class="text-on-surface-variant mb-8">Drag and drop your files here, or click to browse.</p>
+                <button
+                    class="btn-primary px-8 py-3 rounded-full font-label-sm text-label-sm uppercase tracking-widest">Select
+                    Files</button>
+            </div>
+        </section>
+        <!-- Core Modules Bento Grid -->
+        <section class="space-y-16">
+            <h2 class="font-headline-lg text-headline-lg text-center">Core Modules</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+                <!-- Module 1: AI Background Remover -->
+                <div class="glass-card p-8 rounded-xl flex flex-col items-start h-full">
+                    <div class="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-primary-container"
+                            style="font-variation-settings: 'FILL' 1;">person_remove</span>
+                    </div>
+                    <h3 class="font-title-md text-title-md text-on-surface mb-4">AI Background Remover</h3>
+                    <p class="text-on-surface-variant flex-grow">Neural-network powered subject isolation. Instantly
+                        extract main subjects with perfect edge detection.</p>
+                </div>
+                <!-- Module 2: Image Upscaler -->
+                <div
+                    class="glass-card p-8 rounded-xl flex flex-col items-start h-full md:col-span-2 relative overflow-hidden">
+                    <div
+                        class="absolute right-0 top-0 w-64 h-full opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PHBhdGggZD0iTTAgMGg0MHY0MEgweiIgZmlsbD0ibm9uZSIvPjxjaXJjbGUgY3g9IjIwIiBjeT0iMjAiIHI9IjIiIGZpbGw9IiNmYWNjMTUiLz48L3N2Zz4=')]">
+                    </div>
+                    <div
+                        class="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center mb-6 relative z-10">
+                        <span class="material-symbols-outlined text-primary-container"
+                            style="font-variation-settings: 'FILL' 1;">zoom_in</span>
+                    </div>
+                    <h3 class="font-title-md text-title-md text-on-surface mb-4 relative z-10">Image Upscaler</h3>
+                    <p class="text-on-surface-variant flex-grow relative z-10 max-w-md">Scale assets up to 8x native
+                        resolution using advanced machine learning models that hallucinate missing details.</p>
+                </div>
+                <!-- Module 3: Format Converter -->
+                <div class="glass-card p-8 rounded-xl flex flex-col items-start h-full md:col-span-3">
+                    <div class="flex flex-col md:flex-row gap-8 w-full items-center">
+                        <div class="flex-shrink-0">
+                            <div
+                                class="w-16 h-16 rounded-full bg-primary-container/20 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-primary-container text-3xl"
+                                    style="font-variation-settings: 'FILL' 1;">transform</span>
+                            </div>
+                        </div>
+                        <div class="flex-grow text-center md:text-left">
+                            <h3 class="font-title-md text-title-md text-on-surface mb-2">Format Converter</h3>
+                            <p class="text-on-surface-variant">Lossless HEIC to PNG/WebP conversion. Batch process
+                                hundreds of images securely in your browser.</p>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <button
+                                class="btn-primary px-6 py-2 rounded-full font-label-sm text-label-sm uppercase tracking-widest">Launch
+                                Tool</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Interactive FAQ -->
+        <section class="max-w-3xl mx-auto space-y-12">
+            <h2 class="font-headline-lg text-headline-lg text-center">Frequently Asked Questions</h2>
+            <div class="space-y-4">
+                <div
+                    class="faq-item active bg-white rounded-lg p-6 shadow-sm border border-outline-variant/20 cursor-pointer">
+                    <div class="flex justify-between items-center mb-2 faq-toggle">
+                        <h4 class="font-title-md text-title-md">Are my files uploaded to a server?</h4>
+                        <span
+                            class="material-symbols-outlined text-primary-container transition-transform duration-300">expand_more</span>
+                    </div>
+                    <div class="faq-content text-on-surface-variant mt-4">
+                        <p>No. All processing happens locally in your browser using WebAssembly and WebGL. Your data
+                            never leaves your device, ensuring complete privacy and zero server latency.</p>
+                    </div>
+                </div>
+                <div class="faq-item bg-white rounded-lg p-6 shadow-sm border border-outline-variant/20 cursor-pointer">
+                    <div class="flex justify-between items-center mb-2 faq-toggle">
+                        <h4 class="font-title-md text-title-md">What formats are supported for upscaling?</h4>
+                        <span
+                            class="material-symbols-outlined text-primary-container transition-transform duration-300">expand_more</span>
+                    </div>
+                    <div class="faq-content text-on-surface-variant mt-4">
+                        <p>We currently support JPEG, PNG, WebP, and HEIC. For best results, we recommend starting with
+                            the highest quality original you have available.</p>
+                    </div>
+                </div>
+                <div class="faq-item bg-white rounded-lg p-6 shadow-sm border border-outline-variant/20 cursor-pointer">
+                    <div class="flex justify-between items-center mb-2 faq-toggle">
+                        <h4 class="font-title-md text-title-md">Is there a file size limit?</h4>
+                        <span
+                            class="material-symbols-outlined text-primary-container transition-transform duration-300">expand_more</span>
+                    </div>
+                    <div class="faq-content text-on-surface-variant mt-4">
+                        <p>Because processing happens locally, the limit is based on your device's available RAM.
+                            Generally, files up to 50MB process smoothly on modern hardware.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- Footer -->
+    <footer
+        class="w-full mt-auto border-t border-primary/20 bg-on-surface grid grid-cols-1 md:grid-cols-12 gap-gutter px-margin-desktop py-12 mx-auto max-w-container-max font-label-sm text-label-sm uppercase tracking-widest text-primary-fixed">
+        <div class="md:col-span-4 flex flex-col justify-between">
+            <div class="font-display-lg text-headline-lg text-primary-fixed mb-8">SOLARIS UTILITY</div>
+            <div class="text-surface-variant opacity-70">© 2024 Solaris Future Systems. All rights reserved.</div>
+        </div>
+        <div class="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-8">
+            <div class="flex flex-col gap-4">
+                <a class="text-surface-variant hover:text-primary-fixed transition-colors" href="#">Privacy Policy</a>
+                <a class="text-surface-variant hover:text-primary-fixed transition-colors" href="#">Terms of Service</a>
+            </div>
+            <div class="flex flex-col gap-4">
+                <a class="text-surface-variant hover:text-primary-fixed transition-colors" href="#">Architecture
+                    Documentation</a>
+                <a class="text-surface-variant hover:text-primary-fixed transition-colors" href="#">Support</a>
+            </div>
+            <div class="flex flex-col gap-4">
+                <a class="text-surface-variant hover:text-primary-fixed transition-colors" href="#">API Status</a>
+            </div>
+        </div>
+    </footer>
+    <script>
+        // Dropzone Interaction
+        const dropZone = document.getElementById('dropZone');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            dropZone.classList.add('dragover');
+        }
+
+        function unhighlight(e) {
+            dropZone.classList.remove('dragover');
+        }
+
+        dropZone.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            let dt = e.dataTransfer;
+            let files = dt.files;
+            console.log("Files dropped:", files.length);
+            // Add subtle animation feedback
+            dropZone.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                dropZone.style.transform = 'scale(1)';
+            }, 150);
+        }
+
+        // FAQ Accordion Interaction
+        const faqItems = document.querySelectorAll('.faq-item');
+        faqItems.forEach(item => {
+            const toggle = item.querySelector('.faq-toggle');
+            toggle.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+
+                // Close all others
+                faqItems.forEach(otherItem => {
+                    otherItem.classList.remove('active');
+                });
+
+                // Toggle current
+                if (!isActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
