@@ -11,31 +11,18 @@
       gtag('config', 'G-406KB1Z1V6');
     </script>
 
-    <title>Resize Image Online Free – Change Dimensions & Pixels | WebToolkitBox</title>
-    <meta name="description" content="Resize image online free. Change image dimensions, pixel width and height, or scale by percentage. Fast, high-quality, 100% private browser image resizer.">
-    <meta name="keywords" content="compress image to 200kb, image size manager, compress jpg online, resize photo size">
+    <title>Resize Image Pixels Free Online – Custom Dimensions | WebToolkitBox</title>
+    <meta name="description" content="Resize image pixels online free. Set custom width and height in pixels (e.g. 32x30, 100x100), lock aspect ratio, and export in PNG, JPG, or WebP.">
+    <meta name="keywords" content="resize image pixels, custom image width height, image pixel changer, online image resizer">
     <link rel="canonical" href="https://www.webtoolkitbox.com/image-resizer">
     
     <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.webtoolkitbox.com/size-manager">
+    <meta property="og:url" content="https://www.webtoolkitbox.com/image-resizer">
     <meta property="og:site_name" content="WebToolkitBox">
-    <meta property="og:title" content="Compress Image to 200KB, 100KB, 50KB Free Online">
-    <meta property="og:description" content="Compress and resize images to exact KB size (200KB, 100KB, 50KB, 20KB). Free online image compressor for passport photos, government forms & email attachments.">
+    <meta property="og:title" content="Resize Image Pixels Free Online – Custom Dimensions">
+    <meta property="og:description" content="Resize image pixels online free. Set custom width and height in pixels (e.g. 32x30, 100x100), lock aspect ratio, and export in PNG, JPG, or WebP.">
     <meta property="og:image" content="https://www.webtoolkitbox.com/images/og-card.png">
-    
-    <!-- Schema Markup -->
-    <script type="application/ld+json">
-    {
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
-            "name": "WebToolkitBox Image Size Manager",
-            "url": "https://www.webtoolkitbox.com/size-manager",
-            "description": "Compress and scale images to reach your exact target size in KB or MB.",
-            "applicationCategory": "MultimediaApplication",
-            "operatingSystem": "All"
-        }
-    </script>
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -50,39 +37,62 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="style.css">
 
-    <!-- Structured Schema Markup: FAQPage (JSON-LD) -->
-    <script type="application/ld+json">
-    {
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            "mainEntity": [
-                {
-                    "@type": "Question",
-                    "name": "How do I compress an image to exactly 200KB?",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "Specify '200' in the target size input box, upload your file, and our tool will scale and compress the quality automatically to keep it below 200KB."
-                    }
-                },
-                {
-                    "@type": "Question",
-                    "name": "Does image compression happen online?",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "No, compression runs completely inside your web browser client-side. Your private images are never sent to external servers."
-                    }
-                }
-            ]
+    <!-- Custom inline styles for controls layout -->
+    <style>
+        .pixel-inputs-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
         }
-    </script>
-        
-
-    <!-- Favicon & Search Result Icons -->
-    <link rel="icon" href="https://www.webtoolkitbox.com/favicon.ico" sizes="any" />
-    <link rel="icon" type="image/png" sizes="32x32" href="https://www.webtoolkitbox.com/images/logo.png" />
-    <link rel="icon" type="image/png" sizes="192x192" href="https://www.webtoolkitbox.com/images/logo.png" />
-    <link rel="apple-touch-icon" href="https://www.webtoolkitbox.com/images/logo.png" />
-
+        .pixel-input-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .pixel-input-box label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+        }
+        .pixel-input-box input {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            font-size: 14px;
+            font-weight: 600;
+            transition: border-color 0.2s;
+        }
+        .pixel-input-box input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        .lock-aspect-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            width: 42px;
+            height: 42px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.2s;
+        }
+        .lock-aspect-btn.active {
+            color: var(--primary);
+            border-color: var(--primary);
+            background: rgba(250, 204, 21, 0.1);
+        }
+    </style>
 </head>
 <body>
     <div class="app-container">
@@ -103,168 +113,137 @@
             </div>
         </header>
         
-<div class="tool-section active" id="sizeManagerTool">
-            
+        <div class="tool-section active" id="pixelResizerTool">
             <!-- Tool Breadcrumb -->
             <div class="tool-breadcrumb-nav" style="margin-bottom: 24px; display: flex; align-items: center; gap: 8px; font-size: 13px;">
                 <a href="/" style="color: var(--accent-dim); text-decoration: none; display: flex; align-items: center; gap: 4px; transition: color var(--transition-fast);">
                     <i class="fas fa-house" style="font-size: 11px;"></i> Hub
                 </a>
                 <span style="color: var(--border-active); font-size: 10px;">/</span>
-                <span style="color: var(--text-muted); font-weight: 500;">Compress Image</span>
+                <span style="color: var(--text-muted); font-weight: 500;">Resize Image Pixels</span>
             </div>
-    <main class="main-content">
+
+            <main class="main-content">
                 <!-- Hero Section -->
                 <section class="hero">
-                    <h1 class="tool-title">Resize Image Online Free</h1>
+                    <h1 class="tool-title">Resize Image <span class="gradient-text">Pixels</span></h1>
                     <p class="hero-subtitle">
-                        Compress and scale images to reach your exact target size in KB or MB.
+                        Change width and height dimensions to exact pixels (e.g. 32x30, 100x100) instantly.
                     </p>
                 </section>
 
-                <!-- Upload Area -->
-                <div class="upload-section">
-                    <div class="upload-area" id="sizeManagerUploadArea">
-                        <div class="upload-icon">
-                            <i class="fas fa-weight-hanging"></i>
-                        </div>
-                        <h3 class="upload-title">Drop your image here</h3>
-                        <p class="upload-text">or click to browse</p>
-                        <p class="upload-formats">Supports: JPG, PNG, WebP, GIF, BMP, HEIC</p>
-                        <input type="file" id="sizeManagerFileInput" accept="image/*,.heic,.heif"  style="display: none;">
-                    </div>
-                </div>
-
-                <!-- Size Manager Settings Panel -->
-                <div class="settings-panel solaris-controls-panel" id="sizeManagerSettingsPanel" style="display: none;">
-                    <h3 class="settings-title">
-                        <i class="fas fa-sliders"></i>
-                        Size Manager Settings
-                    </h3>
-
-                    <div class="settings-grid">
-                        <!-- Target Size Input -->
-                        <div class="setting-group">
-                            <label class="setting-label">Target File Size</label>
-                            <div class="input-with-unit-toggle">
-                                <input type="number" id="sizeManagerTargetVal" min="1" max="10000" value="200">
-                                <select id="sizeManagerTargetUnit" class="unit-select">
-                                    <option value="kb" selected>KB</option>
-                                    <option value="mb">MB</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Output Format -->
-                        <div class="setting-group">
-                            <label class="setting-label">Output Format</label>
-                            <div class="toggle-buttons toggle-buttons-wrap" id="sizeManagerFormatToggle">
-                                <button class="toggle-btn active" data-value="jpeg">
-                                    <i class="fas fa-image"></i> JPG
-                                </button>
-                                <button class="toggle-btn" data-value="webp">
-                                    <i class="fas fa-image"></i> WebP
-                                    <span class="format-badge">Best</span>
-                                </button>
-                                <button class="toggle-btn" data-value="png">
-                                    <i class="fas fa-image"></i> PNG
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Prioritize Strategy -->
-                        <div class="setting-group">
-                            <label class="setting-label">Optimization Strategy</label>
-                            <div class="toggle-buttons" id="sizeManagerStrategyToggle">
-                                <button class="toggle-btn active" data-value="quality">
-                                    <i class="fas fa-star"></i> Max Quality
-                                </button>
-                                <button class="toggle-btn" data-value="dimensions">
-                                    <i class="fas fa-up-right-and-down-left-from-center"></i> Max Resolution
-                                </button>
-                            </div>
-                            <span class="setting-hint">"Max Quality" scales down dimensions first to keep details sharp. "Max Resolution" lowers quality first to keep original width/height.</span>
-                        </div>
-                    </div>
-
-                    <!-- Action Button -->
-                    <div class="settings-actions">
-                        <button class="btn btn-primary btn-lg" id="sizeManagerProcessBtn">
-                            <i class="fas fa-compress-arrows-alt"></i>
-                            Resize Image
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Preview and Results Workspace -->
-                <div class="preview-section solaris-viewport-stage" id="sizeManagerResultSection" style="display: none;">
-                    <div class="preview-header">
-                        <h3 class="preview-title">
-                            <i class="fas fa-circle-check text-success"></i>
-                            Ready for Download
+                <div class="tool-grid">
+                    <!-- Left Sidebar Controls -->
+                    <div class="settings-panel solaris-controls-panel">
+                        <h3 class="settings-title">
+                            <i class="fas fa-sliders"></i>
+                            Dimension Settings
                         </h3>
-                        <div class="preview-actions" id="sizeManagerPreviewActions">
-                            <button class="btn btn-secondary btn-sm" id="sizeManagerResetBtn">
-                                <i class="fas fa-rotate-left"></i> Start Over
+
+                        <!-- Width & Height Pixel Inputs with Aspect Ratio Lock -->
+                        <div class="pixel-inputs-row">
+                            <div class="pixel-input-box">
+                                <label for="resizeWidthInput">Width (px)</label>
+                                <input type="number" id="resizeWidthInput" value="32" min="1" max="10000">
+                            </div>
+                            <button class="lock-aspect-btn active" id="lockAspectBtn" title="Lock Aspect Ratio">
+                                <i class="fas fa-lock"></i>
                             </button>
-                            <a class="btn btn-primary btn-sm" id="sizeManagerDownloadBtn" download>
-                                <i class="fas fa-download"></i> Download Image
-                            </a>
+                            <div class="pixel-input-box">
+                                <label for="resizeHeightInput">Height (px)</label>
+                                <input type="number" id="resizeHeightInput" value="30" min="1" max="10000">
+                            </div>
+                        </div>
+
+                        <!-- Resize Mode Strategy Selector -->
+                        <div class="setting-group" style="margin-bottom: 18px;">
+                            <label class="setting-label">Resize Strategy</label>
+                            <select id="resizeStrategySelect" class="form-select" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text);">
+                                <option value="stretch">Stretch (Ignore Aspect Ratio)</option>
+                                <option value="contain" selected>Fit / Contain (Preserve Aspect Ratio)</option>
+                                <option value="cover">Fill / Crop (Preserve Aspect Ratio & Crop)</option>
+                            </select>
+                        </div>
+
+                        <!-- Export Options -->
+                        <div class="setting-group" style="margin-bottom: 18px;">
+                            <label class="setting-label">Output Format</label>
+                            <div class="toggle-buttons toggle-buttons-wrap" id="resizerFormatToggle">
+                                <button class="toggle-btn active" data-fmt="png">PNG</button>
+                                <button class="toggle-btn" data-fmt="jpeg">JPG</button>
+                                <button class="toggle-btn" data-fmt="webp">WebP</button>
+                            </div>
+                        </div>
+
+                        <!-- Action Button -->
+                        <div style="margin-top: 24px;">
+                            <button class="btn btn-primary" id="processResizeBtn" style="width: 100%; padding: 12px; font-weight: 700;">
+                                <i class="fas fa-arrows-alt"></i> Apply Resize
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Comparison Grid -->
-                    <div class="comparison-grid">
-                        <div class="comparison-card" id="sizeManagerOrigCard">
-                            <div class="comparison-card-title">Original Image</div>
-                            <div class="preview-container">
-                                <img id="sizeManagerOrigPreview" alt="Original Preview">
+                    <!-- Right Viewport Area -->
+                    <div class="solaris-viewport-stage">
+                        <div class="solaris-viewport-bar">
+                            <div class="solaris-viewport-status">
+                                <div class="solaris-status-dot"></div>
+                                <span id="statusText">System Ready • Drop your photo to resize</span>
                             </div>
-                            <div class="image-meta">
-                                <span class="meta-item" id="sizeManagerOrigDimensions">-</span>
-                                <span class="meta-item" id="sizeManagerOrigSize">-</span>
+                            <div>
+                                <button class="btn btn-outline btn-sm" onclick="document.getElementById('resizerFileInput').click()">
+                                    <i class="fas fa-upload"></i> Choose Photo
+                                </button>
+                                <input type="file" id="resizerFileInput" accept="image/*" style="display: none;">
                             </div>
                         </div>
 
-                        <div class="comparison-card" id="sizeManagerOutputCard">
-                            <div class="comparison-card-title">Resized Image</div>
-                            <div class="preview-container">
-                                <img id="sizeManagerOutputPreview" alt="Output Preview">
+                        <div class="solaris-canvas-wrapper" id="resizerDropZone">
+                            <!-- Dropzone Placeholder -->
+                            <div id="dropZonePlaceholder" style="text-align: center; padding: 60px 40px;">
+                                <div class="upload-icon" style="background: rgba(250, 204, 21, 0.2); width: 64px; height: 64px; margin: 0 auto 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #735c00;">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 6px;">Drag and drop photo here</h3>
+                                <p style="font-size: 14px; color: var(--text-muted); max-width: 320px; margin: 0 auto;">Resize instantly to exact pixel dimensions client-side.</p>
                             </div>
-                            <div class="image-meta">
-                                <span class="meta-item" id="sizeManagerOutputDimensions">-</span>
-                                <span class="meta-item highlight" id="sizeManagerOutputSize">-</span>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Stats Panel -->
-                    <div class="stats-grid" id="sizeManagerStatsGrid">
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-arrow-down-wide-short"></i>
-                            </div>
-                            <div class="stat-info">
-                                <span class="stat-value" id="sizeManagerReduction">-0%</span>
-                                <span class="stat-label">Size Difference</span>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-crosshairs"></i>
-                            </div>
-                            <div class="stat-info">
-                                <span class="stat-value" id="sizeManagerPrecision">-</span>
-                                <span class="stat-label">Accuracy to Target</span>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-bolt"></i>
-                            </div>
-                            <div class="stat-info">
-                                <span class="stat-value" id="sizeManagerTime">0ms</span>
-                                <span class="stat-label">Processing Time</span>
+                            <!-- Image Preview & Canvas result Container -->
+                            <div id="resizerResultContainer" style="display: none; width: 100%; text-align: center; padding: 20px 0;">
+                                <div style="margin-bottom: 16px; position: relative; display: inline-block; max-width: 100%;">
+                                    <canvas id="resizerCanvas" style="max-width: 100%; max-height: 400px; height: auto; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: 0 8px 24px rgba(0,0,0,0.08); background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%); background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px;"></canvas>
+                                </div>
+
+                                <div style="margin-top: 12px; display: flex; justify-content: center; gap: 12px;">
+                                    <a id="downloadResizedBtn" href="#" download="resized-image.png" class="btn btn-primary" style="padding: 10px 24px; font-weight: 700; text-decoration: none;">
+                                        <i class="fas fa-download"></i> Download Image
+                                    </a>
+                                </div>
+
+                                <!-- Analytics Diagnostics Card -->
+                                <div class="analytics-card" style="margin-top: 24px;">
+                                    <h4 style="font-size: 14px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-chart-line" style="color: var(--accent);"></i> Dimension Diagnostics Report
+                                    </h4>
+                                    <div class="analytics-grid">
+                                        <div class="analytics-item">
+                                            <span class="analytics-label">Original Pixels</span>
+                                            <span class="analytics-value" id="origDimText">0 x 0px</span>
+                                        </div>
+                                        <div class="analytics-item">
+                                            <span class="analytics-label">Resized Pixels</span>
+                                            <span class="analytics-value" id="resizedDimText">0 x 0px</span>
+                                        </div>
+                                        <div class="analytics-item">
+                                            <span class="analytics-label">Megapixels</span>
+                                            <span class="analytics-value" id="mpText">0 MP</span>
+                                        </div>
+                                        <div class="analytics-item">
+                                            <span class="analytics-label">Aspect Ratio</span>
+                                            <span class="analytics-value" id="aspectRatioText">1:1</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -272,46 +251,7 @@
             </main>
         </div>
 
-
-        <!-- Dynamic SEO Content Section -->
-        <section class="seo-content-section" style="max-width: 1000px; margin: 60px auto 40px; padding: 0 24px; line-height: 1.8; color: var(--text-muted);">
-            <h2 style="font-size: 28px; color: var(--text); margin-bottom: 20px; font-weight: 700; letter-spacing: -0.5px;">Compress & Resize Image Files to Specific Target Sizes (KB/MB)</h2>
-            <p style="margin-bottom: 24px; font-size: 15px;">Need to compress photos for online job applications, passports, or email attachments? Set your exact target file size (e.g. compress to 200KB) and let our intelligent engine compress the file automatically:</p>
-            <ol style="margin-bottom: 32px; padding-left: 20px; display: flex; flex-direction: column; gap: 12px; font-size: 15px;">
-                <li><strong>Select Target Size:</strong> Specify your maximum target size in Kilobytes (KB) or Megabytes (MB).</li>
-                <li><strong>Upload Image:</strong> Choose your image from your local directory.</li>
-                <li><strong>Automatic Compression:</strong> The tool automatically calculates the optimal dimensions and JPEG quality slider value to match your target file size constraints.</li>
-                <li><strong>Save:</strong> View the live preview of the compressed image and click download.</li>
-            </ol>
-        </section>
-    
-        
-        <!-- FAQ Accordion Section -->
-        <section class="features-section" style="padding: 40px 0 60px; max-width: 1000px; margin: 0 auto;">
-            <h2 class="features-title" style="margin-bottom: 32px; font-size: 24px; color: var(--text); font-weight: 700;">Frequently Asked Questions</h2>
-            <div style="display: flex; flex-direction: column; gap: 16px;">
-                <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer;">
-                    <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
-                        How do I compress an image to exactly 200KB?
-                        <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
-                    </summary>
-                    <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
-                        Specify '200' in the target size input box, upload your file, and our tool will scale and compress the quality automatically to keep it below 200KB.
-                    </p>
-                </details>
-                <details style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; cursor: pointer;">
-                    <summary style="font-weight: 600; font-size: 15px; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">
-                        Does image compression happen online?
-                        <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
-                    </summary>
-                    <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
-                        No, compression runs completely inside your web browser client-side. Your private images are never sent to external servers.
-                    </p>
-                </details>
-            </div>
-        </section>
-        
-                <!-- Footer -->
+        <!-- Footer -->
         <footer class="footer">
             <div class="footer-top">
                 <div class="footer-brand">
@@ -327,18 +267,6 @@
                     <a href="https://twitter.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="X / Twitter">
                         <i class="fab fa-x-twitter"></i>
                     </a>
-                    <a href="https://instagram.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="Instagram">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="https://linkedin.com/in/itxrishabh" target="_blank" rel="noopener" class="social-link" title="LinkedIn">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
-                    <a href="https://youtube.com" target="_blank" rel="noopener" class="social-link" title="YouTube">
-                        <i class="fab fa-youtube"></i>
-                    </a>
-                    <a href="https://discord.com" target="_blank" rel="noopener" class="social-link" title="Discord">
-                        <i class="fab fa-discord"></i>
-                    </a>
                 </div>
             </div>
             <div class="footer-divider"></div>
@@ -348,16 +276,165 @@
             </div>
         </footer>
     </div>
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-content">
-            <div class="loading-spinner"></div>
-            <p>Processing your images...</p>
-        </div>
-    </div>
 
-    <!-- JSZip for ZIP downloads -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
-    <script src="app.js" defer></script>
+    <!-- Script loading and resizer logic -->
+    <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const fileInput = document.getElementById('resizerFileInput');
+            const dropZone = document.getElementById('resizerDropZone');
+            const placeholder = document.getElementById('dropZonePlaceholder');
+            const resultContainer = document.getElementById('resizerResultContainer');
+            const processBtn = document.getElementById('processResizeBtn');
+            const canvas = document.getElementById('resizerCanvas');
+            const downloadBtn = document.getElementById('downloadResizedBtn');
+            const statusText = document.getElementById('statusText');
+
+            const widthInput = document.getElementById('resizeWidthInput');
+            const heightInput = document.getElementById('resizeHeightInput');
+            const lockAspectBtn = document.getElementById('lockAspectBtn');
+            const strategySelect = document.getElementById('resizeStrategySelect');
+
+            let sourceImg = null;
+            let originalAspect = 1.0;
+            let isLocked = true;
+
+            // Lock / Unlock toggle
+            lockAspectBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                isLocked = !isLocked;
+                if (isLocked) {
+                    lockAspectBtn.classList.add('active');
+                    lockAspectBtn.querySelector('i').className = 'fas fa-lock';
+                    // Synchronize height based on width
+                    if (sourceImg) {
+                        heightInput.value = Math.round(parseInt(widthInput.value) / originalAspect);
+                    }
+                } else {
+                    lockAspectBtn.classList.remove('active');
+                    lockAspectBtn.querySelector('i').className = 'fas fa-lock-open';
+                }
+            });
+
+            // Input event listeners to preserve aspect ratio if locked
+            widthInput.addEventListener('input', () => {
+                if (isLocked && sourceImg) {
+                    const w = parseInt(widthInput.value) || 0;
+                    heightInput.value = Math.round(w / originalAspect);
+                }
+            });
+
+            heightInput.addEventListener('input', () => {
+                if (isLocked && sourceImg) {
+                    const h = parseInt(heightInput.value) || 0;
+                    widthInput.value = Math.round(h * originalAspect);
+                }
+            });
+
+            // Output Format toggles
+            const formatBtns = document.querySelectorAll('#resizerFormatToggle .toggle-btn');
+            let selectedFormat = 'png';
+            formatBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    formatBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    selectedFormat = btn.getAttribute('data-fmt');
+                });
+            });
+
+            function handleLoadedFile(file) {
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    sourceImg = new Image();
+                    sourceImg.onload = () => {
+                        originalAspect = sourceImg.width / sourceImg.height;
+                        widthInput.value = sourceImg.width;
+                        heightInput.value = sourceImg.height;
+
+                        if (placeholder) placeholder.style.display = 'none';
+                        if (resultContainer) resultContainer.style.display = 'block';
+
+                        statusText.textContent = `Photo Loaded (${sourceImg.width} x ${sourceImg.height}px) • Adjust pixels & apply`;
+                        
+                        // Process initial preview
+                        applyResize();
+                    };
+                    sourceImg.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+
+            if (typeof ImgKitUploadEngine !== 'undefined') {
+                ImgKitUploadEngine.bind({
+                    container: dropZone,
+                    fileInput: fileInput,
+                    onFiles: (files) => handleLoadedFile(files[0])
+                });
+            } else {
+                if (dropZone) dropZone.addEventListener('click', () => fileInput.click());
+                if (fileInput) fileInput.addEventListener('change', (e) => handleLoadedFile(e.target.files[0]));
+            }
+
+            function applyResize() {
+                if (!sourceImg) return;
+
+                const targetW = parseInt(widthInput.value) || sourceImg.width;
+                const targetH = parseInt(heightInput.value) || sourceImg.height;
+                const strategy = strategySelect.value;
+
+                canvas.width = targetW;
+                canvas.height = targetH;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, targetW, targetH);
+
+                if (strategy === 'stretch') {
+                    ctx.drawImage(sourceImg, 0, 0, targetW, targetH);
+                } else if (strategy === 'contain') {
+                    const aspect = sourceImg.width / sourceImg.height;
+                    let drawW = targetW;
+                    let drawH = targetW / aspect;
+                    if (drawH > targetH) {
+                        drawH = targetH;
+                        drawW = targetH * aspect;
+                    }
+                    const x = (targetW - drawW) / 2;
+                    const y = (targetH - drawH) / 2;
+                    ctx.drawImage(sourceImg, x, y, drawW, drawH);
+                } else if (strategy === 'cover') {
+                    const aspect = sourceImg.width / sourceImg.height;
+                    let drawW = targetW;
+                    let drawH = targetW / aspect;
+                    if (drawH < targetH) {
+                        drawH = targetH;
+                        drawW = targetH * aspect;
+                    }
+                    const x = (targetW - drawW) / 2;
+                    const y = (targetH - drawH) / 2;
+                    ctx.drawImage(sourceImg, x, y, drawW, drawH);
+                }
+
+                const mime = selectedFormat === 'jpeg' ? 'image/jpeg' : (selectedFormat === 'webp' ? 'image/webp' : 'image/png');
+                const ext = selectedFormat === 'jpeg' ? 'jpg' : selectedFormat;
+
+                downloadBtn.href = canvas.toDataURL(mime, 0.95);
+                downloadBtn.download = `resized_pixels_${targetW}x${targetH}.${ext}`;
+
+                // Diagnostics report card
+                document.getElementById('origDimText').textContent = `${sourceImg.width} x ${sourceImg.height}px`;
+                document.getElementById('resizedDimText').textContent = `${targetW} x ${targetH}px`;
+                document.getElementById('mpText').textContent = `${((targetW * targetH) / 1000000).toFixed(3)} MP`;
+                document.getElementById('aspectRatioText').textContent = `${(targetW / targetH).toFixed(2)}:1`;
+
+                statusText.textContent = `Image Resized to ${targetW} x ${targetH}px`;
+            }
+
+            processBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                applyResize();
+            });
+        });
+    </script>
 </body>
 </html>
