@@ -1352,7 +1352,9 @@ class ImageConverter {
             format: 'webp',
             quality: 0.82, // 82% quality - visually lossless with optimal compression
             resizeMode: 'original',
-            maxWidth: 1920
+            customWidth: 1920,
+            customHeight: 1080,
+            lockAspectRatio: true
         };
         this.stats = {
             total: 0,
@@ -1377,7 +1379,9 @@ class ImageConverter {
         this.formatToggle = document.getElementById('converterFormatToggle');
         this.resizeToggle = document.getElementById('converterResizeToggle');
         this.customSizeGroup = document.getElementById('converterCustomSizeGroup');
-        this.maxWidthInput = document.getElementById('converterMaxWidth');
+        this.customWidthInput = document.getElementById('converterCustomWidth');
+        this.customHeightInput = document.getElementById('converterCustomHeight');
+        this.lockAspectBtn = document.getElementById('converterLockAspectBtn');
         this.qualitySlider = document.getElementById('converterQualitySlider');
         this.qualityValue = document.getElementById('converterQualityValue');
         this.qualitySetting = document.getElementById('converterQualitySetting');
@@ -1504,18 +1508,57 @@ class ImageConverter {
             });
         });
 
-        // Max Width Input change (with input validation)
-        this.maxWidthInput.addEventListener('input', (e) => {
-            let val = parseInt(e.target.value) || 1920;
-            if (val < 10) val = 10;
-            if (val > 10000) val = 10000;
-            this.settings.maxWidth = val;
-            
+        // Aspect ratio lock toggle
+        if (this.lockAspectBtn) {
+            this.lockAspectBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.settings.lockAspectRatio = !this.settings.lockAspectRatio;
+                if (this.settings.lockAspectRatio) {
+                    this.lockAspectBtn.classList.add('active');
+                    this.lockAspectBtn.querySelector('i').className = 'fas fa-lock';
+                    if (this.images.length > 0 && this.images[0].width) {
+                        const aspect = this.images[0].width / this.images[0].height;
+                        this.settings.customHeight = Math.round(this.settings.customWidth / aspect);
+                        if (this.customHeightInput) this.customHeightInput.value = this.settings.customHeight;
+                    }
+                } else {
+                    this.lockAspectBtn.classList.remove('active');
+                    this.lockAspectBtn.querySelector('i').className = 'fas fa-lock-open';
+                }
+                this.reprocessAllImages(true);
+            });
+        }
+
+        const handleDimensionInput = (isWidth) => {
+            const wVal = parseInt(this.customWidthInput.value) || 1920;
+            const hVal = parseInt(this.customHeightInput.value) || 1080;
+
+            this.settings.customWidth = wVal;
+            this.settings.customHeight = hVal;
+
+            if (this.settings.lockAspectRatio && this.images.length > 0 && this.images[0].width) {
+                const aspect = this.images[0].width / this.images[0].height;
+                if (isWidth) {
+                    this.settings.customHeight = Math.round(wVal / aspect);
+                    if (this.customHeightInput) this.customHeightInput.value = this.settings.customHeight;
+                } else {
+                    this.settings.customWidth = Math.round(hVal * aspect);
+                    if (this.customWidthInput) this.customWidthInput.value = this.settings.customWidth;
+                }
+            }
+
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(() => {
                 this.reprocessAllImages(true);
-            }, 500); // Wait 500ms when typing dimensions to prevent excessive processing
-        });
+            }, 500);
+        };
+
+        if (this.customWidthInput) {
+            this.customWidthInput.addEventListener('input', () => handleDimensionInput(true));
+        }
+        if (this.customHeightInput) {
+            this.customHeightInput.addEventListener('input', () => handleDimensionInput(false));
+        }
 
         // Clear all
         this.clearAllBtn.addEventListener('click', () => this.clearAll());
@@ -2055,12 +2098,9 @@ class ImageConverter {
             drawW = bitmap.width;
             drawH = bitmap.height;
 
-            if (this.settings.resizeMode === 'custom' && this.settings.maxWidth) {
-                if (drawW > this.settings.maxWidth) {
-                    const scale = this.settings.maxWidth / drawW;
-                    drawW = this.settings.maxWidth;
-                    drawH = Math.round(drawH * scale);
-                }
+            if (this.settings.resizeMode === 'custom' && this.settings.customWidth && this.settings.customHeight) {
+                drawW = this.settings.customWidth;
+                drawH = this.settings.customHeight;
             } else {
                 // Cap very large images to prevent canvas OOM (max ~16MP)
                 const MAX_DIM = 4096;
@@ -2078,12 +2118,9 @@ class ImageConverter {
             drawW = img.width;
             drawH = img.height;
 
-            if (this.settings.resizeMode === 'custom' && this.settings.maxWidth) {
-                if (drawW > this.settings.maxWidth) {
-                    const scale = this.settings.maxWidth / drawW;
-                    drawW = this.settings.maxWidth;
-                    drawH = Math.round(drawH * scale);
-                }
+            if (this.settings.resizeMode === 'custom' && this.settings.customWidth && this.settings.customHeight) {
+                drawW = this.settings.customWidth;
+                drawH = this.settings.customHeight;
             } else {
                 const MAX_DIM = 4096;
                 if (drawW > MAX_DIM || drawH > MAX_DIM) {
