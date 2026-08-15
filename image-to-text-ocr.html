@@ -27,14 +27,14 @@
     <!-- Schema Markup -->
     <script type="application/ld+json">
     {
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
-            "name": "WebToolkitBox Image OCR",
-            "url": "https://www.webtoolkitbox.com/image-to-text-ocr",
-            "description": "Extract structured text from images using high-accuracy local OCR.",
-            "applicationCategory": "MultimediaApplication",
-            "operatingSystem": "All"
-        }
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "WebToolkitBox Image OCR",
+        "url": "https://www.webtoolkitbox.com/image-to-text-ocr",
+        "description": "Extract structured text from images using high-accuracy local OCR.",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "All"
+    }
     </script>
     
     <meta charset="UTF-8">
@@ -53,37 +53,36 @@
     <!-- Structured Schema Markup: FAQPage (JSON-LD) -->
     <script type="application/ld+json">
     {
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            "mainEntity": [
-                {
-                    "@type": "Question",
-                    "name": "How accurate is the online OCR text extractor?",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "Highly accurate. By applying adaptive thresholding and contrast optimization to images beforehand, our engine extracts text layout structural zones accurately."
-                    }
-                },
-                {
-                    "@type": "Question",
-                    "name": "What languages are supported by OCR?",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "We support English, Spanish, French, German, Chinese, Hindi, Arabic, and several other global languages."
-                    }
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "How accurate is the online OCR text extractor?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Highly accurate. By applying adaptive thresholding and contrast optimization to images beforehand, our engine extracts text layout structural zones accurately."
                 }
-            ]
-        }
+            },
+            {
+                "@type": "Question",
+                "name": "What languages are supported by OCR?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "We support English, Spanish, French, German, Chinese, Hindi, Arabic, and several other global languages."
+                }
+            }
+        ]
+    }
     </script>
-        
 
     <!-- Favicon & Search Result Icons -->
     <link rel="icon" href="https://www.webtoolkitbox.com/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="https://www.webtoolkitbox.com/images/logo.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="https://www.webtoolkitbox.com/images/logo.png" />
     <link rel="apple-touch-icon" href="https://www.webtoolkitbox.com/images/logo.png" />
-
 </head>
+
 <body>
     <div class="app-container">
         <!-- Header -->
@@ -102,121 +101,201 @@
                 </a>
             </div>
         </header>
-        
-<div class="tool-section active" id="ocrTool">
-            
+
+        <div class="tool-section active" id="ocrTool">
             <!-- Tool Breadcrumb -->
             <div class="tool-breadcrumb-nav" style="margin-bottom: 24px; display: flex; align-items: center; gap: 8px; font-size: 13px;">
                 <a href="/" style="color: var(--accent-dim); text-decoration: none; display: flex; align-items: center; gap: 4px; transition: color var(--transition-fast);">
                     <i class="fas fa-house" style="font-size: 11px;"></i> Hub
                 </a>
                 <span style="color: var(--border-active); font-size: 10px;">/</span>
-                <span style="color: var(--text-muted); font-weight: 500;">Extract Text from Image</span>
+                <span style="color: var(--text-muted); font-weight: 500;">Extract Text from Image (OCR)</span>
             </div>
-    <main class="main-content">
+
+            <main class="main-content">
                 <!-- Hero Section -->
-                <section class="hero">
-                    <h1 class="hero-title">
+                <section class="hero" style="text-align: center; margin-bottom: 24px;">
+                    <h1 class="hero-title" style="font-size: 32px; font-weight: 800; margin-bottom: 8px;">
                         <span class="gradient-text">Image to OCR</span> Converter
                     </h1>
-                    <p class="hero-subtitle">
-                        Extract text from images with AI. 100% private, accurate, and runs entirely in your browser.
+                    <p class="hero-subtitle" style="font-size: 15px; color: var(--text-muted); max-width: 600px; margin: 0 auto 12px;">
+                        Extract text from images, documents & screenshots with AI-powered Tesseract engine. 100% private, runs client-side.
                     </p>
+                    <div style="background: rgba(39, 174, 96, 0.1); border: 1px solid rgba(39, 174, 96, 0.2); color: #27ae60; padding: 6px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+                        <i class="fas fa-shield-alt"></i> 100% Private Client-Side OCR
+                    </div>
                 </section>
 
-                <!-- Upload Area -->
-                <div class="upload-section" id="ocrUploadSection">
-                    <div class="upload-area" id="ocrUploadArea">
-                        <div class="upload-icon">
-                            <i class="fas fa-file-invoice"></i>
-                        </div>
-                        <h3 class="upload-title">Drop image to extract text</h3>
-                        <p class="upload-text">or click to browse • Ctrl+V to paste</p>
-                        <p class="upload-formats">Supports: PNG, JPG, WebP, BMP</p>
-                        <input type="file" id="ocrFileInput" accept="image/*"  style="display: none;">
-                    </div>
-                </div>
+                <!-- Solaris 2-Column Workstation Studio -->
+                <div class="solaris-workspace">
+                    <!-- Left Sidebar Controls -->
+                    <div class="solaris-controls-panel">
+                        <h3 class="settings-title" style="font-size: 15px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-sliders-h" style="color: var(--accent);"></i> OCR Settings
+                        </h3>
 
-                <!-- OCR Settings Panel -->
-                <div class="settings-panel solaris-controls-panel" id="ocrSettingsPanel">
-                    <h3 class="settings-title">
-                        <i class="fas fa-sliders"></i>
-                        OCR Settings
-                    </h3>
-                    <div class="settings-grid">
-                        <div class="setting-group">
-                            <label class="setting-label">Language</label>
-                            <select id="ocrLanguage" class="text-input">
-                                <option value="eng">English</option>
-                                <option value="spa">Spanish</option>
-                                <option value="fra">French</option>
-                                <option value="deu">German</option>
-                                <option value="hin">Hindi</option>
-                                <option value="ara">Arabic</option>
-                                <option value="chi_sim">Chinese Simplified</option>
-                                <option value="jpn">Japanese</option>
-                                <option value="rus">Russian</option>
+                        <!-- Target Language -->
+                        <div class="setting-group" style="margin-bottom: 20px;">
+                            <label class="setting-label" style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; display: block;">Document Language</label>
+                            <select id="ocrLanguage" class="form-select" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-weight: 600; font-size: 14px;">
+                                <option value="eng" selected>English (English)</option>
+                                <option value="spa">Spanish (Español)</option>
+                                <option value="fra">French (Français)</option>
+                                <option value="deu">German (Deutsch)</option>
+                                <option value="hin">Hindi (हिन्दी)</option>
+                                <option value="ara">Arabic (العربية)</option>
+                                <option value="chi_sim">Chinese Simplified (中文)</option>
+                                <option value="jpn">Japanese (日本語)</option>
+                                <option value="rus">Russian (Русский)</option>
+                                <option value="por">Portuguese (Português)</option>
+                                <option value="ita">Italian (Italiano)</option>
+                                <option value="nld">Dutch (Nederlands)</option>
+                                <option value="kor">Korean (한국어)</option>
                             </select>
                         </div>
-                        <div class="setting-group">
-                            <label class="setting-label">Processing</label>
-                            <label class="checkbox-container">
-                                <input type="checkbox" id="ocrAutoContrast" checked>
-                                <span class="checkmark"></span>
-                                <span>Auto Contrast (Better Accuracy)</span>
-                            </label>
+
+                        <!-- Preprocessing Enhancements -->
+                        <div class="setting-group" style="margin-bottom: 24px;">
+                            <label class="setting-label" style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; display: block;">Enhance Accuracy</label>
+                            <div style="display: flex; flex-direction: column; gap: 10px;">
+                                <label style="display: flex; align-items: center; gap: 10px; font-size: 13.5px; cursor: pointer; color: var(--text);">
+                                    <input type="checkbox" id="ocrAutoContrast" checked style="width: 16px; height: 16px; accent-color: var(--accent);">
+                                    <span>Adaptive Thresholding (Clear text)</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 10px; font-size: 13.5px; cursor: pointer; color: var(--text);">
+                                    <input type="checkbox" id="ocrPreserveLayout" checked style="width: 16px; height: 16px; accent-color: var(--accent);">
+                                    <span>Preserve Columns & Layout</span>
+                                </label>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <!-- Processing Progress -->
-                <div class="ocr-progress-container" id="ocrProgressContainer" style="display: none;">
-                    <div class="ocr-progress-header">
-                        <span id="ocrStatusText">Initializing OCR...</span>
-                        <span id="ocrProgressValue">0%</span>
-                    </div>
-                    <div class="ocr-progress-bar">
-                        <div class="ocr-progress-fill" id="ocrProgressFill"></div>
-                    </div>
-                </div>
-
-                <!-- OCR Result Workspace -->
-                <div class="preview-section solaris-viewport-stage" id="ocrResultSection" style="display: none;">
-                    <div class="preview-header">
-                        <h3 class="preview-title">
-                            <i class="fas fa-file-lines"></i>
-                            Extracted Text
-                        </h3>
-                        <div class="preview-actions">
-                            <button class="btn btn-secondary btn-sm" id="copyOcrText">
-                                <i class="fas fa-copy"></i> Copy Text
+                        <!-- Actions -->
+                        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 24px;">
+                            <button class="btn btn-primary" id="ocrProcessBtn" style="width: 100%; padding: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <i class="fas fa-magic"></i> Extract Text Now
                             </button>
-                            <button class="btn btn-primary btn-sm" id="downloadOcrText">
-                                <i class="fas fa-download"></i> Download .txt
+                            <button class="btn btn-secondary" id="ocrResetBtn" style="width: 100%; padding: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <i class="fas fa-rotate-right"></i> Reset / Upload New
                             </button>
                         </div>
                     </div>
-                    <div class="ocr-result-container">
-                        <textarea id="ocrResultText" class="ocr-textarea" readonly placeholder="Extracted text will appear here..."></textarea>
+
+                    <!-- Right Viewport Stage -->
+                    <div class="solaris-viewport-stage">
+                        <!-- Top Status Bar -->
+                        <div class="solaris-viewport-bar" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border-bottom: 1px solid var(--border); background: var(--surface);">
+                            <div class="solaris-viewport-status" style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600;">
+                                <div class="solaris-status-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #27ae60;"></div>
+                                <span id="ocrStatusText">System Ready • Drop image or document to extract text</span>
+                            </div>
+                            <div>
+                                <button class="btn btn-outline btn-sm" id="ocrChooseFileBtn">
+                                    <i class="fas fa-upload"></i> Choose Photo
+                                </button>
+                                <input type="file" id="ocrFileInput" accept="image/*" style="display: none;">
+                            </div>
+                        </div>
+
+                        <div class="solaris-canvas-wrapper" id="ocrUploadArea" style="min-height: 480px; padding: 24px;">
+                            <!-- Dropzone Placeholder -->
+                            <div id="ocrDropPlaceholder" style="text-align: center; padding: 80px 40px;">
+                                <div class="upload-icon" style="background: rgba(250, 204, 21, 0.2); width: 72px; height: 72px; margin: 0 auto 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #735c00;">
+                                    <i class="fas fa-file-invoice"></i>
+                                </div>
+                                <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 8px;">Drag & drop image or document here</h3>
+                                <p style="font-size: 14px; color: var(--text-muted); max-width: 380px; margin: 0 auto 12px;">Supports PNG, JPG, WebP, BMP, TIFF. Ctrl+V to paste screenshot.</p>
+                            </div>
+
+                            <!-- Progress Container -->
+                            <div class="ocr-progress-container" id="ocrProgressContainer" style="display: none; max-width: 500px; margin: 60px auto; text-align: center;">
+                                <div style="display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; margin-bottom: 10px;">
+                                    <span id="ocrStatusTextProgress">Initializing OCR...</span>
+                                    <span id="ocrProgressValue">0%</span>
+                                </div>
+                                <div style="width: 100%; height: 10px; background: var(--surface); border-radius: 5px; overflow: hidden; border: 1px solid var(--border);">
+                                    <div class="ocr-progress-fill" id="ocrProgressFill" style="width: 0%; height: 100%; background: var(--accent); transition: width 0.3s ease;"></div>
+                                </div>
+                            </div>
+
+                            <!-- OCR Result Split Workspace -->
+                            <div id="ocrResultSection" style="display: none; width: 100%;">
+                                <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; align-items: start;">
+                                    <!-- Source Image Card -->
+                                    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; text-align: center;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 13px; font-weight: 700;">
+                                            <span><i class="fas fa-image" style="color: var(--accent);"></i> Original Source</span>
+                                            <span id="ocrImgMeta" style="color: var(--text-muted); font-size: 11.5px;">0 x 0px</span>
+                                        </div>
+                                        <div style="max-height: 420px; overflow: auto; border-radius: 8px; border: 1px solid var(--border); background: #000;">
+                                            <img id="ocrImagePreview" src="" alt="OCR Source" style="max-width: 100%; height: auto; display: block; margin: 0 auto;">
+                                        </div>
+                                    </div>
+
+                                    <!-- Extracted Text Card -->
+                                    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                            <h3 style="font-size: 14px; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 8px;">
+                                                <i class="fas fa-file-lines" style="color: var(--accent);"></i> Extracted Text
+                                            </h3>
+                                            <span id="ocrConfidence" style="background: rgba(39, 174, 96, 0.15); color: #27ae60; border: 1px solid rgba(39, 174, 96, 0.3); padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700;">Confidence: 0%</span>
+                                        </div>
+
+                                        <!-- Stats Dashboard Bar -->
+                                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; background: rgba(0,0,0,0.2); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); text-align: center;">
+                                            <div>
+                                                <span style="font-size: 10px; text-transform: uppercase; color: var(--text-muted); display: block;">Chars</span>
+                                                <span id="ocrCharCount" style="font-weight: 700; font-size: 14px;">0</span>
+                                            </div>
+                                            <div>
+                                                <span style="font-size: 10px; text-transform: uppercase; color: var(--text-muted); display: block;">Words</span>
+                                                <span id="ocrWordCount" style="font-weight: 700; font-size: 14px;">0</span>
+                                            </div>
+                                            <div>
+                                                <span style="font-size: 10px; text-transform: uppercase; color: var(--text-muted); display: block;">Lines</span>
+                                                <span id="ocrLineCount" style="font-weight: 700; font-size: 14px;">0</span>
+                                            </div>
+                                            <div>
+                                                <span style="font-size: 10px; text-transform: uppercase; color: var(--text-muted); display: block;">Est Read</span>
+                                                <span id="ocrReadTime" style="font-weight: 700; font-size: 14px;">0s</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Textarea Editor -->
+                                        <textarea id="ocrResultText" style="width: 100%; height: 260px; padding: 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-family: monospace; font-size: 13.5px; line-height: 1.6; resize: vertical; margin-bottom: 14px;" placeholder="Extracted text will appear here..."></textarea>
+
+                                        <!-- Action Buttons Toolbar -->
+                                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                            <button class="btn btn-primary btn-sm" id="copyOcrText" style="flex: 1; font-weight: 700;">
+                                                <i class="fas fa-copy"></i> Copy Text
+                                            </button>
+                                            <button class="btn btn-secondary btn-sm" id="copyCleanOcrText" title="Copy text without linebreaks" style="flex: 1; font-weight: 600;">
+                                                <i class="fas fa-align-left"></i> Copy Clean
+                                            </button>
+                                            <button class="btn btn-secondary btn-sm" id="downloadOcrText" style="flex: 1; font-weight: 600;">
+                                                <i class="fas fa-download"></i> .TXT
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </main>
         </div>
-
 
         <!-- Dynamic SEO Content Section -->
         <section class="seo-content-section" style="max-width: 1000px; margin: 60px auto 40px; padding: 0 24px; line-height: 1.8; color: var(--text-muted);">
             <h2 style="font-size: 28px; color: var(--text); margin-bottom: 20px; font-weight: 700; letter-spacing: -0.5px;">Extract Editable Text Characters from Image Screenshots with OCR</h2>
             <p style="margin-bottom: 24px; font-size: 15px;">Use Optical Character Recognition (OCR) to convert scanned images or document screenshots into copyable plain text:</p>
             <ol style="margin-bottom: 32px; padding-left: 20px; display: flex; flex-direction: column; gap: 12px; font-size: 15px;">
-                <li><strong>Upload Document/Screenshot:</strong> Upload your file (PNG, JPG, or PDF).</li>
+                <li><strong>Upload Document/Screenshot:</strong> Upload your file (PNG, JPG, WebP, or BMP).</li>
                 <li><strong>Select Language:</strong> Choose the target language of the text.</li>
                 <li><strong>Automatic Extraction:</strong> The OCR engine runs locally to parse letters and layout structures.</li>
                 <li><strong>Copy/Export Text:</strong> Click "Copy to Clipboard" to save the extracted text instantly.</li>
             </ol>
         </section>
-    
-        
+
         <!-- FAQ Accordion Section -->
         <section class="features-section" style="padding: 40px 0 60px; max-width: 1000px; margin: 0 auto;">
             <h2 class="features-title" style="margin-bottom: 32px; font-size: 24px; color: var(--text); font-weight: 700;">Frequently Asked Questions</h2>
@@ -236,13 +315,13 @@
                         <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
                     </summary>
                     <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted); line-height: 1.7;">
-                        We support English, Spanish, French, German, Chinese, Hindi, Arabic, and several other global languages.
+                        We support English, Spanish, French, German, Chinese, Hindi, Arabic, Japanese, Russian, and several other global languages.
                     </p>
                 </details>
             </div>
         </section>
-        
-                <!-- Footer -->
+
+        <!-- Footer -->
         <footer class="footer">
             <div class="footer-top">
                 <div class="footer-brand">
@@ -250,26 +329,6 @@
                         <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
                     </div>
                     <p class="footer-tagline">Process unlimited images for free. No watermarks. No sign-up required.</p>
-                </div>
-                <div class="footer-socials">
-                    <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="social-link" title="GitHub">
-                        <i class="fab fa-github"></i>
-                    </a>
-                    <a href="https://twitter.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="X / Twitter">
-                        <i class="fab fa-x-twitter"></i>
-                    </a>
-                    <a href="https://instagram.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="Instagram">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="https://linkedin.com/in/itxrishabh" target="_blank" rel="noopener" class="social-link" title="LinkedIn">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
-                    <a href="https://youtube.com" target="_blank" rel="noopener" class="social-link" title="YouTube">
-                        <i class="fab fa-youtube"></i>
-                    </a>
-                    <a href="https://discord.com" target="_blank" rel="noopener" class="social-link" title="Discord">
-                        <i class="fab fa-discord"></i>
-                    </a>
                 </div>
             </div>
             <div class="footer-divider"></div>
@@ -279,16 +338,10 @@
             </div>
         </footer>
     </div>
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-content">
-            <div class="loading-spinner"></div>
-            <p>Processing your images...</p>
-        </div>
-    </div>
 
-    <!-- JSZip for ZIP downloads -->
+    <!-- Script loading -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
-    <script src="app.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>

@@ -3800,7 +3800,8 @@ class ImageOCR {
         this.currentImage = null;
         this.settings = {
             lang: 'eng',
-            autoContrast: true
+            autoContrast: true,
+            preserveLayout: true
         };
 
         this.initElements();
@@ -3810,17 +3811,33 @@ class ImageOCR {
     initElements() {
         this.uploadArea = document.getElementById('ocrUploadArea');
         this.fileInput = document.getElementById('ocrFileInput');
+        this.chooseFileBtn = document.getElementById('ocrChooseFileBtn');
         this.langSelect = document.getElementById('ocrLanguage');
         this.autoContrastCheck = document.getElementById('ocrAutoContrast');
+        this.preserveLayoutCheck = document.getElementById('ocrPreserveLayout');
         
+        this.dropPlaceholder = document.getElementById('ocrDropPlaceholder');
         this.progressContainer = document.getElementById('ocrProgressContainer');
         this.statusText = document.getElementById('ocrStatusText');
+        this.statusTextProgress = document.getElementById('ocrStatusTextProgress');
         this.progressValue = document.getElementById('ocrProgressValue');
         this.progressFill = document.getElementById('ocrProgressFill');
         
         this.resultSection = document.getElementById('ocrResultSection');
+        this.imagePreview = document.getElementById('ocrImagePreview');
+        this.imgMeta = document.getElementById('ocrImgMeta');
+        
         this.resultText = document.getElementById('ocrResultText');
+        this.charCount = document.getElementById('ocrCharCount');
+        this.wordCount = document.getElementById('ocrWordCount');
+        this.lineCount = document.getElementById('ocrLineCount');
+        this.readTime = document.getElementById('ocrReadTime');
+        this.confidenceBadge = document.getElementById('ocrConfidence');
+        
+        this.processBtn = document.getElementById('ocrProcessBtn');
+        this.resetBtn = document.getElementById('ocrResetBtn');
         this.copyBtn = document.getElementById('copyOcrText');
+        this.copyCleanBtn = document.getElementById('copyCleanOcrText');
         this.downloadBtn = document.getElementById('downloadOcrText');
         
         this.loadingOverlay = document.getElementById('loadingOverlay');
@@ -3834,6 +3851,13 @@ class ImageOCR {
             onFiles: (files) => this.handleFiles(files)
         });
 
+        if (this.chooseFileBtn && this.fileInput) {
+            this.chooseFileBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.fileInput.click();
+            });
+        }
+
         // Paste
         document.addEventListener('paste', (e) => {
             const ocrTool = document.getElementById('ocrTool');
@@ -3843,20 +3867,52 @@ class ImageOCR {
         });
 
         // Language change
-        this.langSelect.addEventListener('change', (e) => {
-            this.settings.lang = e.target.value;
-            if (this.currentImage) this.processOCR();
-        });
+        if (this.langSelect) {
+            this.langSelect.addEventListener('change', (e) => {
+                this.settings.lang = e.target.value;
+                if (this.currentImage) this.processOCR();
+            });
+        }
 
         // Auto contrast change
-        this.autoContrastCheck.addEventListener('change', (e) => {
-            this.settings.autoContrast = e.target.checked;
-            if (this.currentImage) this.processOCR();
-        });
+        if (this.autoContrastCheck) {
+            this.autoContrastCheck.addEventListener('change', (e) => {
+                this.settings.autoContrast = e.target.checked;
+                if (this.currentImage) this.processOCR();
+            });
+        }
+
+        if (this.preserveLayoutCheck) {
+            this.preserveLayoutCheck.addEventListener('change', (e) => {
+                this.settings.preserveLayout = e.target.checked;
+                if (this.currentImage) this.processOCR();
+            });
+        }
+
+        if (this.processBtn) {
+            this.processBtn.addEventListener('click', () => {
+                if (this.currentImage) this.processOCR();
+                else if (this.fileInput) this.fileInput.click();
+            });
+        }
+
+        if (this.resetBtn) {
+            this.resetBtn.addEventListener('click', () => this.resetWorkspace());
+        }
 
         // Actions
-        this.copyBtn.addEventListener('click', () => this.copyResult());
-        this.downloadBtn.addEventListener('click', () => this.downloadResult());
+        if (this.copyBtn) this.copyBtn.addEventListener('click', () => this.copyResult(false));
+        if (this.copyCleanBtn) this.copyCleanBtn.addEventListener('click', () => this.copyResult(true));
+        if (this.downloadBtn) this.downloadBtn.addEventListener('click', () => this.downloadResult());
+    }
+
+    resetWorkspace() {
+        this.currentImage = null;
+        if (this.fileInput) this.fileInput.value = '';
+        if (this.dropPlaceholder) this.dropPlaceholder.style.display = 'block';
+        if (this.progressContainer) this.progressContainer.style.display = 'none';
+        if (this.resultSection) this.resultSection.style.display = 'none';
+        if (this.statusText) this.statusText.textContent = 'System Ready • Drop image or document to extract text';
     }
 
     handlePaste(e) {
@@ -3877,16 +3933,41 @@ class ImageOCR {
         if (!file.type.startsWith('image/')) return;
 
         this.currentImage = file;
+
+        // Display Image Preview immediately
+        const objectUrl = URL.createObjectURL(file);
+        if (this.imagePreview) {
+            this.imagePreview.src = objectUrl;
+        }
+
+        // Extract image dimensions
+        const img = new Image();
+        img.onload = () => {
+            if (this.imgMeta) {
+                this.imgMeta.textContent = `${img.width} × ${img.height}px • ${this.formatFileSize(file.size)}`;
+            }
+        };
+        img.src = objectUrl;
+
         this.processOCR();
+    }
+
+    formatFileSize(bytes) {
+        if (!bytes) return '0 B';
+        const k = 1024;
+        const sizes = ['B', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
     }
 
     async processOCR() {
         if (this.isProcessing || !this.currentImage) return;
         this.isProcessing = true;
 
-        this.resultSection.style.display = 'none';
-        this.progressContainer.style.display = 'block';
-        this.updateProgress(0, 'Initializing advanced OCR engine...');
+        if (this.dropPlaceholder) this.dropPlaceholder.style.display = 'none';
+        if (this.resultSection) this.resultSection.style.display = 'none';
+        if (this.progressContainer) this.progressContainer.style.display = 'block';
+        this.updateProgress(0, 'Initializing OCR engine...');
 
         try {
             // Load and Preprocess
@@ -3894,61 +3975,62 @@ class ImageOCR {
             let processedImage = imagePtr;
 
             if (this.settings.autoContrast) {
-                this.updateProgress(5, 'Applying adaptive thresholding for high accuracy...');
+                this.updateProgress(10, 'Applying adaptive thresholding for text clarity...');
                 processedImage = await this.applyPreprocessing(imagePtr);
             }
 
             // Perform OCR
-            this.updateProgress(10, 'Performing intelligent layout analysis...');
+            this.updateProgress(20, 'Analyzing layout structures...');
             
             if (typeof Tesseract === 'undefined') {
-                this.updateProgress(12, 'Downloading OCR language packages (approx. 1MB)...');
+                this.updateProgress(25, 'Downloading OCR language packages...');
                 await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');
             }
             
-            // PSM 1: Automatic page segmentation with OSD. 
-            // Important for multi-column detection.
             const result = await Tesseract.recognize(
                 processedImage,
                 this.settings.lang,
                 {
                     logger: m => {
                         if (m.status === 'recognizing text') {
-                            this.updateProgress(10 + (m.progress * 85), `Extracting structure & data...`);
+                            this.updateProgress(20 + (m.progress * 75), `Extracting characters & words (${Math.round(m.progress * 100)}%)...`);
                         }
                     }
                 }
             );
 
-            this.updateProgress(95, 'Finalizing structural reconstruction...');
-            const structuredText = this.reconstructLayout(result.data);
-            this.showResult(structuredText);
+            this.updateProgress(98, 'Finalizing structural reconstruction...');
+            
+            let finalText = result.data.text || '';
+            if (this.settings.preserveLayout && result.data.lines && result.data.lines.length > 0) {
+                finalText = this.reconstructLayout(result.data);
+            }
+
+            this.showResult(result.data, finalText);
 
         } catch (error) {
             console.error('OCR Error:', error);
-            this.statusText.textContent = 'Error: ' + error.message;
-            this.statusText.style.color = 'var(--error-color)';
+            if (this.statusText) {
+                this.statusText.textContent = 'Error: ' + error.message;
+                this.statusText.style.color = 'var(--error-color)';
+            }
         } finally {
             this.isProcessing = false;
         }
     }
 
     /**
-     * Reconstructs text layout using a grid-based spatial mapper
-     * Handles multiple columns and precise spacing
+     * Reconstructs text layout using spatial grid coordinate mapping
      */
     reconstructLayout(data) {
-        if (!data.lines || data.lines.length === 0) return data.text;
+        if (!data.lines || data.lines.length === 0) return data.text || '';
 
-        // 1. Spatial Sorting & Column Detection
-        // Sort lines primarily by Y (vertical), then X (horizontal)
         const sortedLines = [...data.lines].sort((a, b) => {
             const yDiff = a.bbox.y0 - b.bbox.y0;
-            if (Math.abs(yDiff) < 10) return a.bbox.x0 - b.bbox.x0; // Roughly same line
+            if (Math.abs(yDiff) < 10) return a.bbox.x0 - b.bbox.x0;
             return yDiff;
         });
 
-        // Group lines into rows based on vertical overlap
         const rows = [];
         let currentRow = [];
         let prevY = -1;
@@ -3957,7 +4039,6 @@ class ImageOCR {
             if (prevY === -1 || Math.abs(line.bbox.y0 - prevY) < 15) {
                 currentRow.push(line);
             } else {
-                // Sort current row by X before adding
                 currentRow.sort((a, b) => a.bbox.x0 - b.bbox.x0);
                 rows.push(currentRow);
                 currentRow = [line];
@@ -3969,14 +4050,11 @@ class ImageOCR {
             rows.push(currentRow);
         }
 
-        // 2. Grid Reconstruction
         let output = "";
-        
-        // Estimate character width based on average
         let totalChars = 0;
         let totalWidth = 0;
         data.lines.forEach(line => {
-            const textLen = line.text.trim().length;
+            const textLen = (line.text || '').trim().length;
             if (textLen > 0) {
                 totalChars += textLen;
                 totalWidth += (line.bbox.x1 - line.bbox.x0);
@@ -3990,24 +4068,25 @@ class ImageOCR {
                 const targetX = line.bbox.x0;
                 const spacesNeeded = Math.max(0, Math.floor((targetX - currentX) / charWidth));
                 
-                // If this is the start of a column skip, add extra buffer
-                const leadSpace = lineIdx > 0 ? "    " : " ".repeat(spacesNeeded);
                 output += (lineIdx > 0 ? "    " : " ".repeat(spacesNeeded));
                 
-                // Track word-by-word within the line block for pricing dots/gaps
-                let wordX = targetX;
-                line.words.forEach((word, wordIdx) => {
-                    const gap = word.bbox.x0 - wordX;
-                    if (gap > charWidth * 2) {
-                        const gapSpaces = Math.floor(gap / charWidth);
-                        output += " ".repeat(gapSpaces);
-                    } else if (wordIdx > 0) {
-                        output += " ";
-                    }
-                    
-                    output += word.text;
-                    wordX = word.bbox.x1;
-                });
+                if (line.words && line.words.length > 0) {
+                    let wordX = targetX;
+                    line.words.forEach((word, wordIdx) => {
+                        const gap = word.bbox.x0 - wordX;
+                        if (gap > charWidth * 2) {
+                            const gapSpaces = Math.floor(gap / charWidth);
+                            output += " ".repeat(gapSpaces);
+                        } else if (wordIdx > 0) {
+                            output += " ";
+                        }
+                        
+                        output += (word.text || '');
+                        wordX = word.bbox.x1;
+                    });
+                } else {
+                    output += (line.text || '');
+                }
                 
                 currentX = line.bbox.x1;
             });
@@ -4025,10 +4104,6 @@ class ImageOCR {
         });
     }
 
-    /**
-     * Advanced Adaptive Thresholding (Bradley-Roth Algorithm)
-     * Handles variable lighting and background gradients perfectly
-     */
     async applyPreprocessing(imageSrc) {
         return new Promise((resolve) => {
             const img = new Image();
@@ -4045,13 +4120,11 @@ class ImageOCR {
                 const w = canvas.width;
                 const h = canvas.height;
 
-                // 1. Create Grayscale Buffer
                 const grayscale = new Uint8Array(w * h);
                 for (let i = 0; i < data.length; i += 4) {
                     grayscale[i/4] = 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2];
                 }
 
-                // 2. Create Integral Image for fast local mean calculation
                 const integral = new Int32Array(w * h);
                 for (let x = 0; x < w; x++) {
                     let sum = 0;
@@ -4062,9 +4135,8 @@ class ImageOCR {
                     }
                 }
 
-                // 3. Adaptive Decision
-                const s = Math.floor(w / 8); // Window size
-                const t = 15; // Threshold percentage
+                const s = Math.floor(w / 8);
+                const t = 15;
 
                 for (let x = 0; x < w; x++) {
                     for (let y = 0; y < h; y++) {
@@ -4097,41 +4169,75 @@ class ImageOCR {
 
     updateProgress(percent, status) {
         const p = Math.round(percent);
-        this.progressFill.style.width = `${p}%`;
-        this.progressValue.textContent = `${p}%`;
-        this.statusText.textContent = status;
+        if (this.progressFill) this.progressFill.style.width = `${p}%`;
+        if (this.progressValue) this.progressValue.textContent = `${p}%`;
+        if (this.statusTextProgress) this.statusTextProgress.textContent = status;
+        if (this.statusText) this.statusText.textContent = `OCR Processing (${p}%)...`;
     }
 
-    showResult(text) {
-        this.progressContainer.style.display = 'none';
-        this.resultSection.style.display = 'block';
-        this.resultText.value = text.trim();
-        this.resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    showResult(tesseractData, formattedText) {
+        if (this.progressContainer) this.progressContainer.style.display = 'none';
+        if (this.resultSection) this.resultSection.style.display = 'block';
+        
+        const cleanText = (formattedText || '').trim();
+        if (this.resultText) this.resultText.value = cleanText;
+
+        // Calculate Stats
+        const chars = cleanText.length;
+        const words = cleanText ? cleanText.split(/\s+/).filter(Boolean).length : 0;
+        const lines = cleanText ? cleanText.split('\n').length : 0;
+        const readSeconds = Math.max(1, Math.ceil(words / 4)); // ~240 wpm
+
+        if (this.charCount) this.charCount.textContent = chars.toLocaleString();
+        if (this.wordCount) this.wordCount.textContent = words.toLocaleString();
+        if (this.lineCount) this.lineCount.textContent = lines.toLocaleString();
+        if (this.readTime) this.readTime.textContent = `${readSeconds}s`;
+
+        const confidence = tesseractData && tesseractData.confidence ? Math.round(tesseractData.confidence) : 95;
+        if (this.confidenceBadge) {
+            this.confidenceBadge.textContent = `Confidence: ${confidence}%`;
+        }
+
+        if (this.statusText) {
+            this.statusText.textContent = `OCR Complete • ${words} words extracted`;
+        }
+
+        if (this.resultSection) {
+            this.resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     }
 
-    copyResult() {
-        const text = this.resultText.value;
+    copyResult(cleanLines = false) {
+        if (!this.resultText) return;
+        let text = this.resultText.value;
         if (!text) return;
 
+        if (cleanLines) {
+            text = text.replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim();
+        }
+
+        const targetBtn = cleanLines ? this.copyCleanBtn : this.copyBtn;
+
         navigator.clipboard.writeText(text).then(() => {
-            const originalText = this.copyBtn.innerHTML;
-            this.copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-            this.copyBtn.classList.add('btn-success');
+            const originalHTML = targetBtn.innerHTML;
+            targetBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            targetBtn.classList.add('btn-success');
             setTimeout(() => {
-                this.copyBtn.innerHTML = originalText;
-                this.copyBtn.classList.remove('btn-success');
+                targetBtn.innerHTML = originalHTML;
+                targetBtn.classList.remove('btn-success');
             }, 2000);
         });
     }
 
     downloadResult() {
+        if (!this.resultText) return;
         const text = this.resultText.value;
         if (!text) return;
 
-        const blob = new Blob([text], { type: 'text/plain' });
+        const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
-        const fileName = this.currentImage ? this.currentImage.name.split('.')[0] : 'extracted_text';
+        const fileName = this.currentImage ? this.currentImage.name.replace(/\.[^/.]+$/, "") : 'extracted_text';
         link.download = `${fileName}_ocr.txt`;
         link.href = url;
         link.click();
