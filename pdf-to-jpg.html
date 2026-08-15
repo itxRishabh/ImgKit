@@ -198,67 +198,76 @@
         </footer>
     </div>
 
+    <script src="app.js"></script>
     <script>
-      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      document.addEventListener('DOMContentLoaded', () => {
+          pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-      const fileInput = document.getElementById('pdfFileInput');
-      const dropZone = document.getElementById('pdfDropZone');
-      const controls = document.getElementById('pdfControls');
-      const resultsContainer = document.getElementById('pdfResultsContainer');
-      const renderBtn = document.getElementById('startPdfRenderBtn');
+          const fileInput = document.getElementById('pdfFileInput');
+          const dropZone = document.getElementById('pdfDropZone');
+          const controls = document.getElementById('pdfControls');
+          const resultsContainer = document.getElementById('pdfResultsContainer');
+          const renderBtn = document.getElementById('startPdfRenderBtn');
 
-      let currentPdfDoc = null;
+          let currentPdfDoc = null;
 
-      ImgKitUploadEngine.bind({
-          container: dropZone,
-          fileInput: fileInput,
-          onFiles: (files) => {
-              if (files[0]) processPdfFile(files[0]);
+          if (typeof ImgKitUploadEngine !== 'undefined') {
+              ImgKitUploadEngine.bind({
+                  container: dropZone,
+                  fileInput: fileInput,
+                  onFiles: (files) => {
+                      if (files[0]) processPdfFile(files[0]);
+                  }
+              });
+          } else {
+              if (dropZone) dropZone.addEventListener('click', () => fileInput.click());
+              if (fileInput) fileInput.addEventListener('change', (e) => {
+                  if (e.target.files[0]) processPdfFile(e.target.files[0]);
+              });
           }
-      });
 
-      async function processPdfFile(file) {
-          if (!file || file.type !== 'application/pdf') return;
-          
-          const arrayBuffer = await file.arrayBuffer();
-          currentPdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-          controls.style.display = 'flex';
-          resultsContainer.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">PDF Loaded (${currentPdfDoc.numPages} pages)! Click "Convert PDF to Images" above.</p>`;
-      }
-
-      renderBtn.addEventListener('click', async () => {
-          if (!currentPdfDoc) return;
-          resultsContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">Rendering pages...</p>';
-          
-          const scale = parseFloat(document.getElementById('pdfScaleSelect').value);
-          const format = document.getElementById('pdfFormatSelect').value;
-          resultsContainer.innerHTML = '';
-
-          for (let pageNum = 1; pageNum <= currentPdfDoc.numPages; pageNum++) {
-              const page = await currentPdfDoc.getPage(pageNum);
-              const viewport = page.getViewport({ scale });
+          async function processPdfFile(file) {
+              if (!file || file.type !== 'application/pdf') return;
               
-              const canvas = document.createElement('canvas');
-              const ctx = canvas.getContext('2d');
-              canvas.width = viewport.width;
-              canvas.height = viewport.height;
-
-              await page.render({ canvasContext: ctx, viewport }).promise;
-              const imgUrl = canvas.toDataURL(`image/${format}`, 0.92);
-
-              const card = document.createElement('div');
-              card.style.cssText = 'border: 1px solid var(--border); padding: 14px; border-radius: var(--radius-lg); text-align: center; background: var(--surface);';
-              card.innerHTML = `
-                  <img src="${imgUrl}" style="max-width: 100%; height: auto; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-                  <p style="font-size: 13px; font-weight: 600; margin: 10px 0 6px; color: var(--text-main);">Page ${pageNum}</p>
-                  <a href="${imgUrl}" download="page-${pageNum}.${format === 'jpeg' ? 'jpg' : format}" class="btn btn-primary" style="padding: 6px 14px; font-size: 12px; text-decoration: none; display: inline-block;">
-                      <i class="fas fa-download"></i> Download
-                  </a>
-              `;
-              resultsContainer.appendChild(card);
+              const arrayBuffer = await file.arrayBuffer();
+              currentPdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+              controls.style.display = 'flex';
+              resultsContainer.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">PDF Loaded (${currentPdfDoc.numPages} pages)! Click "Convert PDF to Images" above.</p>`;
           }
+
+          renderBtn.addEventListener('click', async () => {
+              if (!currentPdfDoc) return;
+              resultsContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">Rendering pages...</p>';
+              
+              const scale = parseFloat(document.getElementById('pdfScaleSelect').value);
+              const format = document.getElementById('pdfFormatSelect').value;
+              resultsContainer.innerHTML = '';
+
+              for (let pageNum = 1; pageNum <= currentPdfDoc.numPages; pageNum++) {
+                  const page = await currentPdfDoc.getPage(pageNum);
+                  const viewport = page.getViewport({ scale });
+                  
+                  const canvas = document.createElement('canvas');
+                  const ctx = canvas.getContext('2d');
+                  canvas.width = viewport.width;
+                  canvas.height = viewport.height;
+
+                  await page.render({ canvasContext: ctx, viewport }).promise;
+                  const imgUrl = canvas.toDataURL(`image/${format}`, 0.92);
+
+                  const card = document.createElement('div');
+                  card.style.cssText = 'border: 1px solid var(--border); padding: 14px; border-radius: var(--radius-lg); text-align: center; background: var(--surface);';
+                  card.innerHTML = `
+                      <img src="${imgUrl}" style="max-width: 100%; height: auto; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                      <p style="font-size: 13px; font-weight: 600; margin: 10px 0 6px; color: var(--text-main);">Page ${pageNum}</p>
+                      <a href="${imgUrl}" download="page-${pageNum}.${format === 'jpeg' ? 'jpg' : format}" class="btn btn-primary" style="padding: 6px 14px; font-size: 12px; text-decoration: none; display: inline-block;">
+                          <i class="fas fa-download"></i> Download
+                      </a>
+                  `;
+                  resultsContainer.appendChild(card);
+              }
+          });
       });
     </script>
-    <script src="app.js" defer></script>
 </body>
 </html>

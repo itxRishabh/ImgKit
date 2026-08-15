@@ -196,70 +196,86 @@
         </footer>
     </div>
 
+    <script src="app.js"></script>
     <script>
-      const fileInput = document.getElementById('jpgPdfFileInput');
-      const dropZone = document.getElementById('jpgPdfDropZone');
-      const controls = document.getElementById('jpgPdfControls');
-      const filesList = document.getElementById('jpgPdfFilesList');
-      const createPdfBtn = document.getElementById('createPdfBtn');
+      document.addEventListener('DOMContentLoaded', () => {
+          const fileInput = document.getElementById('jpgPdfFileInput');
+          const dropZone = document.getElementById('jpgPdfDropZone');
+          const controls = document.getElementById('jpgPdfControls');
+          const filesList = document.getElementById('jpgPdfFilesList');
+          const createPdfBtn = document.getElementById('createPdfBtn');
 
-      let loadedImages = [];
+          let loadedImages = [];
 
-      ImgKitUploadEngine.bind({
-          container: dropZone,
-          fileInput: fileInput,
-          onFiles: (files) => {
-              files.forEach(file => {
-                  const reader = new FileReader();
-                  reader.onload = (event) => {
-                      loadedImages.push(event.target.result);
-                      renderThumbnails();
-                  };
-                  reader.readAsDataURL(file);
+          if (typeof ImgKitUploadEngine !== 'undefined') {
+              ImgKitUploadEngine.bind({
+                  container: dropZone,
+                  fileInput: fileInput,
+                  onFiles: (files) => {
+                      files.forEach(file => {
+                          const reader = new FileReader();
+                          reader.onload = (event) => {
+                              loadedImages.push(event.target.result);
+                              renderThumbnails();
+                          };
+                          reader.readAsDataURL(file);
+                      });
+                  }
+              });
+          } else {
+              if (dropZone) dropZone.addEventListener('click', () => fileInput.click());
+              if (fileInput) fileInput.addEventListener('change', (e) => {
+                  Array.from(e.target.files).forEach(file => {
+                      const reader = new FileReader();
+                      reader.onload = (event) => {
+                          loadedImages.push(event.target.result);
+                          renderThumbnails();
+                      };
+                      reader.readAsDataURL(file);
+                  });
               });
           }
-      });
 
-      function renderThumbnails() {
-          if (loadedImages.length > 0) controls.style.display = 'flex';
-          filesList.innerHTML = '';
-          loadedImages.forEach((src, idx) => {
-              const thumb = document.createElement('div');
-              thumb.style.cssText = 'position: relative; width: 100px; height: 100px; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border);';
-              thumb.innerHTML = `
-                  <img src="${src}" style="width: 100%; height: 100%; object-fit: cover;">
-                  <button onclick="removeImg(${idx})" style="position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.6); color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
-              `;
-              filesList.appendChild(thumb);
+          function renderThumbnails() {
+              if (loadedImages.length > 0) controls.style.display = 'flex';
+              filesList.innerHTML = '';
+              loadedImages.forEach((src, idx) => {
+                  const thumb = document.createElement('div');
+                  thumb.style.cssText = 'position: relative; width: 100px; height: 100px; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border);';
+                  thumb.innerHTML = `
+                      <img src="${src}" style="width: 100%; height: 100%; object-fit: cover;">
+                      <button onclick="removeImg(${idx})" style="position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.6); color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+                  `;
+                  filesList.appendChild(thumb);
+              });
+          }
+
+          window.removeImg = function(idx) {
+              loadedImages.splice(idx, 1);
+              if (loadedImages.length === 0) controls.style.display = 'none';
+              renderThumbnails();
+          };
+
+          createPdfBtn.addEventListener('click', () => {
+              if (loadedImages.length === 0) return;
+              const { jsPDF } = window.jspdf;
+              const orientation = document.getElementById('pdfOrientationSelect').value;
+              const margin = parseInt(document.getElementById('pdfMarginSelect').value);
+              
+              const doc = new jsPDF({ orientation: orientation, unit: 'mm', format: 'a4' });
+              const pageWidth = doc.internal.pageSize.getWidth();
+              const pageHeight = doc.internal.pageSize.getHeight();
+
+              loadedImages.forEach((imgData, idx) => {
+                  if (idx > 0) doc.addPage();
+                  const availableWidth = pageWidth - (margin * 2);
+                  const availableHeight = pageHeight - (margin * 2);
+                  doc.addImage(imgData, 'JPEG', margin, margin, availableWidth, availableHeight);
+              });
+
+              doc.save('converted-images.pdf');
           });
-      }
-
-      window.removeImg = function(idx) {
-          loadedImages.splice(idx, 1);
-          if (loadedImages.length === 0) controls.style.display = 'none';
-          renderThumbnails();
-      };
-
-      createPdfBtn.addEventListener('click', () => {
-          if (loadedImages.length === 0) return;
-          const { jsPDF } = window.jspdf;
-          const orientation = document.getElementById('pdfOrientationSelect').value;
-          const margin = parseInt(document.getElementById('pdfMarginSelect').value);
-          
-          const doc = new jsPDF({ orientation: orientation, unit: 'mm', format: 'a4' });
-          const pageWidth = doc.internal.pageSize.getWidth();
-          const pageHeight = doc.internal.pageSize.getHeight();
-
-          loadedImages.forEach((imgData, idx) => {
-              if (idx > 0) doc.addPage();
-              const availableWidth = pageWidth - (margin * 2);
-              const availableHeight = pageHeight - (margin * 2);
-              doc.addImage(imgData, 'JPEG', margin, margin, availableWidth, availableHeight);
-          });
-
-          doc.save('converted-images.pdf');
       });
     </script>
-    <script src="app.js" defer></script>
 </body>
 </html>
