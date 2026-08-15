@@ -4027,6 +4027,80 @@ class ImageOCR {
         }
     }
 
+    reconstructLayout(data) {
+        if (!data || !data.lines || data.lines.length === 0) return data ? (data.text || '') : '';
+
+        const sortedLines = [...data.lines].sort((a, b) => {
+            const yDiff = a.bbox.y0 - b.bbox.y0;
+            if (Math.abs(yDiff) < 10) return a.bbox.x0 - b.bbox.x0;
+            return yDiff;
+        });
+
+        const rows = [];
+        let currentRow = [];
+        let prevY = -1;
+
+        sortedLines.forEach(line => {
+            if (prevY === -1 || Math.abs(line.bbox.y0 - prevY) < 15) {
+                currentRow.push(line);
+            } else {
+                currentRow.sort((a, b) => a.bbox.x0 - b.bbox.x0);
+                rows.push(currentRow);
+                currentRow = [line];
+            }
+            prevY = line.bbox.y0;
+        });
+        if (currentRow.length > 0) {
+            currentRow.sort((a, b) => a.bbox.x0 - b.bbox.x0);
+            rows.push(currentRow);
+        }
+
+        let output = "";
+        let totalChars = 0;
+        let totalWidth = 0;
+        data.lines.forEach(line => {
+            const textLen = (line.text || '').trim().length;
+            if (textLen > 0) {
+                totalChars += textLen;
+                totalWidth += (line.bbox.x1 - line.bbox.x0);
+            }
+        });
+        const charWidth = totalChars > 0 ? (totalWidth / totalChars) : 10;
+
+        rows.forEach(row => {
+            let currentX = 0;
+            row.forEach((line, lineIdx) => {
+                const targetX = line.bbox.x0;
+                const spacesNeeded = Math.max(0, Math.floor((targetX - currentX) / charWidth));
+                
+                output += (lineIdx > 0 ? "    " : " ".repeat(spacesNeeded));
+                
+                if (line.words && line.words.length > 0) {
+                    let wordX = targetX;
+                    line.words.forEach((word, wordIdx) => {
+                        const gap = word.bbox.x0 - wordX;
+                        if (gap > charWidth * 2) {
+                            const gapSpaces = Math.floor(gap / charWidth);
+                            output += " ".repeat(gapSpaces);
+                        } else if (wordIdx > 0) {
+                            output += " ";
+                        }
+                        
+                        output += (word.text || '');
+                        wordX = word.bbox.x1;
+                    });
+                } else {
+                    output += (line.text || '');
+                }
+                
+                currentX = line.bbox.x1;
+            });
+            output += "\n";
+        });
+
+        return output;
+    }
+
     async applyContrastEnhancement(file) {
         return new Promise((resolve) => {
             const img = new Image();
