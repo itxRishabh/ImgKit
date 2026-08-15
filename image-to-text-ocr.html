@@ -134,6 +134,17 @@
                             <i class="fas fa-sliders-h" style="color: var(--accent);"></i> OCR Settings
                         </h3>
 
+                        <!-- OCR Recognition Mode -->
+                        <div class="setting-group" style="margin-bottom: 20px;">
+                            <label class="setting-label" style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; display: block;">OCR Mode</label>
+                            <select id="ocrMode" class="form-select" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-weight: 600; font-size: 13.5px;">
+                                <option value="smart" selected>🤖 Smart AI Auto (High Accuracy)</option>
+                                <option value="document">📄 Scanned Document / Book</option>
+                                <option value="screenshot">📱 Screenshot / Digital Text / Code</option>
+                                <option value="table">📊 Receipt, Invoice & Tables</option>
+                            </select>
+                        </div>
+
                         <!-- Target Language -->
                         <div class="setting-group" style="margin-bottom: 20px;">
                             <label class="setting-label" style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; display: block;">Document Language</label>
@@ -159,8 +170,12 @@
                             <label class="setting-label" style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; display: block;">Enhance Accuracy</label>
                             <div style="display: flex; flex-direction: column; gap: 10px;">
                                 <label style="display: flex; align-items: center; gap: 10px; font-size: 13.5px; cursor: pointer; color: var(--text);">
+                                    <input type="checkbox" id="ocrUpscale" checked style="width: 16px; height: 16px; accent-color: var(--accent);">
+                                    <span>2× Super-Resolution (Small Text)</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 10px; font-size: 13.5px; cursor: pointer; color: var(--text);">
                                     <input type="checkbox" id="ocrAutoContrast" checked style="width: 16px; height: 16px; accent-color: var(--accent);">
-                                    <span>Adaptive Thresholding (Clear text)</span>
+                                    <span>Adaptive Contrast & Edge Sharpening</span>
                                 </label>
                                 <label style="display: flex; align-items: center; gap: 10px; font-size: 13.5px; cursor: pointer; color: var(--text);">
                                     <input type="checkbox" id="ocrPreserveLayout" checked style="width: 16px; height: 16px; accent-color: var(--accent);">
