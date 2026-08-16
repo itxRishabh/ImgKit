@@ -89,6 +89,17 @@ class SEOAuditTool {
         if (this.downloadPdfBtn) {
             this.downloadPdfBtn.addEventListener('click', () => this.downloadPdf());
         }
+
+        // 1-Click Quick Demo Chips
+        document.querySelectorAll('.demo-chip-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetUrl = btn.getAttribute('data-url');
+                if (targetUrl && this.urlInput) {
+                    this.urlInput.value = targetUrl;
+                    this.startAudit();
+                }
+            });
+        });
     }
 
     showNotification(msg, type = 'info') {

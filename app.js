@@ -1475,6 +1475,22 @@ class ImageConverter {
             });
         });
 
+        // 1-Click Popular Format Presets
+        document.querySelectorAll('.format-chip-btn').forEach(chip => {
+            chip.addEventListener('click', () => {
+                const fmt = chip.getAttribute('data-fmt');
+                document.querySelectorAll('.format-chip-btn').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+
+                if (this.formatToggle) {
+                    const targetBtn = this.formatToggle.querySelector(`.toggle-btn[data-value="${fmt}"]`);
+                    if (targetBtn) {
+                        targetBtn.click();
+                    }
+                }
+            });
+        });
+
         // Quality slider - real-time debounced updates for smooth sliding
         let debounceTimer;
         this.qualitySlider.addEventListener('input', (e) => {
