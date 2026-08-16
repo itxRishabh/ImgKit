@@ -1,164 +1,211 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <!-- Homepage -->
     <url>
         <loc>https://www.webtoolkitbox.com/</loc>
-        <lastmod>2026-07-29</lastmod>
+        <lastmod>2026-08-16</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
-    <url>
-        <loc>https://www.webtoolkitbox.com/seo-audit</loc>
-        <lastmod>2026-07-29</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://www.webtoolkitbox.com/promo</loc>
-        <lastmod>2026-07-29</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
+
+    <!-- Core Image Tools -->
     <url>
         <loc>https://www.webtoolkitbox.com/image-converter</loc>
-        <lastmod>2026-07-29</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://www.webtoolkitbox.com/svg-to-image</loc>
-        <lastmod>2026-07-29</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://www.webtoolkitbox.com/size-manager</loc>
-        <lastmod>2026-07-29</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://www.webtoolkitbox.com/background-remover</loc>
-        <lastmod>2026-07-29</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://www.webtoolkitbox.com/watermark-remover</loc>
-        <lastmod>2026-07-29</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://www.webtoolkitbox.com/image-cropper</loc>
-        <lastmod>2026-07-29</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://www.webtoolkitbox.com/favicon-generator</loc>
-        <lastmod>2026-07-29</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://www.webtoolkitbox.com/image-trimmer</loc>
-        <lastmod>2026-07-29</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://www.webtoolkitbox.com/image-to-text-ocr</loc>
-        <lastmod>2026-07-29</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://www.webtoolkitbox.com/video-compressor</loc>
-        <lastmod>2026-07-29</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://www.webtoolkitbox.com/square-image-maker</loc>
-        <lastmod>2026-07-29</lastmod>
+        <lastmod>2026-08-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
         <loc>https://www.webtoolkitbox.com/image-resizer</loc>
-        <lastmod>2026-07-29</lastmod>
+        <lastmod>2026-08-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://www.webtoolkitbox.com/webp-to-jpg</loc>
-        <lastmod>2026-07-29</lastmod>
+        <loc>https://www.webtoolkitbox.com/image-cropper</loc>
+        <lastmod>2026-08-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://www.webtoolkitbox.com/png-to-jpg</loc>
-        <lastmod>2026-07-29</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://www.webtoolkitbox.com/jpg-to-png</loc>
-        <lastmod>2026-07-29</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://www.webtoolkitbox.com/heic-to-png</loc>
-        <lastmod>2026-07-29</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://www.webtoolkitbox.com/pdf-to-jpg</loc>
-        <lastmod>2026-07-29</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://www.webtoolkitbox.com/jpg-to-pdf</loc>
-        <lastmod>2026-07-29</lastmod>
+        <loc>https://www.webtoolkitbox.com/image-trimmer</loc>
+        <lastmod>2026-08-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
         <loc>https://www.webtoolkitbox.com/image-upscaler</loc>
-        <lastmod>2026-08-07</lastmod>
+        <lastmod>2026-08-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://www.webtoolkitbox.com/how-to-do-free-website-seo-audit</loc>
-        <lastmod>2026-08-07</lastmod>
+        <loc>https://www.webtoolkitbox.com/square-image-maker</loc>
+        <lastmod>2026-08-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://www.webtoolkitbox.com/background-remover</loc>
+        <lastmod>2026-08-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://www.webtoolkitbox.com/watermark-remover</loc>
+        <lastmod>2026-08-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <!-- Converter Tools -->
+    <url>
+        <loc>https://www.webtoolkitbox.com/svg-to-image</loc>
+        <lastmod>2026-08-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://www.webtoolkitbox.com/webp-to-jpg</loc>
+        <lastmod>2026-08-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://www.webtoolkitbox.com/png-to-jpg</loc>
+        <lastmod>2026-08-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://www.webtoolkitbox.com/jpg-to-png</loc>
+        <lastmod>2026-08-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://www.webtoolkitbox.com/heic-to-png</loc>
+        <lastmod>2026-08-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://www.webtoolkitbox.com/pdf-to-jpg</loc>
+        <lastmod>2026-08-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://www.webtoolkitbox.com/jpg-to-pdf</loc>
+        <lastmod>2026-08-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <!-- Specialty Tools -->
+    <url>
+        <loc>https://www.webtoolkitbox.com/favicon-generator</loc>
+        <lastmod>2026-08-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://www.webtoolkitbox.com/image-to-text-ocr</loc>
+        <lastmod>2026-08-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://www.webtoolkitbox.com/size-manager</loc>
+        <lastmod>2026-08-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://www.webtoolkitbox.com/passport-photo-maker</loc>
+        <lastmod>2026-08-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://www.webtoolkitbox.com/video-compressor</loc>
+        <lastmod>2026-08-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <!-- SEO Audit Tool -->
+    <url>
+        <loc>https://www.webtoolkitbox.com/seo-audit</loc>
+        <lastmod>2026-08-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- Blog Posts / SEO Guides -->
+    <url>
+        <loc>https://www.webtoolkitbox.com/how-to-resize-photo-for-passport-and-visa-online</loc>
+        <lastmod>2026-08-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://www.webtoolkitbox.com/how-to-compress-image-for-government-job-exam-application</loc>
+        <lastmod>2026-08-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://www.webtoolkitbox.com/how-to-upscale-images-without-losing-quality</loc>
-        <lastmod>2026-08-07</lastmod>
+        <lastmod>2026-08-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://www.webtoolkitbox.com/how-to-convert-heic-to-png-iphone</loc>
-        <lastmod>2026-08-07</lastmod>
+        <lastmod>2026-08-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://www.webtoolkitbox.com/how-to-do-free-website-seo-audit</loc>
+        <lastmod>2026-08-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://www.webtoolkitbox.com/how-to-remove-watermarks-and-unwanted-objects-from-photos</loc>
-        <lastmod>2026-08-10</lastmod>
+        <lastmod>2026-08-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://www.webtoolkitbox.com/how-to-resize-images-to-custom-pixel-dimensions</loc>
-        <lastmod>2026-08-10</lastmod>
+        <lastmod>2026-08-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://www.webtoolkitbox.com/how-to-make-image-square-without-cropping</loc>
+        <lastmod>2026-08-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://www.webtoolkitbox.com/how-to-create-favicon-ico-from-png</loc>
+        <lastmod>2026-08-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://www.webtoolkitbox.com/how-to-extract-text-from-image-ocr</loc>
+        <lastmod>2026-08-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://www.webtoolkitbox.com/how-to-change-image-pixel-size</loc>
+        <lastmod>2026-08-16</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>

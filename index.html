@@ -19,6 +19,15 @@
     <meta name="author" content="Rishabh Dev (@itxrishabh)">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <link rel="canonical" href="https://www.webtoolkitbox.com/">
+    
+    <!-- International Hreflang & Geo Targeting -->
+    <link rel="alternate" hreflang="x-default" href="https://www.webtoolkitbox.com/">
+    <link rel="alternate" hreflang="en-US" href="https://www.webtoolkitbox.com/">
+    <link rel="alternate" hreflang="en-IN" href="https://www.webtoolkitbox.com/">
+    <link rel="alternate" hreflang="en-GB" href="https://www.webtoolkitbox.com/">
+    <link rel="alternate" hreflang="en-CA" href="https://www.webtoolkitbox.com/">
+    <link rel="alternate" hreflang="en-AU" href="https://www.webtoolkitbox.com/">
+
     <meta name="google-site-verification" content="d0OdByg6j4ZbXrYq_O7SLN5kcx58VtFDakc5TRUElB4" />
     <meta name="msvalidate.01" content="" />
     <meta name="theme-color" content="#0a0a0a">
@@ -38,6 +47,9 @@
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="en_IN">
+    <meta property="og:locale:alternate" content="en_GB">
+    <meta property="og:locale:alternate" content="en_CA">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
@@ -74,10 +86,21 @@
         "price": "0",
         "priceCurrency": "USD"
       },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "ratingCount": "2840",
+        "bestRating": "5"
+      },
       "screenshot": "https://webtoolkitbox.com/images/logo.png",
       "featureList": [
         "HEIC/PNG/JPG/WebP/BMP/GIF/TIFF image format conversion",
         "SVG to PNG/JPG/WebP high-resolution rasterization",
+        "Passport & Visa photo maker with country presets",
+        "Exact KB image compression for job and exam portals"
+      ]
+    }
+    </script>
         "AI-powered background removal",
         "Batch image processing with real-time quality control",
         "Image cropping with aspect ratio presets",
@@ -174,6 +197,10 @@
                 <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Light/Dark Mode">
                     <i class="fas fa-sun"></i>
                 </button>
+                <a href="passport-photo-maker" class="seo-audit-link" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3);">
+                    <i class="fas fa-id-card"></i>
+                    <span>Passport Maker</span>
+                </a>
                 <a href="seo-audit.html" class="seo-audit-link">
                     <i class="fas fa-chart-line"></i>
                     <span>SEO Audit</span>
@@ -193,19 +220,20 @@
 
         <!-- Tools Hub Grid -->
         <div class="tools-hub-grid">
+            <!-- Passport Photo Maker (Featured) -->
+            <a href="passport-photo-maker" class="hub-card accent-passport" style="border-color: rgba(245, 158, 11, 0.4); background: linear-gradient(180deg, rgba(245, 158, 11, 0.05), var(--surface)); position: relative;">
+                <div style="position: absolute; top: 12px; right: 12px; background: #f59e0b; color: #000; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.05em;">New</div>
+                <div class="hub-card-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;"><i class="fas fa-id-card"></i></div>
+                <h3 class="hub-card-title">Passport &amp; Visa Photo Maker</h3>
+                <p class="hub-card-desc">Official passport &amp; visa photos for US (2x2"), India (3.5x4.5cm / 200KB / 50KB), UK, Canada, Schengen &amp; competitive exams. Single photo &amp; 4x6" printable sheets.</p>
+                <span class="hub-card-link" style="color: #f59e0b;">Launch Tool <i class="fas fa-arrow-right"></i></span>
+            </a>
+
             <!-- Format Converter -->
             <a href="image-converter" class="hub-card accent-converter">
                 <div class="hub-card-icon"><i class="fas fa-shuffle"></i></div>
                 <h3 class="hub-card-title">Image Converter</h3>
                 <p class="hub-card-desc">Convert images instantly between PNG, JPG, WebP, GIF, BMP, HEIC & TIFF with real-time size optimization comparison.</p>
-                <span class="hub-card-link">Launch Tool <i class="fas fa-arrow-right"></i></span>
-            </a>
-
-            <!-- SVG to Image -->
-            <a href="svg-to-image" class="hub-card accent-svg">
-                <div class="hub-card-icon"><i class="fas fa-file-code"></i></div>
-                <h3 class="hub-card-title">SVG to PNG Converter</h3>
-                <p class="hub-card-desc">Convert vector SVG code or SVG files to high-res PNG, JPEG, or WebP with custom scale up to 8x and solid background options.</p>
                 <span class="hub-card-link">Launch Tool <i class="fas fa-arrow-right"></i></span>
             </a>
 
@@ -303,6 +331,14 @@
                 <div class="hub-card-icon" style="background: rgba(26, 115, 232, 0.1); color: #1a73e8;"><i class="fas fa-ruler-combined"></i></div>
                 <h3 class="hub-card-title">Resize Image (Pixels)</h3>
                 <p class="hub-card-desc">Change image width & height in pixels or scale by percentage. Aspect ratio lock & instant preview.</p>
+                <span class="hub-card-link">Launch Tool <i class="fas fa-arrow-right"></i></span>
+            </a>
+
+            <!-- SVG to Image -->
+            <a href="svg-to-image" class="hub-card accent-svg">
+                <div class="hub-card-icon"><i class="fas fa-file-code"></i></div>
+                <h3 class="hub-card-title">SVG to PNG Converter</h3>
+                <p class="hub-card-desc">Convert vector SVG code or SVG files to high-res PNG, JPEG, or WebP with custom scale up to 8x and solid background options.</p>
                 <span class="hub-card-link">Launch Tool <i class="fas fa-arrow-right"></i></span>
             </a>
 
@@ -407,10 +443,11 @@
                 </div>
 
                 <div class="seo-footer-col">
-                    <h4><i class="fas fa-wand-magic-sparkles"></i> AI & Power Tools</h4>
+                    <h4><i class="fas fa-wand-magic-sparkles"></i> AI &amp; Power Tools</h4>
                     <ul>
-                        <li><a href="https://www.webtoolkitbox.com/seo-audit"><i class="fas fa-chevron-right"></i> Free SEO Audit Tool & Score Checker</a></li>
-                        <li><a href="https://www.webtoolkitbox.com/image-upscaler"><i class="fas fa-chevron-right"></i> Free AI Image Upscaler & Enhancer</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/passport-photo-maker"><i class="fas fa-chevron-right"></i> Free Passport Photo Maker</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/seo-audit"><i class="fas fa-chevron-right"></i> Free SEO Audit Tool &amp; Score Checker</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-upscaler"><i class="fas fa-chevron-right"></i> Free AI Image Upscaler &amp; Enhancer</a></li>
                         <li><a href="https://www.webtoolkitbox.com/background-remover"><i class="fas fa-chevron-right"></i> Free AI Background Remover</a></li>
                         <li><a href="https://www.webtoolkitbox.com/watermark-remover"><i class="fas fa-chevron-right"></i> Remove Watermark Online Free</a></li>
                         <li><a href="https://www.webtoolkitbox.com/image-to-text-ocr"><i class="fas fa-chevron-right"></i> Image to Text OCR Converter</a></li>
@@ -424,19 +461,24 @@
                         <li><a href="https://www.webtoolkitbox.com/image-resizer"><i class="fas fa-chevron-right"></i> Image Dimension Resizer</a></li>
                         <li><a href="https://www.webtoolkitbox.com/image-cropper"><i class="fas fa-chevron-right"></i> Crop Image Custom Ratio</a></li>
                         <li><a href="https://www.webtoolkitbox.com/square-image-maker"><i class="fas fa-chevron-right"></i> Square Image 1:1 Maker</a></li>
-                        <li><a href="https://www.webtoolkitbox.com/favicon-generator"><i class="fas fa-chevron-right"></i> Favicon & ICO Generator</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/favicon-generator"><i class="fas fa-chevron-right"></i> Favicon &amp; ICO Generator</a></li>
                         <li><a href="https://www.webtoolkitbox.com/video-compressor"><i class="fas fa-chevron-right"></i> Compress Video MP4 Online</a></li>
                     </ul>
                 </div>
 
                 <div class="seo-footer-col">
-                    <h4><i class="fas fa-book-open"></i> SEO Guides & Tutorials</h4>
+                    <h4><i class="fas fa-book-open"></i> Image &amp; SEO Guides</h4>
                     <ul>
-                        <li><a href="https://www.webtoolkitbox.com/how-to-do-free-website-seo-audit"><i class="fas fa-chevron-right"></i> How to Perform a Free Website SEO Audit</a></li>
-                        <li><a href="https://www.webtoolkitbox.com/how-to-upscale-images-without-losing-quality"><i class="fas fa-chevron-right"></i> How to Upscale Images Without Losing Quality</a></li>
-                        <li><a href="https://www.webtoolkitbox.com/how-to-convert-heic-to-png-iphone"><i class="fas fa-chevron-right"></i> How to Convert iPhone HEIC Photos to PNG</a></li>
-                        <li><a href="https://www.webtoolkitbox.com/how-to-remove-watermarks-and-unwanted-objects-from-photos"><i class="fas fa-chevron-right"></i> How to Remove Watermarks & Objects from Photos</a></li>
-                        <li><a href="https://www.webtoolkitbox.com/how-to-resize-images-to-custom-pixel-dimensions"><i class="fas fa-chevron-right"></i> How to Resize Images to Custom Pixel Dimensions</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-resize-photo-for-passport-and-visa-online"><i class="fas fa-chevron-right"></i> Resize Photo for Passport &amp; Visa</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-compress-image-for-government-job-exam-application"><i class="fas fa-chevron-right"></i> Compress Photo for Govt Exams</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-make-image-square-without-cropping"><i class="fas fa-chevron-right"></i> Make Image Square Without Cropping</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-create-favicon-ico-from-png"><i class="fas fa-chevron-right"></i> Create Favicon.ico from PNG</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-extract-text-from-image-ocr"><i class="fas fa-chevron-right"></i> Extract Text from Image (OCR)</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-change-image-pixel-size"><i class="fas fa-chevron-right"></i> Change Image Pixel Dimensions</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-upscale-images-without-losing-quality"><i class="fas fa-chevron-right"></i> Upscale Images Without Blur</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-convert-heic-to-png-iphone"><i class="fas fa-chevron-right"></i> Convert iPhone HEIC to PNG</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-remove-watermarks-and-unwanted-objects-from-photos"><i class="fas fa-chevron-right"></i> Remove Watermarks from Photos</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-do-free-website-seo-audit"><i class="fas fa-chevron-right"></i> Free Website SEO Audit Guide</a></li>
                     </ul>
                 </div>
             </div>

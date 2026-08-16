@@ -3,6 +3,11 @@ Allow: /
 
 # Block crawling of API endpoints
 Disallow: /api/
+Disallow: /node_modules/
+Disallow: /test_temp/
+Disallow: /seo-update-charts/
+Disallow: /new.html
+Disallow: /new
 
 # Sitemap
-Sitemap: https://webtoolkitbox.com/sitemap.xml
+Sitemap: https://www.webtoolkitbox.com/sitemap.xml
