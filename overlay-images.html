@@ -268,9 +268,14 @@
 
                 <!-- Controls Panel -->
                 <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; padding: 18px; background: rgba(0,0,0,0.02); border: 1px solid var(--border); border-radius: 12px;">
-                    <!-- Position Presets -->
+                    <!-- Position Presets & Drag Anywhere Badge -->
                     <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-                        <span style="font-size: 13px; font-weight: 700; color: var(--text);">Position:</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 13px; font-weight: 700; color: var(--text);">Position:</span>
+                            <span id="dragHintBadge" style="font-size: 11px; font-weight: 700; color: #10b981; background: rgba(16, 185, 129, 0.12); padding: 3px 8px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                                <i class="fas fa-hand-pointer"></i> Drag anywhere on canvas
+                            </span>
+                        </div>
                         <div style="display: flex; gap: 6px; flex-wrap: wrap;">
                             <button type="button" class="pos-btn" data-pos="top-left">Top-Left</button>
                             <button type="button" class="pos-btn" data-pos="top-right">Top-Right</button>
@@ -282,19 +287,26 @@
                     </div>
 
                     <!-- Sliders Grid -->
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
                         <!-- Scale Slider -->
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <span style="font-size: 12px; font-weight: 700; color: var(--text); min-width: 70px;">Scale Size:</span>
-                            <input type="range" id="scaleSlider" min="10" max="100" value="30" style="flex: 1; accent-color: #f59e0b; cursor: pointer;">
+                            <span style="font-size: 12px; font-weight: 700; color: var(--text); min-width: 65px;">Scale:</span>
+                            <input type="range" id="scaleSlider" min="5" max="100" value="30" style="flex: 1; accent-color: #f59e0b; cursor: pointer;">
                             <span id="scaleVal" style="font-size: 12px; font-weight: 700; min-width: 32px;">30%</span>
                         </div>
 
                         <!-- Opacity Slider -->
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <span style="font-size: 12px; font-weight: 700; color: var(--text); min-width: 70px;">Opacity:</span>
+                            <span style="font-size: 12px; font-weight: 700; color: var(--text); min-width: 65px;">Opacity:</span>
                             <input type="range" id="opacitySlider" min="5" max="100" value="100" style="flex: 1; accent-color: #f59e0b; cursor: pointer;">
                             <span id="opacityVal" style="font-size: 12px; font-weight: 700; min-width: 32px;">100%</span>
+                        </div>
+
+                        <!-- Rotation Slider -->
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 12px; font-weight: 700; color: var(--text); min-width: 65px;">Rotate:</span>
+                            <input type="range" id="rotateSlider" min="0" max="360" value="0" style="flex: 1; accent-color: #f59e0b; cursor: pointer;">
+                            <span id="rotateVal" style="font-size: 12px; font-weight: 700; min-width: 32px;">0°</span>
                         </div>
                     </div>
                 </div>
@@ -424,6 +436,28 @@
             let scalePct = 30;
             let opacityVal = 100;
 
+    <!-- Client-Side Image Overlay Engine with Interactive Dragging -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let baseImg = null;
+            let topImg = null;
+            let currentPos = 'bottom-right'; // 'custom', 'center', 'top-left', 'top-right', 'bottom-left', 'bottom-right', 'cover'
+            let scalePct = 30;
+            let opacityVal = 100;
+            let rotateDeg = 0;
+
+            // Live Drag Coordinates
+            let overlayX = null;
+            let overlayY = null;
+            let overlayW = 0;
+            let overlayH = 0;
+            let isDragging = false;
+            let dragStartX = 0;
+            let dragStartY = 0;
+            let initialOverlayX = 0;
+            let initialOverlayY = 0;
+            let isHovering = false;
+
             const baseBox = document.getElementById('baseDropZone');
             const baseInput = document.getElementById('baseFileInput');
             const basePreview = document.getElementById('basePreviewImg');
@@ -444,6 +478,9 @@
             const scaleValDisplay = document.getElementById('scaleVal');
             const opacitySlider = document.getElementById('opacitySlider');
             const opacityValDisplay = document.getElementById('opacityVal');
+            const rotateSlider = document.getElementById('rotateSlider');
+            const rotateValDisplay = document.getElementById('rotateVal');
+            const dragHintBadge = document.getElementById('dragHintBadge');
 
             // Position Preset Buttons
             document.querySelectorAll('.pos-btn').forEach(btn => {
@@ -451,6 +488,7 @@
                     document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     currentPos = btn.getAttribute('data-pos');
+                    calculatePresetPosition();
                     if (baseImg) renderOverlay();
                 });
             });
@@ -459,12 +497,23 @@
             scaleSlider.addEventListener('input', (e) => {
                 scalePct = parseInt(e.target.value);
                 scaleValDisplay.textContent = `${scalePct}%`;
+                if (currentPos !== 'custom') {
+                    calculatePresetPosition();
+                } else {
+                    updateOverlayDimensions();
+                }
                 if (baseImg) renderOverlay();
             });
 
             opacitySlider.addEventListener('input', (e) => {
                 opacityVal = parseInt(e.target.value);
                 opacityValDisplay.textContent = `${opacityVal}%`;
+                if (baseImg) renderOverlay();
+            });
+
+            rotateSlider.addEventListener('input', (e) => {
+                rotateDeg = parseInt(e.target.value);
+                rotateValDisplay.textContent = `${rotateDeg}°`;
                 if (baseImg) renderOverlay();
             });
 
@@ -513,6 +562,8 @@
                             topPlaceholder.style.display = 'none';
                             topBox.classList.add('has-img');
                         }
+                        overlayX = null; // reset to recalculate preset
+                        calculatePresetPosition();
                         if (baseImg) renderOverlay();
                     };
                     img.src = event.target.result;
@@ -520,7 +571,151 @@
                 reader.readAsDataURL(file);
             }
 
-            function renderOverlay() {
+            function updateOverlayDimensions() {
+                if (!baseImg || !topImg) return;
+                if (currentPos === 'cover') {
+                    overlayW = baseImg.width;
+                    overlayH = baseImg.height;
+                } else {
+                    const targetW = (baseImg.width * (scalePct / 100));
+                    const scale = targetW / topImg.width;
+                    overlayW = targetW;
+                    overlayH = topImg.height * scale;
+                }
+            }
+
+            function calculatePresetPosition() {
+                if (!baseImg || !topImg) return;
+                updateOverlayDimensions();
+
+                const pad = Math.max(20, Math.floor(baseImg.width * 0.03));
+
+                if (currentPos === 'cover') {
+                    overlayX = 0;
+                    overlayY = 0;
+                } else if (currentPos === 'top-left') {
+                    overlayX = pad;
+                    overlayY = pad;
+                } else if (currentPos === 'top-right') {
+                    overlayX = baseImg.width - overlayW - pad;
+                    overlayY = pad;
+                } else if (currentPos === 'center') {
+                    overlayX = (baseImg.width - overlayW) / 2;
+                    overlayY = (baseImg.height - overlayH) / 2;
+                } else if (currentPos === 'bottom-left') {
+                    overlayX = pad;
+                    overlayY = baseImg.height - overlayH - pad;
+                } else if (currentPos === 'bottom-right') {
+                    overlayX = baseImg.width - overlayW - pad;
+                    overlayY = baseImg.height - overlayH - pad;
+                }
+            }
+
+            function getCanvasCoords(e) {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+                return {
+                    x: (clientX - rect.left) * scaleX,
+                    y: (clientY - rect.top) * scaleY
+                };
+            }
+
+            function isInsideOverlay(x, y) {
+                if (!topImg || overlayX === null) return false;
+                return x >= overlayX && x <= overlayX + overlayW && y >= overlayY && y <= overlayY + overlayH;
+            }
+
+            // Canvas Mouse & Touch Drag Listeners
+            canvas.addEventListener('mousedown', (e) => {
+                if (!topImg) return;
+                const { x, y } = getCanvasCoords(e);
+                if (isInsideOverlay(x, y)) {
+                    isDragging = true;
+                    dragStartX = x;
+                    dragStartY = y;
+                    initialOverlayX = overlayX;
+                    initialOverlayY = overlayY;
+                    canvas.style.cursor = 'grabbing';
+                }
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!topImg) return;
+                const { x, y } = getCanvasCoords(e);
+
+                if (isDragging) {
+                    const dx = x - dragStartX;
+                    const dy = y - dragStartY;
+                    overlayX = Math.round(initialOverlayX + dx);
+                    overlayY = Math.round(initialOverlayY + dy);
+
+                    // Switch to custom mode
+                    currentPos = 'custom';
+                    document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
+                    if (dragHintBadge) dragHintBadge.innerHTML = '<i class="fas fa-arrows-up-down-left-right"></i> Custom Drag Position';
+
+                    renderOverlay(true);
+                } else {
+                    const inside = isInsideOverlay(x, y);
+                    if (inside !== isHovering) {
+                        isHovering = inside;
+                        canvas.style.cursor = inside ? 'grab' : 'default';
+                        renderOverlay(false);
+                    }
+                }
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    canvas.style.cursor = isHovering ? 'grab' : 'default';
+                    renderOverlay(false);
+                }
+            });
+
+            // Touch support for Mobile / Tablets
+            canvas.addEventListener('touchstart', (e) => {
+                if (!topImg) return;
+                const { x, y } = getCanvasCoords(e);
+                if (isInsideOverlay(x, y)) {
+                    isDragging = true;
+                    dragStartX = x;
+                    dragStartY = y;
+                    initialOverlayX = overlayX;
+                    initialOverlayY = overlayY;
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            window.addEventListener('touchmove', (e) => {
+                if (!isDragging || !topImg) return;
+                const { x, y } = getCanvasCoords(e);
+                const dx = x - dragStartX;
+                const dy = y - dragStartY;
+                overlayX = Math.round(initialOverlayX + dx);
+                overlayY = Math.round(initialOverlayY + dy);
+
+                currentPos = 'custom';
+                document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
+                if (dragHintBadge) dragHintBadge.innerHTML = '<i class="fas fa-arrows-up-down-left-right"></i> Custom Drag Position';
+
+                renderOverlay(true);
+                e.preventDefault();
+            }, { passive: false });
+
+            window.addEventListener('touchend', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    renderOverlay(false);
+                }
+            });
+
+            function renderOverlay(showGuide = false) {
                 if (!baseImg) return;
 
                 resultContainer.style.display = 'block';
@@ -531,57 +726,86 @@
                 ctx.imageSmoothingEnabled = true;
                 ctx.imageSmoothingQuality = 'high';
 
-                // Draw Base Image
+                // Step 1: Draw Base Image
                 ctx.drawImage(baseImg, 0, 0);
 
-                // Draw Top Overlay Image if present
+                // Step 2: Draw Top Overlay Image if present
                 if (topImg) {
+                    if (overlayX === null) calculatePresetPosition();
+
                     ctx.save();
                     ctx.globalAlpha = opacityVal / 100;
 
-                    let overlayW, overlayH, destX, destY;
-                    const pad = Math.max(20, Math.floor(baseImg.width * 0.03));
+                    // Center for rotation
+                    const centerX = overlayX + (overlayW / 2);
+                    const centerY = overlayY + (overlayH / 2);
 
-                    if (currentPos === 'cover') {
-                        overlayW = baseImg.width;
-                        overlayH = baseImg.height;
-                        destX = 0;
-                        destY = 0;
+                    if (rotateDeg !== 0) {
+                        ctx.translate(centerX, centerY);
+                        ctx.rotate((rotateDeg * Math.PI) / 180);
+                        ctx.drawImage(topImg, -overlayW / 2, -overlayH / 2, overlayW, overlayH);
                     } else {
-                        const targetW = (baseImg.width * (scalePct / 100));
-                        const scale = targetW / topImg.width;
-                        overlayW = targetW;
-                        overlayH = topImg.height * scale;
-
-                        if (currentPos === 'top-left') {
-                            destX = pad;
-                            destY = pad;
-                        } else if (currentPos === 'top-right') {
-                            destX = baseImg.width - overlayW - pad;
-                            destY = pad;
-                        } else if (currentPos === 'center') {
-                            destX = (baseImg.width - overlayW) / 2;
-                            destY = (baseImg.height - overlayH) / 2;
-                        } else if (currentPos === 'bottom-left') {
-                            destX = pad;
-                            destY = baseImg.height - overlayH - pad;
-                        } else {
-                            // Bottom-Right default
-                            destX = baseImg.width - overlayW - pad;
-                            destY = baseImg.height - overlayH - pad;
-                        }
+                        ctx.drawImage(topImg, overlayX, overlayY, overlayW, overlayH);
                     }
-
-                    ctx.drawImage(topImg, destX, destY, overlayW, overlayH);
                     ctx.restore();
+
+                    // Step 3: Draw interactive drag border outline when hovering or dragging
+                    if (isDragging || isHovering || showGuide) {
+                        ctx.save();
+                        ctx.strokeStyle = '#f59e0b';
+                        ctx.lineWidth = Math.max(2, Math.floor(baseImg.width * 0.003));
+                        ctx.setLineDash([8, 6]);
+
+                        if (rotateDeg !== 0) {
+                            ctx.translate(centerX, centerY);
+                            ctx.rotate((rotateDeg * Math.PI) / 180);
+                            ctx.strokeRect(-overlayW / 2, -overlayH / 2, overlayW, overlayH);
+                        } else {
+                            ctx.strokeRect(overlayX, overlayY, overlayW, overlayH);
+                        }
+                        ctx.restore();
+                    }
                 }
 
-                downloadBtn.href = canvas.toDataURL('image/png');
+                // Create clean export without dashed guide lines
+                createCleanExport();
+            }
+
+            function createCleanExport() {
+                if (!baseImg) return;
+                const exportCanvas = document.createElement('canvas');
+                exportCanvas.width = baseImg.width;
+                exportCanvas.height = baseImg.height;
+                const expCtx = exportCanvas.getContext('2d');
+                expCtx.imageSmoothingEnabled = true;
+                expCtx.imageSmoothingQuality = 'high';
+
+                expCtx.drawImage(baseImg, 0, 0);
+
+                if (topImg) {
+                    expCtx.save();
+                    expCtx.globalAlpha = opacityVal / 100;
+                    const centerX = overlayX + (overlayW / 2);
+                    const centerY = overlayY + (overlayH / 2);
+
+                    if (rotateDeg !== 0) {
+                        expCtx.translate(centerX, centerY);
+                        expCtx.rotate((rotateDeg * Math.PI) / 180);
+                        expCtx.drawImage(topImg, -overlayW / 2, -overlayH / 2, overlayW, overlayH);
+                    } else {
+                        expCtx.drawImage(topImg, overlayX, overlayY, overlayW, overlayH);
+                    }
+                    expCtx.restore();
+                }
+
+                downloadBtn.href = exportCanvas.toDataURL('image/png');
             }
 
             resetBtn.addEventListener('click', () => {
                 baseImg = null;
                 topImg = null;
+                overlayX = null;
+                overlayY = null;
                 basePreview.style.display = 'none';
                 basePlaceholder.style.display = 'block';
                 baseBox.classList.remove('has-img');
@@ -589,6 +813,7 @@
                 topPlaceholder.style.display = 'block';
                 topBox.classList.remove('has-img');
                 resultContainer.style.display = 'none';
+                if (dragHintBadge) dragHintBadge.innerHTML = '<i class="fas fa-hand-pointer"></i> Drag anywhere on canvas';
             });
         });
     </script>
