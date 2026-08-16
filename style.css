@@ -2174,9 +2174,18 @@ input[type="range"].solaris-slider::-webkit-slider-thumb:hover {
 }
 
 .footer-logo {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 10px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    width: fit-content;
+}
+
+.footer-logo:hover {
+    transform: scale(1.04);
+    opacity: 0.9;
 }
 
 .footer-tagline {
