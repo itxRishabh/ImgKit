@@ -3663,5 +3663,191 @@ input[type="range"].solaris-slider::-webkit-slider-thumb:hover {
     flex-wrap: wrap;
 }
 
+/* ===== AI Smart Tool Search & Suggester ===== */
+.ai-search-wrapper {
+    max-width: 680px;
+    margin: 24px auto 32px;
+    position: relative;
+    z-index: 100;
+}
+
+.ai-search-box {
+    display: flex;
+    align-items: center;
+    background: var(--surface);
+    border: 1.5px solid rgba(245, 158, 11, 0.4);
+    border-radius: var(--radius-full);
+    padding: 6px 8px 6px 18px;
+    box-shadow: 0 8px 28px rgba(245, 158, 11, 0.12);
+    transition: all 0.25s ease;
+}
+
+.ai-search-box:focus-within {
+    border-color: #f59e0b;
+    box-shadow: 0 12px 36px rgba(245, 158, 11, 0.22);
+    transform: translateY(-1px);
+}
+
+.ai-search-icon {
+    color: #f59e0b;
+    font-size: 16px;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    animation: pulseGlow 2s infinite ease-in-out;
+}
+
+@keyframes pulseGlow {
+    0%, 100% { opacity: 0.8; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
+}
+
+.ai-search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    font-family: inherit;
+}
+
+.ai-search-input::placeholder {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 14px;
+}
+
+.ai-search-btn {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #000;
+    font-weight: 700;
+    font-size: 13px;
+    border: none;
+    border-radius: var(--radius-full);
+    padding: 10px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.ai-search-btn:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+}
+
+.ai-quick-pills {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.ai-intent-pill {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.ai-intent-pill:hover {
+    color: var(--text);
+    border-color: #f59e0b;
+    background: rgba(245, 158, 11, 0.08);
+    transform: translateY(-1px);
+}
+
+.ai-search-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+    padding: 10px;
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 380px;
+    overflow-y: auto;
+    z-index: 1000;
+    backdrop-filter: blur(12px);
+}
+
+.ai-dropdown-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.15s ease;
+    background: transparent;
+    cursor: pointer;
+}
+
+.ai-dropdown-item:hover,
+.ai-dropdown-item.focused {
+    background: rgba(245, 158, 11, 0.12);
+    transform: translateX(4px);
+}
+
+.ai-dropdown-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ai-dropdown-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.ai-dropdown-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text);
+}
+
+.ai-dropdown-desc {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    margin: 1px 0 0;
+}
+
+.ai-dropdown-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: #f59e0b;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
 
 

@@ -207,6 +207,32 @@
             <p class="hero-subtitle">
                 Free, 100% secure, browser-based tools for batch image conversion, editing, compression, OCR, and more. No signup required.
             </p>
+
+            <!-- AI Smart Tool Search & Suggester -->
+            <div class="ai-search-wrapper">
+                <div class="ai-search-box">
+                    <div class="ai-search-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
+                    <input type="text" id="aiToolSearchInput" class="ai-search-input" placeholder="✨ Describe what you need (e.g., '50kb photo', 'heic to jpg', 'blur face', 'youtube banner', 'sign pdf', '300 dpi')..." autocomplete="off" spellcheck="false">
+                    <button type="button" id="aiSearchActionBtn" class="ai-search-btn">
+                        <i class="fas fa-magnifying-glass"></i> Find Tool
+                    </button>
+                </div>
+                
+                <!-- Quick Intent Pills -->
+                <div class="ai-quick-pills">
+                    <button type="button" class="ai-intent-pill" data-query="passport photo"><i class="fas fa-id-card"></i> Passport / Visa Photo</button>
+                    <button type="button" class="ai-intent-pill" data-query="compress to 50kb"><i class="fas fa-weight-hanging"></i> 50KB / 20KB Form</button>
+                    <button type="button" class="ai-intent-pill" data-query="youtube thumbnail banner"><i class="fab fa-youtube" style="color: #ff0000;"></i> YouTube / Insta Resizer</button>
+                    <button type="button" class="ai-intent-pill" data-query="transparent signature pdf"><i class="fas fa-file-signature" style="color: #0ea5e9;"></i> Sign PDF / Signature</button>
+                    <button type="button" class="ai-intent-pill" data-query="blur face sensitive"><i class="fas fa-eye-slash" style="color: #ef4444;"></i> Blur Face &amp; Info</button>
+                    <button type="button" class="ai-intent-pill" data-query="300 dpi print"><i class="fas fa-print" style="color: #10b981;"></i> 300 DPI Converter</button>
+                    <button type="button" class="ai-intent-pill" data-query="convert heic to jpg webp"><i class="fas fa-shuffle"></i> HEIC to JPG</button>
+                    <button type="button" class="ai-intent-pill" data-query="seo audit score"><i class="fas fa-chart-line" style="color: #f59e0b;"></i> SEO Audit</button>
+                </div>
+
+                <!-- Instant Live Dropdown Results -->
+                <div class="ai-search-dropdown" id="aiSearchDropdown"></div>
+            </div>
         </section>
 
         <!-- Tools Hub Grid -->
@@ -354,6 +380,14 @@
                 <div class="hub-card-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;"><i class="fas fa-eye-slash"></i></div>
                 <h3 class="hub-card-title">Privacy Blur &amp; Image Censor</h3>
                 <p class="hub-card-desc">Blur faces, pixelate license plates, or redact sensitive text on screenshots and documents. 100% private in-browser canvas tool.</p>
+                <span class="hub-card-link">Launch Tool <i class="fas fa-arrow-right"></i></span>
+            </a>
+
+            <!-- Image 300 DPI Converter -->
+            <a href="image-dpi-converter" class="hub-card accent-dpi" style="border-color: rgba(16, 185, 129, 0.35);">
+                <div class="hub-card-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;"><i class="fas fa-print"></i></div>
+                <h3 class="hub-card-title">Image 300 DPI Converter</h3>
+                <p class="hub-card-desc">Change image resolution density to 300 DPI or 600 DPI for official passport requirements and high-resolution printing labs.</p>
                 <span class="hub-card-link">Launch Tool <i class="fas fa-arrow-right"></i></span>
             </a>
 
@@ -506,5 +540,266 @@
             </div>
         </footer>
     </div>
+
+    <!-- AI Smart Tool Search & Suggester Engine -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const TOOLS_DB = [
+                {
+                    name: "Passport & Visa Photo Maker",
+                    url: "passport-photo-maker",
+                    icon: "fa-id-card",
+                    color: "#f59e0b",
+                    desc: "US 2x2, India 3.5x4.5cm, UK, Canada, SSC, UPSC exam photos with 4x6 print sheet",
+                    keywords: ["passport", "visa", "exam", "ssc", "upsc", "neet", "jee", "nta", "photo", "id card", "2x2", "3.5x4.5", "printable sheet", "us visa", "india passport", "white background photo", "govt exam"]
+                },
+                {
+                    name: "Compress Image (Size Manager)",
+                    url: "size-manager",
+                    icon: "fa-weight-hanging",
+                    color: "#10b981",
+                    desc: "Compress photos to exact 20KB, 50KB, 100KB, 200KB limits without losing quality",
+                    keywords: ["compress", "size", "reduce kb", "under 50kb", "under 20kb", "100kb", "200kb", "50 kb", "20 kb", "file size", "job application", "govt portal", "shrink image", "smaller mb", "kb manager"]
+                },
+                {
+                    name: "Social Media Resizer & Banners",
+                    url: "social-media-image-resizer",
+                    icon: "fa-share-nodes",
+                    color: "#f59e0b",
+                    desc: "1-click YouTube Thumbnails (1280x720), YT Banners (2560x1440), Instagram, TikTok, LinkedIn, Twitter/X",
+                    keywords: ["social media", "youtube", "thumbnail", "1280x720", "banner", "channel art", "2560x1440", "instagram", "story", "reel", "tiktok", "linkedin", "twitter", "x header", "facebook cover", "post resizer"]
+                },
+                {
+                    name: "Transparent Signature Maker",
+                    url: "transparent-signature-maker",
+                    icon: "fa-file-signature",
+                    color: "#0ea5e9",
+                    desc: "Turn handwritten signature photo into crisp transparent PNG for PDF signing & contracts",
+                    keywords: ["signature", "transparent", "sign pdf", "contract", "handwritten", "ink", "paper background", "white background", "sign document", "digital signature", "extract signature"]
+                },
+                {
+                    name: "Privacy Blur & Image Censor",
+                    url: "blur-image-privacy-censor",
+                    icon: "fa-eye-slash",
+                    color: "#ef4444",
+                    desc: "Blur faces, pixelate license plates, redact sensitive text & passwords on screenshots",
+                    keywords: ["blur", "censor", "pixelate", "redact", "face blur", "license plate", "privacy", "hide text", "sensitive info", "mosaic", "black bar", "screenshot blur", "mask photo"]
+                },
+                {
+                    name: "Image 300 DPI Converter",
+                    url: "image-dpi-converter",
+                    icon: "fa-print",
+                    color: "#10b981",
+                    desc: "Change image resolution to 300 DPI or 600 DPI for high-res printing and passport compliance",
+                    keywords: ["dpi", "300 dpi", "600 dpi", "72 dpi", "print", "resolution", "dots per inch", "printing lab", "passport requirement", "high res print", "density"]
+                },
+                {
+                    name: "Image Converter",
+                    url: "image-converter",
+                    icon: "fa-shuffle",
+                    color: "#3b82f6",
+                    desc: "Convert HEIC to JPG, PNG to WebP, SVG, GIF, BMP, TIFF in batch with 0 quality loss",
+                    keywords: ["convert", "heic", "jpg", "png", "webp", "jpeg", "iphone photo", "format", "svg", "bmp", "gif", "batch convert", "convert photo"]
+                },
+                {
+                    name: "SEO Audit Tool & Score Checker",
+                    url: "seo-audit",
+                    icon: "fa-chart-line",
+                    color: "#f59e0b",
+                    desc: "Instant website SEO score, meta tags, Core Web Vitals, speed & printable PDF report",
+                    keywords: ["seo", "audit", "score", "website seo", "google ranking", "core web vitals", "speed test", "meta tags", "backlink", "site checker", "lighthouse", "seo checker"]
+                },
+                {
+                    name: "AI Background Remover",
+                    url: "background-remover",
+                    icon: "fa-wand-magic-sparkles",
+                    color: "#a855f7",
+                    desc: "Erase photo backgrounds automatically with private client-side AI",
+                    keywords: ["background", "remove background", "transparent", "cutout", "product photo", "erase bg", "ai cutout", "avatar cutout", "white bg remover"]
+                },
+                {
+                    name: "Erase Objects & Watermarks",
+                    url: "watermark-remover",
+                    icon: "fa-eraser",
+                    color: "#ec4899",
+                    desc: "Erase watermarks, stamps, unwanted objects and photobombers from pictures",
+                    keywords: ["watermark", "erase", "remove object", "clean photo", "stamp", "inpaint", "photobomb", "delete text", "clean image"]
+                },
+                {
+                    name: "AI Image Upscaler & Enhancer",
+                    url: "image-upscaler",
+                    icon: "fa-arrow-up-right-dots",
+                    color: "#6366f1",
+                    desc: "Enlarge low-res photos 2X, 4X, 8X HD without blur using Lanczos3 WASM",
+                    keywords: ["upscale", "enlarge", "enhance", "increase resolution", "sharpen", "clarity", "hd", "4x", "lanczos", "enhance image"]
+                },
+                {
+                    name: "Resize Image (Pixels)",
+                    url: "image-resizer",
+                    icon: "fa-ruler-combined",
+                    color: "#1a73e8",
+                    desc: "Change width and height in pixels or scale percentage with aspect ratio lock",
+                    keywords: ["resize", "pixels", "width", "height", "dimensions", "aspect ratio", "scale", "shrink", "enlarge pixel"]
+                },
+                {
+                    name: "Crop Image",
+                    url: "image-cropper",
+                    icon: "fa-crop-alt",
+                    color: "#14b8a6",
+                    desc: "Crop images with exact 1:1, 16:9, 4:3, 9:16 aspect ratio guides",
+                    keywords: ["crop", "cut", "trim", "aspect ratio", "1:1", "16:9", "profile crop", "circle crop"]
+                },
+                {
+                    name: "Make Image Square",
+                    url: "square-image-maker",
+                    icon: "fa-crop-simple",
+                    color: "#8b5cf6",
+                    desc: "Convert rectangular photos to 1:1 square canvas with blur extension without cropping",
+                    keywords: ["square", "no crop", "1:1", "instagram square", "blur padding", "fit square", "square photo"]
+                },
+                {
+                    name: "SVG to PNG Converter",
+                    url: "svg-to-image",
+                    icon: "fa-file-code",
+                    color: "#f97316",
+                    desc: "Rasterize vector SVG to high-res PNG, JPG or WebP up to 8X scale",
+                    keywords: ["svg", "vector", "rasterize", "svg to png", "svg to jpg", "icon vector", "vector converter"]
+                },
+                {
+                    name: "Favicon & Icon Generator",
+                    url: "favicon-generator",
+                    icon: "fa-icons",
+                    color: "#eab308",
+                    desc: "Generate 16x16, 32x32, 192x192 favicon.ico and iOS/Android app icon packages",
+                    keywords: ["favicon", "ico", "app icon", "website icon", "touch icon", "16x16", "32x32", "generate icon"]
+                },
+                {
+                    name: "Image to Text (OCR)",
+                    url: "image-to-text-ocr",
+                    icon: "fa-file-lines",
+                    color: "#0284c7",
+                    desc: "Extract text from screenshots, scanned documents, and photos",
+                    keywords: ["ocr", "text", "extract text", "scan text", "document to text", "screenshot text", "copy text from image"]
+                }
+            ];
+
+            const searchInput = document.getElementById('aiToolSearchInput');
+            const searchDropdown = document.getElementById('aiSearchDropdown');
+            const actionBtn = document.getElementById('aiSearchActionBtn');
+            const intentPills = document.querySelectorAll('.ai-intent-pill');
+
+            if (!searchInput || !searchDropdown) return;
+
+            // Semantic Fuzzy Match Function
+            function searchTools(query) {
+                const q = query.toLowerCase().trim();
+                if (!q) {
+                    searchDropdown.style.display = 'none';
+                    return [];
+                }
+
+                const words = q.split(/\s+/).filter(w => w.length > 0);
+
+                const scored = TOOLS_DB.map(tool => {
+                    let score = 0;
+                    const nameLower = tool.name.toLowerCase();
+                    const descLower = tool.desc.toLowerCase();
+
+                    // Exact title match bonus
+                    if (nameLower.includes(q)) score += 50;
+
+                    // Word matching across title, desc & keywords
+                    words.forEach(word => {
+                        if (nameLower.includes(word)) score += 20;
+                        if (descLower.includes(word)) score += 10;
+                        tool.keywords.forEach(kw => {
+                            if (kw.includes(word)) score += 15;
+                            if (word.includes(kw)) score += 10;
+                        });
+                    });
+
+                    return { tool, score };
+                });
+
+                return scored.filter(item => item.score > 0).sort((a, b) => b.score - a.score).map(item => item.tool);
+            }
+
+            function renderResults(results) {
+                if (results.length === 0) {
+                    searchDropdown.innerHTML = `
+                        <div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 13px;">
+                            <i class="fas fa-sparkles" style="color: #f59e0b; margin-bottom: 6px; display: block; font-size: 18px;"></i>
+                            No exact tool found for this description. Try searching by keywords like <b>passport, 50kb, youtube, signature, blur, or convert</b>.
+                        </div>
+                    `;
+                    searchDropdown.style.display = 'flex';
+                    return;
+                }
+
+                searchDropdown.innerHTML = results.slice(0, 5).map((tool, idx) => `
+                    <a href="${tool.url}" class="ai-dropdown-item ${idx === 0 ? 'focused' : ''}">
+                        <div class="ai-dropdown-left">
+                            <div class="ai-dropdown-icon" style="background: ${tool.color}22; color: ${tool.color};">
+                                <i class="fas ${tool.icon}"></i>
+                            </div>
+                            <div>
+                                <h4 class="ai-dropdown-title">${tool.name}</h4>
+                                <p class="ai-dropdown-desc">${tool.desc}</p>
+                            </div>
+                        </div>
+                        <div class="ai-dropdown-badge">
+                            <span>Open</span> <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </a>
+                `).join('');
+
+                searchDropdown.style.display = 'flex';
+            }
+
+            // Input Event Listeners
+            searchInput.addEventListener('input', (e) => {
+                const results = searchTools(e.target.value);
+                renderResults(results);
+            });
+
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const results = searchTools(searchInput.value);
+                    if (results.length > 0) {
+                        window.location.href = results[0].url;
+                    }
+                }
+            });
+
+            if (actionBtn) {
+                actionBtn.addEventListener('click', () => {
+                    const results = searchTools(searchInput.value);
+                    if (results.length > 0) {
+                        window.location.href = results[0].url;
+                    } else if (searchInput.value.trim() !== '') {
+                        renderResults([]);
+                    }
+                });
+            }
+
+            // Quick Intent Pills Click
+            intentPills.forEach(pill => {
+                pill.addEventListener('click', () => {
+                    const query = pill.getAttribute('data-query');
+                    searchInput.value = query;
+                    const results = searchTools(query);
+                    renderResults(results);
+                    searchInput.focus();
+                });
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.ai-search-wrapper')) {
+                    searchDropdown.style.display = 'none';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
