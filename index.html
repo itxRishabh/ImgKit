@@ -212,9 +212,9 @@
             <div class="ai-search-wrapper">
                 <div class="ai-search-box">
                     <div class="ai-search-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
-                    <input type="text" id="aiToolSearchInput" class="ai-search-input" placeholder="✨ Describe what you need (e.g., '50kb photo', 'heic to jpg', 'blur face', 'youtube banner', 'sign pdf', '300 dpi')..." autocomplete="off" spellcheck="false">
+                    <input type="text" id="aiToolSearchInput" class="ai-search-input" placeholder="✨ Describe what you need (e.g., '50kb photo', 'heic to jpg', 'blur face', 'passport', 'sign pdf')..." autocomplete="off" spellcheck="false">
                     <button type="button" id="aiSearchActionBtn" class="ai-search-btn">
-                        <i class="fas fa-magnifying-glass"></i> Find Tool
+                        <i class="fas fa-magnifying-glass"></i> <span class="search-btn-text">Find Tool</span>
                     </button>
                 </div>
                 
@@ -817,6 +817,18 @@
             const intentPills = document.querySelectorAll('.ai-intent-pill');
 
             if (!searchInput || !searchDropdown) return;
+
+            function updatePlaceholder() {
+                if (window.innerWidth < 480) {
+                    searchInput.placeholder = "✨ Search tools (e.g. 50kb, passport, blur)...";
+                } else if (window.innerWidth < 768) {
+                    searchInput.placeholder = "✨ Describe what you need (e.g. 50kb, heic, signature)...";
+                } else {
+                    searchInput.placeholder = "✨ Describe what you need (e.g., '50kb photo', 'heic to jpg', 'blur face', 'passport', 'sign pdf')...";
+                }
+            }
+            updatePlaceholder();
+            window.addEventListener('resize', updatePlaceholder);
 
             // Semantic Fuzzy Match Function
             function searchTools(query) {
