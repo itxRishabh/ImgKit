@@ -281,12 +281,36 @@ textarea:focus {
     text-decoration: none;
     transition: all var(--transition-normal);
     box-shadow: none;
+    white-space: nowrap;
 }
 
 .seo-audit-link:hover {
     background: var(--primary-hover);
     box-shadow: 0 4px 16px rgba(250, 204, 21, 0.35);
     transform: translateY(-1px);
+}
+
+.passport-header-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    padding: 7px 16px;
+    border-radius: var(--radius-full);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all var(--transition-normal);
+    white-space: nowrap;
+}
+
+.passport-header-link:hover {
+    background: rgba(245, 158, 11, 0.2);
+    border-color: #f59e0b;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
 }
 
 /* ===== Footer (Clean Seamless Footer) ===== */
