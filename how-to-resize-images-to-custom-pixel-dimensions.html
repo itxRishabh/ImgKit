@@ -157,11 +157,73 @@
             </div>
 
             <article class="article-body">
-                <div class="article-callout">
-                    <p>
-                        📐 <strong>Custom Pixel Resizer:</strong> Need to change image width and height to exact dimensions? Use our 
-                        <a href="https://www.webtoolkitbox.com/image-resizer" style="color: var(--accent); font-weight: 700; text-decoration: underline;">Free Image Dimension Resizer</a>.
-                    </p>
+                <!-- Embedded Live Quick Resizer Tool -->
+                <div style="background: var(--surface); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: var(--radius-xl); padding: 24px; margin-bottom: 32px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                        <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(59, 130, 246, 0.15); color: #3b82f6; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                            <i class="fas fa-arrows-alt"></i>
+                        </div>
+                        <div>
+                            <h3 style="margin: 0; font-size: 16px; font-weight: 800; color: var(--text);">Quick Image Pixel Resizer (Live Tool)</h3>
+                            <p style="margin: 2px 0 0; font-size: 12px; color: var(--text-muted);">Resize any image to exact pixels right here in your browser.</p>
+                        </div>
+                    </div>
+
+                    <!-- Dropzone -->
+                    <div class="dropzone" id="quickResizeDropzone" style="padding: 36px 20px; border-width: 2px;">
+                        <input type="file" id="quickResizeFileInput" accept="image/*" style="display: none;">
+                        <div class="dropzone-content">
+                            <i class="fas fa-cloud-arrow-up dropzone-icon" style="color: #3b82f6; font-size: 36px;"></i>
+                            <p class="dropzone-title" style="font-size: 15px;">Drop your image here or <span class="dropzone-browse">browse</span></p>
+                            <p class="dropzone-desc" style="font-size: 12px;">Resize to 100x100, 32x32, 1920x1080 without quality loss</p>
+                        </div>
+                    </div>
+
+                    <!-- Live Controls (shown after upload) -->
+                    <div id="quickResizeControls" style="display: none; margin-top: 18px;">
+                        <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 16px; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px;">
+                            <img id="quickResizeThumb" src="" style="width: 40px; height: 40px; object-fit: contain; border-radius: 6px; background: #fff;">
+                            <div style="flex: 1;">
+                                <strong id="quickResizeFileName" style="font-size: 13px; color: var(--text); display: block;">photo.jpg</strong>
+                                <span id="quickResizeOrigDim" style="font-size: 11.5px; color: var(--text-muted);">Original: 1920 × 1080 px</span>
+                            </div>
+                        </div>
+
+                        <!-- Dimension Inputs -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                            <div>
+                                <label style="font-size: 12px; font-weight: 700; color: var(--text); display: block; margin-bottom: 4px;">Width (px)</label>
+                                <input type="number" id="quickTargetW" value="100" style="width: 100%; padding: 8px 10px; font-size: 13px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); box-sizing: border-box;">
+                            </div>
+                            <div>
+                                <label style="font-size: 12px; font-weight: 700; color: var(--text); display: block; margin-bottom: 4px;">Height (px)</label>
+                                <input type="number" id="quickTargetH" value="100" style="width: 100%; padding: 8px 10px; font-size: 13px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); box-sizing: border-box;">
+                            </div>
+                        </div>
+
+                        <!-- Presets & Lock -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
+                            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                <button type="button" class="preset-btn" data-w="100" data-h="100">100×100</button>
+                                <button type="button" class="preset-btn" data-w="32" data-h="32">32×32</button>
+                                <button type="button" class="preset-btn" data-w="320" data-h="320">320×320</button>
+                                <button type="button" class="preset-btn" data-w="1920" data-h="1080">1920×1080</button>
+                            </div>
+                            <label style="font-size: 12px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                <input type="checkbox" id="quickLockRatio" style="accent-color: #3b82f6;"> Lock Ratio
+                            </label>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div style="display: flex; gap: 10px;">
+                            <a id="quickDownloadBtn" href="#" download="resized-image.png" class="btn btn-primary" style="flex: 1; padding: 10px 18px; font-weight: 700; text-align: center; text-decoration: none;">
+                                <i class="fas fa-download"></i> Download Resized Image
+                            </a>
+                            <button type="button" id="quickResetBtn" class="btn btn-secondary" style="padding: 10px 14px; font-weight: 600;">
+                                <i class="fas fa-rotate-left"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <h2 id="need-for-resizing">1. Why Do You Need Custom Pixel Dimensions?</h2>
@@ -315,5 +377,109 @@
             </div>
         </footer>
     </div>
+
+    <!-- Client-Side Quick Resizer Engine -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let loadedImg = null;
+            let origRatio = 1;
+
+            const dropzone = document.getElementById('quickResizeDropzone');
+            const fileInput = document.getElementById('quickResizeFileInput');
+            const controls = document.getElementById('quickResizeControls');
+            const thumb = document.getElementById('quickResizeThumb');
+            const fileName = document.getElementById('quickResizeFileName');
+            const origDim = document.getElementById('quickResizeOrigDim');
+            const targetW = document.getElementById('quickTargetW');
+            const targetH = document.getElementById('quickTargetH');
+            const lockRatio = document.getElementById('quickLockRatio');
+            const downloadBtn = document.getElementById('quickDownloadBtn');
+            const resetBtn = document.getElementById('quickResetBtn');
+
+            dropzone.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files && e.target.files[0]) handleFile(e.target.files[0]);
+            });
+
+            dropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropzone.style.borderColor = '#3b82f6';
+            });
+            dropzone.addEventListener('dragleave', () => dropzone.style.borderColor = 'var(--border)');
+            dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropzone.style.borderColor = 'var(--border)';
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+            });
+
+            function handleFile(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        loadedImg = img;
+                        origRatio = img.width / img.height;
+                        thumb.src = e.target.result;
+                        fileName.textContent = file.name;
+                        origDim.textContent = `Original: ${img.width} × ${img.height} px`;
+                        targetW.value = img.width;
+                        targetH.value = img.height;
+                        dropzone.style.display = 'none';
+                        controls.style.display = 'block';
+                        renderResized();
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+
+            targetW.addEventListener('input', () => {
+                if (lockRatio.checked && loadedImg) {
+                    targetH.value = Math.round(targetW.value / origRatio);
+                }
+                renderResized();
+            });
+
+            targetH.addEventListener('input', () => {
+                if (lockRatio.checked && loadedImg) {
+                    targetW.value = Math.round(targetH.value * origRatio);
+                }
+                renderResized();
+            });
+
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const w = parseInt(btn.getAttribute('data-w'));
+                    const h = parseInt(btn.getAttribute('data-h'));
+                    targetW.value = w;
+                    targetH.value = h;
+                    renderResized();
+                });
+            });
+
+            function renderResized() {
+                if (!loadedImg) return;
+                const w = parseInt(targetW.value) || 100;
+                const h = parseInt(targetH.value) || 100;
+
+                const canvas = document.createElement('canvas');
+                canvas.width = w;
+                canvas.height = h;
+                const ctx = canvas.getContext('2d');
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                ctx.drawImage(loadedImg, 0, 0, w, h);
+
+                downloadBtn.href = canvas.toDataURL('image/png');
+            }
+
+            resetBtn.addEventListener('click', () => {
+                fileInput.value = '';
+                loadedImg = null;
+                dropzone.style.display = 'flex';
+                controls.style.display = 'none';
+            });
+        });
+    </script>
 </body>
 </html>
