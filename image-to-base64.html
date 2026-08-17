@@ -85,6 +85,22 @@
                 "@type": "Answer",
                 "text": "Yes! Switch to the 'Base64 to Image Decoder' tab, paste your Base64 string or Data URI, and click Download to save the reconstructed PNG/JPG file."
               }
+            },
+            {
+              "@type": "Question",
+              "name": "Does converting to Base64 increase file size?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, Base64 encoding increases the raw text payload by approximately 33% compared to the original binary file, which is why it is best suited for icons, small graphics, and email templates."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is my data stored or sent to any server?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. The entire encoding and decoding process is executed 100% inside your browser via the HTML5 FileReader API."
+              }
             }
           ]
         }
@@ -124,14 +140,31 @@
             </div>
         </header>
 
-        <!-- Main Tool Workspace -->
-        <main class="tool-workspace">
-            <div class="tool-header">
-                <h1 class="tool-title"><i class="fas fa-code" style="color: #f59e0b;"></i> Image to Base64 Converter &amp; Decoder</h1>
-                <p class="tool-subtitle">Convert PNG, JPG, SVG, and WebP into Base64 Data URI strings or paste Base64 code to decode back to an image file. 100% private.</p>
-            </div>
+        <!-- Breadcrumb Navigation -->
+        <div style="max-width: 1100px; margin: 24px auto 0; padding: 0 20px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted);">
+            <a href="/" style="color: var(--accent); text-decoration: none;"><i class="fas fa-home"></i> Home</a>
+            <span>/</span>
+            <span>Developer Tools</span>
+            <span>/</span>
+            <span style="color: var(--text); font-weight: 600;">Image to Base64</span>
+        </div>
 
-            <!-- Mode Tabs -->
+        <!-- Main Content -->
+        <main class="main-content" style="max-width: 1100px; margin: 32px auto 60px; padding: 0 20px;">
+            <!-- Hero Section -->
+            <section class="hero" style="text-align: center; margin-bottom: 36px;">
+                <div style="background: rgba(245, 158, 11, 0.12); color: #f59e0b; display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-bottom: 12px;">
+                    <i class="fas fa-code"></i> Two-Way Encoder &amp; Decoder
+                </div>
+                <h1 style="font-size: clamp(26px, 4.5vw, 42px); font-weight: 800; line-height: 1.2; margin-bottom: 12px;">
+                    Image to Base64 <span class="gradient-text">Converter &amp; Decoder</span>
+                </h1>
+                <p style="color: var(--text-muted); font-size: 15px; max-width: 680px; margin: 0 auto; line-height: 1.6;">
+                    Convert PNG, JPG, SVG, and WebP into Base64 Data URI strings, HTML &lt;img&gt; tags, and CSS background codes. Decode Base64 back to image in 1 click.
+                </p>
+            </section>
+
+            <!-- Mode Switcher Tabs -->
             <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 24px;">
                 <button type="button" id="tabEncodeBtn" class="btn btn-primary" style="padding: 10px 24px; font-weight: 700;">
                     <i class="fas fa-image"></i> Image ➔ Base64
@@ -141,92 +174,170 @@
                 </button>
             </div>
 
-            <!-- TAB 1: ENCODE IMAGE TO BASE64 -->
-            <div id="encodeSection">
-                <div class="dropzone" id="b64Dropzone">
-                    <input type="file" id="b64FileInput" accept="image/*" style="display: none;">
-                    <div class="dropzone-content">
-                        <i class="fas fa-cloud-arrow-up dropzone-icon" style="color: #f59e0b;"></i>
-                        <p class="dropzone-title">Drop your image here or <span class="dropzone-browse">browse</span></p>
-                        <p class="dropzone-desc">Supports PNG, JPG, WebP, SVG, GIF, ICO, AVIF</p>
+            <!-- Tool Workspace Card -->
+            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 28px; box-shadow: 0 10px 40px rgba(0,0,0,0.03);">
+                
+                <!-- TAB 1: ENCODE IMAGE TO BASE64 -->
+                <div id="encodeSection">
+                    <div id="b64DropZone" style="border: 2px dashed var(--border); border-radius: var(--radius-lg); padding: 56px 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: rgba(0,0,0,0.01);">
+                        <div style="width: 68px; height: 68px; border-radius: 50%; background: rgba(245, 158, 11, 0.15); color: #f59e0b; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 16px;">
+                            <i class="fas fa-file-code"></i>
+                        </div>
+                        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 8px; color: var(--text);">Drop your image here or <span style="color: var(--accent); text-decoration: underline;">browse</span></h3>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 0;">Supports PNG, JPG, WebP, SVG, GIF, ICO, AVIF (Instant In-Browser)</p>
+                        <input type="file" id="b64FileInput" accept="image/*" style="display: none;">
                     </div>
-                </div>
 
-                <div id="encodeResult" style="display: none; margin-top: 24px;">
-                    <!-- Stats Bar -->
-                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 14px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 20px;">
-                        <div style="display: flex; align-items: center; gap: 14px;">
-                            <img id="encodedPreviewThumb" src="" alt="Thumbnail" style="width: 48px; height: 48px; object-fit: contain; border-radius: 8px; border: 1px solid var(--border); background: #fff;">
+                    <!-- Encode Result -->
+                    <div id="encodeResult" style="display: none;">
+                        <!-- Stats Bar -->
+                        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 14px 18px; background: rgba(0,0,0,0.02); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 20px;">
+                            <div style="display: flex; align-items: center; gap: 14px;">
+                                <img id="encodedPreviewThumb" src="" alt="Thumbnail" style="width: 48px; height: 48px; object-fit: contain; border-radius: 8px; border: 1px solid var(--border); background: #fff;">
+                                <div>
+                                    <h4 id="encodedFileName" style="margin: 0; font-size: 14px; font-weight: 700; color: var(--text);">image.png</h4>
+                                    <p id="encodedMetaInfo" style="margin: 2px 0 0; font-size: 12px; color: var(--text-muted);">1920x1080 • 120 KB</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <button type="button" id="copyRawB64Btn" class="btn btn-primary btn-sm"><i class="fas fa-copy"></i> Copy Data URI</button>
+                                <button type="button" id="resetEncodeBtn" class="btn btn-secondary btn-sm"><i class="fas fa-upload"></i> Convert Another</button>
+                            </div>
+                        </div>
+
+                        <!-- Code Outputs -->
+                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                            <!-- Format 1: Data URI -->
                             <div>
-                                <h4 id="encodedFileName" style="margin: 0; font-size: 14px; font-weight: 700; color: var(--text);">image.png</h4>
-                                <p id="encodedMetaInfo" style="margin: 2px 0 0; font-size: 12px; color: var(--text-muted);">1920x1080 • 120 KB</p>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                    <label style="font-size: 13px; font-weight: 700; color: var(--text);"><i class="fas fa-link" style="color: #f59e0b;"></i> Data URI (Base64 URL)</label>
+                                    <button type="button" class="copy-field-btn" data-target="dataUriOutput"><i class="far fa-copy"></i> Copy</button>
+                                </div>
+                                <textarea id="dataUriOutput" readonly rows="3" style="width: 100%; font-family: 'Fira Code', monospace; font-size: 12px; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); resize: vertical; box-sizing: border-box;"></textarea>
                             </div>
-                        </div>
-                        <div style="display: flex; gap: 8px;">
-                            <button type="button" id="copyRawB64Btn" class="btn btn-primary btn-sm"><i class="fas fa-copy"></i> Copy Data URI</button>
-                            <button type="button" id="resetEncodeBtn" class="btn btn-secondary btn-sm"><i class="fas fa-rotate-left"></i> Convert Another</button>
-                        </div>
-                    </div>
 
-                    <!-- Code Outputs -->
-                    <div style="display: flex; flex-direction: column; gap: 16px;">
-                        <!-- Format 1: Data URI -->
-                        <div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                                <label style="font-size: 13px; font-weight: 700; color: var(--text);">Data URI (Base64 URL)</label>
-                                <button type="button" class="copy-field-btn" data-target="dataUriOutput"><i class="far fa-copy"></i> Copy</button>
+                            <!-- Format 2: HTML <img> tag -->
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                    <label style="font-size: 13px; font-weight: 700; color: var(--text);"><i class="fas fa-code" style="color: #f59e0b;"></i> HTML &lt;img&gt; Embed Code</label>
+                                    <button type="button" class="copy-field-btn" data-target="htmlImgOutput"><i class="far fa-copy"></i> Copy</button>
+                                </div>
+                                <textarea id="htmlImgOutput" readonly rows="3" style="width: 100%; font-family: 'Fira Code', monospace; font-size: 12px; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); resize: vertical; box-sizing: border-box;"></textarea>
                             </div>
-                            <textarea id="dataUriOutput" readonly rows="3" style="width: 100%; font-family: 'Fira Code', monospace; font-size: 12px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); resize: vertical; box-sizing: border-box;"></textarea>
-                        </div>
 
-                        <!-- Format 2: HTML <img> tag -->
-                        <div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                                <label style="font-size: 13px; font-weight: 700; color: var(--text);">HTML &lt;img&gt; Embed Code</label>
-                                <button type="button" class="copy-field-btn" data-target="htmlImgOutput"><i class="far fa-copy"></i> Copy</button>
+                            <!-- Format 3: CSS background-image -->
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                    <label style="font-size: 13px; font-weight: 700; color: var(--text);"><i class="fab fa-css3-alt" style="color: #f59e0b;"></i> CSS background-image Code</label>
+                                    <button type="button" class="copy-field-btn" data-target="cssBgOutput"><i class="far fa-copy"></i> Copy</button>
+                                </div>
+                                <textarea id="cssBgOutput" readonly rows="3" style="width: 100%; font-family: 'Fira Code', monospace; font-size: 12px; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); resize: vertical; box-sizing: border-box;"></textarea>
                             </div>
-                            <textarea id="htmlImgOutput" readonly rows="3" style="width: 100%; font-family: 'Fira Code', monospace; font-size: 12px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); resize: vertical; box-sizing: border-box;"></textarea>
-                        </div>
-
-                        <!-- Format 3: CSS background-image -->
-                        <div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                                <label style="font-size: 13px; font-weight: 700; color: var(--text);">CSS background-image Code</label>
-                                <button type="button" class="copy-field-btn" data-target="cssBgOutput"><i class="far fa-copy"></i> Copy</button>
-                            </div>
-                            <textarea id="cssBgOutput" readonly rows="3" style="width: 100%; font-family: 'Fira Code', monospace; font-size: 12px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); resize: vertical; box-sizing: border-box;"></textarea>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- TAB 2: DECODE BASE64 TO IMAGE -->
-            <div id="decodeSection" style="display: none;">
-                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-sizing: border-box;">
-                    <label style="display: block; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 8px;">
-                        Paste Base64 String or Data URI Code below:
-                    </label>
-                    <textarea id="decodeInput" rows="6" placeholder="Paste data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA... or raw Base64 string here..." style="width: 100%; font-family: 'Fira Code', monospace; font-size: 12.5px; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); resize: vertical; box-sizing: border-box;"></textarea>
-                    
-                    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 12px;">
-                        <button type="button" id="clearDecodeBtn" class="btn btn-secondary btn-sm"><i class="fas fa-trash-can"></i> Clear</button>
-                        <button type="button" id="runDecodeBtn" class="btn btn-primary" style="padding: 10px 24px; font-weight: 700;"><i class="fas fa-wand-magic-sparkles"></i> Decode to Image</button>
+                <!-- TAB 2: DECODE BASE64 TO IMAGE -->
+                <div id="decodeSection" style="display: none;">
+                    <div style="background: rgba(0,0,0,0.02); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-sizing: border-box;">
+                        <label style="display: block; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 8px;">
+                            <i class="fas fa-terminal" style="color: #f59e0b;"></i> Paste Base64 String or Data URI Code below:
+                        </label>
+                        <textarea id="decodeInput" rows="6" placeholder="Paste data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA... or raw Base64 string here..." style="width: 100%; font-family: 'Fira Code', monospace; font-size: 12.5px; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); resize: vertical; box-sizing: border-box;"></textarea>
+                        
+                        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 12px;">
+                            <button type="button" id="clearDecodeBtn" class="btn btn-secondary btn-sm"><i class="fas fa-trash-can"></i> Clear</button>
+                            <button type="button" id="runDecodeBtn" class="btn btn-primary" style="padding: 10px 24px; font-weight: 700;"><i class="fas fa-wand-magic-sparkles"></i> Decode to Image</button>
+                        </div>
+                    </div>
+
+                    <div id="decodeResult" style="display: none; margin-top: 24px; text-align: center;">
+                        <div style="display: inline-block; max-width: 100%; border: 1px solid var(--border); border-radius: 12px; padding: 16px; background: var(--surface); box-shadow: 0 10px 30px rgba(0,0,0,0.08);">
+                            <img id="decodedImagePreview" src="" alt="Decoded Base64 Image" style="max-width: 100%; max-height: 400px; height: auto; border-radius: 8px; display: block; margin: 0 auto;">
+                            <p id="decodedMetaStats" style="margin: 12px 0 16px; font-size: 13px; font-weight: 600; color: var(--text-muted);">Dimensions: 800x600 • Format: PNG</p>
+                            <a id="downloadDecodedBtn" href="#" download="decoded-image.png" class="btn btn-primary" style="padding: 12px 28px; font-weight: 700; text-decoration: none;">
+                                <i class="fas fa-download"></i> Download Reconstructed Image
+                            </a>
+                        </div>
                     </div>
                 </div>
 
-                <div id="decodeResult" style="display: none; margin-top: 24px; text-align: center;">
-                    <div style="display: inline-block; max-width: 100%; border: 1px solid var(--border); border-radius: 12px; padding: 16px; background: var(--surface); box-shadow: 0 10px 30px rgba(0,0,0,0.08);">
-                        <img id="decodedImagePreview" src="" alt="Decoded Base64 Image" style="max-width: 100%; max-height: 400px; height: auto; border-radius: 8px; display: block; margin: 0 auto;">
-                        <p id="decodedMetaStats" style="margin: 12px 0 16px; font-size: 13px; font-weight: 600; color: var(--text-muted);">Dimensions: 800x600 • Format: PNG</p>
-                        <a id="downloadDecodedBtn" href="#" download="decoded-image.png" class="btn btn-primary" style="padding: 12px 28px; font-weight: 700; text-decoration: none;">
-                            <i class="fas fa-download"></i> Download Image
+                <!-- Cross-Tool Recommendation Card -->
+                <div class="next-step-card" style="text-align: left; margin-top: 28px;">
+                    <div class="next-step-info">
+                        <div class="next-step-icon"><i class="fas fa-lightbulb"></i></div>
+                        <div>
+                            <h4 class="next-step-title">Need to generate favicons or convert SVG to PNG?</h4>
+                            <p class="next-step-desc">Create 16x16, 32x32 multi-size ICO packages or rasterize vectors.</p>
+                        </div>
+                    </div>
+                    <div class="next-step-actions">
+                        <a href="favicon-generator" class="btn btn-secondary btn-sm" style="text-decoration: none;">
+                            <i class="fas fa-globe"></i> Favicon Maker
+                        </a>
+                        <a href="svg-to-image" class="btn btn-primary btn-sm" style="text-decoration: none;">
+                            <i class="fas fa-bezier-curve"></i> SVG to PNG
                         </a>
                     </div>
                 </div>
+
             </div>
+
+            <!-- Features Highlights Grid -->
+            <section style="margin-top: 48px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px;">
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(245, 158, 11, 0.12); color: #f59e0b; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 14px;">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--text);">Instant Data URI</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0;">Embed graphics directly into HTML/CSS files to eliminate redundant HTTP network requests and boost page speed.</p>
+                </div>
+
+                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px;">
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(16, 185, 129, 0.12); color: #10b981; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 14px;">
+                        <i class="fas fa-arrows-rotate"></i>
+                    </div>
+                    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--text);">Two-Way Decoder</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0;">Paste raw Base64 strings from databases, APIs, or JSON payloads to immediately inspect and download the image file.</p>
+                </div>
+
+                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px;">
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(59, 130, 246, 0.12); color: #3b82f6; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 14px;">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+                    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--text);">100% Private In-Browser</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0;">Zero server uploads. All encoding and decoding runs in your browser using the HTML5 FileReader API.</p>
+                </div>
+            </section>
+
+            <!-- FAQ Section -->
+            <section style="margin-top: 48px;">
+                <h2 style="font-size: 24px; font-weight: 800; text-align: center; margin-bottom: 24px; color: var(--text);">Frequently Asked Questions</h2>
+                <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px;">
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">What is an Image to Base64 Converter?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">An Image to Base64 converter translates binary image files (PNG, JPG, WebP, SVG) into text strings formatted as Data URIs. This allows embedding images directly into HTML or CSS without separate HTTP requests.</p>
+                    </details>
+
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">Can I convert Base64 back into an image file?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">Yes! Switch to the 'Base64 to Image Decoder' tab, paste your Base64 string or Data URI, and click Download to save the reconstructed PNG/JPG file.</p>
+                    </details>
+
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">Does converting to Base64 increase file size?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">Yes, Base64 encoding increases the raw text payload by approximately 33% compared to the original binary file, which is why it is best suited for icons, small graphics, and email templates.</p>
+                    </details>
+
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">Is my data stored or sent to any server?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">No. The entire encoding and decoding process is executed 100% inside your browser via the HTML5 FileReader API.</p>
+                    </details>
+                </div>
+            </section>
         </main>
 
-                <!-- Footer -->
+        <!-- Footer -->
         <footer class="footer">
             <div class="footer-top">
                 <div class="footer-brand">
@@ -336,7 +447,6 @@
     <!-- Client-Side Base64 Engine -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Tabs
             const tabEncode = document.getElementById('tabEncodeBtn');
             const tabDecode = document.getElementById('tabDecodeBtn');
             const encodeSection = document.getElementById('encodeSection');
@@ -361,7 +471,7 @@
             });
 
             // Tab 1: Encode Logic
-            const dropzone = document.getElementById('b64Dropzone');
+            const dropzone = document.getElementById('b64DropZone');
             const fileInput = document.getElementById('b64FileInput');
             const encodeResult = document.getElementById('encodeResult');
             const thumb = document.getElementById('encodedPreviewThumb');
@@ -381,11 +491,16 @@
             dropzone.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 dropzone.style.borderColor = '#f59e0b';
+                dropzone.style.background = 'rgba(245, 158, 11, 0.04)';
             });
-            dropzone.addEventListener('dragleave', () => dropzone.style.borderColor = 'var(--border)');
+            dropzone.addEventListener('dragleave', () => {
+                dropzone.style.borderColor = 'var(--border)';
+                dropzone.style.background = 'rgba(0,0,0,0.01)';
+            });
             dropzone.addEventListener('drop', (e) => {
                 e.preventDefault();
                 dropzone.style.borderColor = 'var(--border)';
+                dropzone.style.background = 'rgba(0,0,0,0.01)';
                 if (e.dataTransfer.files && e.dataTransfer.files[0]) processEncode(e.dataTransfer.files[0]);
             });
 
@@ -405,7 +520,7 @@
                     img.onload = () => {
                         thumb.src = dataUrl;
                         fileNameDisplay.textContent = file.name;
-                        metaInfoDisplay.textContent = `${img.naturalWidth} × ${img.naturalHeight} px • File: ${formatBytes(file.size)} (Base64 string: ~${formatBytes(dataUrl.length)})`;
+                        metaInfoDisplay.textContent = `${img.naturalWidth} × ${img.naturalHeight} px • File: ${formatBytes(file.size)} (Base64 size: ~${formatBytes(dataUrl.length)})`;
 
                         dataUriOutput.value = dataUrl;
                         htmlImgOutput.value = `<img src="${dataUrl}" alt="${file.name.split('.')[0]}" width="${img.naturalWidth}" height="${img.naturalHeight}">`;
@@ -421,7 +536,7 @@
 
             resetBtn.addEventListener('click', () => {
                 fileInput.value = '';
-                dropzone.style.display = 'flex';
+                dropzone.style.display = 'block';
                 encodeResult.style.display = 'none';
             });
 
@@ -429,7 +544,6 @@
                 copyTextToClipboard(dataUriOutput.value, copyRawBtn, 'Copied Data URI!');
             });
 
-            // Copy buttons for textareas
             document.querySelectorAll('.copy-field-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const targetId = btn.getAttribute('data-target');
@@ -475,11 +589,8 @@
                     return;
                 }
 
-                // If raw base64 string without data:image/ prefix, infer PNG
                 if (!code.startsWith('data:image/')) {
-                    if (code.startsWith('data:')) {
-                        // Already custom data url
-                    } else {
+                    if (!code.startsWith('data:')) {
                         code = 'data:image/png;base64,' + code;
                     }
                 }

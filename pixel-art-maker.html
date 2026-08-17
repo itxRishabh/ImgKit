@@ -85,6 +85,22 @@
                 "@type": "Answer",
                 "text": "You can choose from Full Color Pixelate, Classic Game Boy 4-Green, NES 8-Bit Arcade, PICO-8 Fantasy, Cyberpunk Neon, and 1-Bit Monochrome."
               }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I adjust the pixel block size?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! Use the Pixel Block Size slider to choose anything from fine 4px detailed sprites to chunky 40px retro arcade mosaics."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Are my images uploaded to any server?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. All pixel art quantization and canvas rendering runs 100% locally in your web browser with complete privacy."
+              }
             }
           ]
         }
@@ -124,78 +140,176 @@
             </div>
         </header>
 
-        <!-- Main Tool Workspace -->
-        <main class="tool-workspace">
-            <div class="tool-header">
-                <h1 class="tool-title"><i class="fas fa-gamepad" style="color: #8b5cf6;"></i> Pixel Art Maker &amp; 8-Bit Retro Converter</h1>
-                <p class="tool-subtitle">Convert regular photos into vintage 8-bit pixel art, Game Boy green nostalgic sprites, and NES arcade mosaics. 100% private.</p>
-            </div>
+        <!-- Breadcrumb Navigation -->
+        <div style="max-width: 1100px; margin: 24px auto 0; padding: 0 20px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted);">
+            <a href="/" style="color: var(--accent); text-decoration: none;"><i class="fas fa-home"></i> Home</a>
+            <span>/</span>
+            <span>Creative Tools</span>
+            <span>/</span>
+            <span style="color: var(--text); font-weight: 600;">Pixel Art Maker</span>
+        </div>
 
-            <!-- Upload Dropzone -->
-            <div class="dropzone" id="pixelDropzone">
-                <input type="file" id="pixelFileInput" accept="image/*" style="display: none;">
-                <div class="dropzone-content">
-                    <i class="fas fa-gamepad dropzone-icon" style="color: #8b5cf6;"></i>
-                    <p class="dropzone-title">Drop your image here or <span class="dropzone-browse">browse</span></p>
-                    <p class="dropzone-desc">PNG, JPG, WebP — Convert to 8-bit retro gaming art in 1 click</p>
+        <!-- Main Content -->
+        <main class="main-content" style="max-width: 1100px; margin: 32px auto 60px; padding: 0 20px;">
+            <!-- Hero Section -->
+            <section class="hero" style="text-align: center; margin-bottom: 36px;">
+                <div style="background: rgba(139, 92, 246, 0.12); color: #8b5cf6; display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-bottom: 12px;">
+                    <i class="fas fa-gamepad"></i> 8-Bit Retro Gaming Filter
                 </div>
-            </div>
+                <h1 style="font-size: clamp(26px, 4.5vw, 42px); font-weight: 800; line-height: 1.2; margin-bottom: 12px;">
+                    Pixel Art Maker &amp; <span class="gradient-text">8-Bit Retro Converter</span>
+                </h1>
+                <p style="color: var(--text-muted); font-size: 15px; max-width: 680px; margin: 0 auto; line-height: 1.6;">
+                    Turn ordinary photos into retro 8-bit sprites, Game Boy nostalgic art, and vintage arcade mosaics with crisp nearest-neighbor rendering.
+                </p>
+            </section>
 
-            <!-- Workspace Controls & Canvas -->
-            <div id="pixelWorkspace" style="display: none; margin-top: 24px;">
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; align-items: start;">
-                    <!-- Canvas Preview -->
-                    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center;">
-                        <div style="display: inline-block; max-width: 100%; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
-                            <canvas id="pixelCanvas" style="max-width: 100%; max-height: 440px; height: auto; display: block; image-rendering: pixelated; image-rendering: crisp-edges;"></canvas>
+            <!-- Tool Workspace Card -->
+            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 28px; box-shadow: 0 10px 40px rgba(0,0,0,0.03);">
+                
+                <!-- Large Dropzone Area -->
+                <div id="pixelDropZone" style="border: 2px dashed var(--border); border-radius: var(--radius-lg); padding: 56px 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: rgba(0,0,0,0.01);">
+                    <div style="width: 68px; height: 68px; border-radius: 50%; background: rgba(139, 92, 246, 0.15); color: #8b5cf6; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 16px;">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 8px; color: var(--text);">Drop your photo here or <span style="color: var(--accent); text-decoration: underline;">browse</span></h3>
+                    <p style="font-size: 13.5px; color: var(--text-muted); margin: 0;">Supports PNG, JPG, WebP (Convert to 8-Bit Pixel Art in 1 Click)</p>
+                    <input type="file" id="pixelFileInput" accept="image/*" style="display: none;">
+                </div>
+
+                <!-- Active Workspace -->
+                <div id="pixelWorkspace" style="display: none;">
+                    <div style="display: grid; grid-template-columns: minmax(300px, 1.3fr) minmax(280px, 1fr); gap: 28px; align-items: start; margin-bottom: 24px;">
+                        
+                        <!-- Left: Canvas Preview -->
+                        <div style="background: rgba(0,0,0,0.02); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <div style="position: relative; max-width: 100%; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                                <canvas id="pixelCanvas" style="max-width: 100%; max-height: 440px; height: auto; display: block; image-rendering: pixelated; image-rendering: crisp-edges;"></canvas>
+                            </div>
+                            <span id="pixelResolutionBadge" style="margin-top: 12px; font-size: 12px; font-weight: 600; color: var(--text-muted);">Crisp Nearest-Neighbor Rendering</span>
+                        </div>
+
+                        <!-- Right: Controls Sidebar -->
+                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                            
+                            <!-- Pixel Size Slider -->
+                            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <label style="font-size: 13px; font-weight: 700; color: var(--text);"><i class="fas fa-table-cells" style="color: #8b5cf6;"></i> Pixel Block Size</label>
+                                    <span id="pixelSizeDisplay" style="font-size: 13px; font-weight: 700; color: #8b5cf6;">12 px</span>
+                                </div>
+                                <input type="range" id="pixelSizeSlider" min="4" max="40" step="2" value="12" style="width: 100%; accent-color: #8b5cf6; cursor: pointer;">
+                            </div>
+
+                            <!-- Retro Color Palettes -->
+                            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
+                                <label style="font-size: 13px; font-weight: 700; color: var(--text); display: block; margin-bottom: 12px;"><i class="fas fa-palette" style="color: #8b5cf6;"></i> Retro Gaming Palette</label>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                    <button type="button" class="palette-btn active" data-palette="full">🌈 Full Color</button>
+                                    <button type="button" class="palette-btn" data-palette="gameboy">🎮 Game Boy</button>
+                                    <button type="button" class="palette-btn" data-palette="nes">👾 NES 8-Bit</button>
+                                    <button type="button" class="palette-btn" data-palette="pico8">🕹️ PICO-8</button>
+                                    <button type="button" class="palette-btn" data-palette="cyberpunk">⚡ Cyberpunk</button>
+                                    <button type="button" class="palette-btn" data-palette="mono">🖤 1-Bit B&amp;W</button>
+                                </div>
+                            </div>
+
+                            <!-- Grid Toggle -->
+                            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 13px; font-weight: 600; color: var(--text);">Show Retro Pixel Grid</span>
+                                <input type="checkbox" id="pixelGridToggle" style="accent-color: #8b5cf6; width: 18px; height: 18px; cursor: pointer;">
+                            </div>
+
+                            <!-- Actions Row -->
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <a id="downloadPixelBtn" href="#" download="pixel-art-hd.png" class="btn btn-primary" style="flex: 1; padding: 12px 20px; font-weight: 700; text-align: center; text-decoration: none;">
+                                    <i class="fas fa-download"></i> Download Pixel Art (HD)
+                                </a>
+                                <button type="button" id="resetPixelBtn" class="btn btn-secondary" style="padding: 12px 18px; font-weight: 600;">
+                                    <i class="fas fa-upload"></i> New Image
+                                </button>
+                            </div>
+
                         </div>
                     </div>
 
-                    <!-- Controls Sidebar -->
-                    <div style="display: flex; flex-direction: column; gap: 16px;">
-                        <!-- Pixel Block Size Slider -->
-                        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                <label style="font-size: 13px; font-weight: 700; color: var(--text);">Pixel Block Size</label>
-                                <span id="pixelSizeDisplay" style="font-size: 13px; font-weight: 700; color: #8b5cf6;">12 px</span>
-                            </div>
-                            <input type="range" id="pixelSizeSlider" min="4" max="40" step="2" value="12" style="width: 100%; accent-color: #8b5cf6; cursor: pointer;">
-                        </div>
-
-                        <!-- Retro Color Palettes -->
-                        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
-                            <label style="font-size: 13px; font-weight: 700; color: var(--text); display: block; margin-bottom: 12px;">Retro Palette Mode</label>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                                <button type="button" class="palette-btn active" data-palette="full">🌈 Full Color</button>
-                                <button type="button" class="palette-btn" data-palette="gameboy">🎮 Game Boy</button>
-                                <button type="button" class="palette-btn" data-palette="nes">👾 NES 8-Bit</button>
-                                <button type="button" class="palette-btn" data-palette="pico8">🕹️ PICO-8</button>
-                                <button type="button" class="palette-btn" data-palette="cyberpunk">⚡ Cyberpunk</button>
-                                <button type="button" class="palette-btn" data-palette="mono">🖤 1-Bit B&amp;W</button>
+                    <!-- Cross-Tool Recommendation Card -->
+                    <div class="next-step-card" style="text-align: left; margin-top: 28px;">
+                        <div class="next-step-info">
+                            <div class="next-step-icon"><i class="fas fa-lightbulb"></i></div>
+                            <div>
+                                <h4 class="next-step-title">Need to generate memes or slice into Instagram carousel grids?</h4>
+                                <p class="next-step-desc">Create viral meme captions or 3x3 profile grid splits.</p>
                             </div>
                         </div>
-
-                        <!-- Pixel Grid Toggle -->
-                        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;">
-                            <span style="font-size: 13px; font-weight: 600; color: var(--text);">Show Retro Pixel Grid Lines</span>
-                            <input type="checkbox" id="pixelGridToggle" style="accent-color: #8b5cf6; width: 18px; height: 18px; cursor: pointer;">
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            <a id="downloadPixelBtn" href="#" download="pixel-art.png" class="btn btn-primary" style="flex: 1; padding: 12px; font-weight: 700; text-align: center; text-decoration: none;">
-                                <i class="fas fa-download"></i> Download Pixel Art (HD)
+                        <div class="next-step-actions">
+                            <a href="meme-generator-online" class="btn btn-secondary btn-sm" style="text-decoration: none;">
+                                <i class="fas fa-face-laugh-squint"></i> Meme Maker
                             </a>
-                            <button type="button" id="resetPixelBtn" class="btn btn-secondary" style="padding: 12px 18px; font-weight: 600;">
-                                <i class="fas fa-rotate-left"></i> Reset
-                            </button>
+                            <a href="image-grid-splitter" class="btn btn-primary btn-sm" style="text-decoration: none;">
+                                <i class="fas fa-table-cells"></i> Grid Splitter
+                            </a>
                         </div>
                     </div>
                 </div>
+
             </div>
+
+            <!-- Features Highlights Grid -->
+            <section style="margin-top: 48px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px;">
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(139, 92, 246, 0.12); color: #8b5cf6; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 14px;">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--text);">Zero-Blur HD Scaling</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0;">Nearest-neighbor interpolation ensures crisp pixel edges without unwanted muddy blur on download.</p>
+                </div>
+
+                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px;">
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(245, 158, 11, 0.12); color: #f59e0b; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 14px;">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--text);">6 Nostalgic Palettes</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0;">Choose from Game Boy 4-Green, NES 8-Bit Arcade, PICO-8, and Cyberpunk for true retro aesthetics.</p>
+                </div>
+
+                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px;">
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(16, 185, 129, 0.12); color: #10b981; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 14px;">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+                    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--text);">100% Private In-Browser</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0;">Pixel quantization calculations execute locally on your device with complete security.</p>
+                </div>
+            </section>
+
+            <!-- FAQ Section -->
+            <section style="margin-top: 48px;">
+                <h2 style="font-size: 24px; font-weight: 800; text-align: center; margin-bottom: 24px; color: var(--text);">Frequently Asked Questions</h2>
+                <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px;">
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">How does the Pixel Art Converter keep images sharp?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">It downsamples the image onto a retro pixel grid and then re-renders using crisp nearest-neighbor image smoothing, preventing unwanted anti-aliased blur on export.</p>
+                    </details>
+
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">What retro color palettes are available?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">You can choose from Full Color Pixelate, Classic Game Boy 4-Green, NES 8-Bit Arcade, PICO-8 Fantasy, Cyberpunk Neon, and 1-Bit Monochrome.</p>
+                    </details>
+
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">Can I adjust the pixel block size?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">Yes! Use the Pixel Block Size slider to choose anything from fine 4px detailed sprites to chunky 40px retro arcade mosaics.</p>
+                    </details>
+
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">Are my images uploaded to any server?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">No. All pixel art quantization and canvas rendering runs 100% locally in your web browser with complete privacy.</p>
+                    </details>
+                </div>
+            </section>
         </main>
 
-                <!-- Footer -->
+        <!-- Footer -->
         <footer class="footer">
             <div class="footer-top">
                 <div class="footer-brand">
@@ -310,7 +424,7 @@
             let currentPalette = 'full';
             let showGrid = false;
 
-            const dropzone = document.getElementById('pixelDropzone');
+            const dropzone = document.getElementById('pixelDropZone');
             const fileInput = document.getElementById('pixelFileInput');
             const workspace = document.getElementById('pixelWorkspace');
             const canvas = document.getElementById('pixelCanvas');
@@ -321,7 +435,6 @@
             const downloadBtn = document.getElementById('downloadPixelBtn');
             const resetBtn = document.getElementById('resetPixelBtn');
 
-            // Retro Palette Definitions
             const PALETTES = {
                 gameboy: [[15, 56, 15], [48, 98, 48], [139, 172, 15], [155, 188, 15]],
                 nes: [
@@ -349,11 +462,16 @@
             dropzone.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 dropzone.style.borderColor = '#8b5cf6';
+                dropzone.style.background = 'rgba(139, 92, 246, 0.04)';
             });
-            dropzone.addEventListener('dragleave', () => dropzone.style.borderColor = 'var(--border)');
+            dropzone.addEventListener('dragleave', () => {
+                dropzone.style.borderColor = 'var(--border)';
+                dropzone.style.background = 'rgba(0,0,0,0.01)';
+            });
             dropzone.addEventListener('drop', (e) => {
                 e.preventDefault();
                 dropzone.style.borderColor = 'var(--border)';
+                dropzone.style.background = 'rgba(0,0,0,0.01)';
                 if (e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
             });
 
@@ -398,7 +516,6 @@
 
                 for (let i = 0; i < paletteList.length; i++) {
                     const p = paletteList[i];
-                    // Weighted Euclidean distance for human perception
                     const d = (r - p[0]) * (r - p[0]) * 0.299 +
                               (g - p[1]) * (g - p[1]) * 0.587 +
                               (b - p[2]) * (b - p[2]) * 0.114;
@@ -420,7 +537,6 @@
                 canvas.width = w;
                 canvas.height = h;
 
-                // Step 1: Render downsampled image onto temporary canvas
                 const cols = Math.max(1, Math.floor(w / pixelSize));
                 const rows = Math.max(1, Math.floor(h / pixelSize));
 
@@ -433,7 +549,6 @@
                 const imgData = tCtx.getImageData(0, 0, cols, rows);
                 const data = imgData.data;
 
-                // Step 2: Apply Palette Quantization if selected
                 if (currentPalette !== 'full' && PALETTES[currentPalette]) {
                     const pal = PALETTES[currentPalette];
                     for (let i = 0; i < data.length; i += 4) {
@@ -445,11 +560,9 @@
                     tCtx.putImageData(imgData, 0, 0);
                 }
 
-                // Step 3: Draw scaled up with crisp nearest-neighbor
                 ctx.imageSmoothingEnabled = false;
                 ctx.drawImage(tempCanvas, 0, 0, cols, rows, 0, 0, w, h);
 
-                // Step 4: Optional Grid lines
                 if (showGrid) {
                     ctx.strokeStyle = 'rgba(0, 0, 0, 0.15)';
                     ctx.lineWidth = 1;
@@ -473,7 +586,7 @@
             resetBtn.addEventListener('click', () => {
                 fileInput.value = '';
                 loadedImg = null;
-                dropzone.style.display = 'flex';
+                dropzone.style.display = 'block';
                 workspace.style.display = 'none';
             });
         });

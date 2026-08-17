@@ -85,6 +85,22 @@
                 "@type": "Answer",
                 "text": "Yes! Hover or click anywhere on the uploaded image to use the interactive eyedropper loupe and copy the exact pixel color."
               }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I export the extracted palette for web design?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! You can export a CSS Variables snippet (:root { --color-1: ... }), download a color card graphic PNG, or copy all HEX values in 1 click."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Are my images processed securely?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, 100% in-browser processing. Your images never leave your local computer or phone."
+              }
             }
           ]
         }
@@ -124,71 +140,166 @@
             </div>
         </header>
 
-        <!-- Main Tool Workspace -->
-        <main class="tool-workspace">
-            <div class="tool-header">
-                <h1 class="tool-title"><i class="fas fa-palette" style="color: #ec4899;"></i> Image Color Palette Extractor &amp; Hex Picker</h1>
-                <p class="tool-subtitle">Extract dominant color schemes, HEX &amp; RGB swatches, and CSS variables from any image with interactive pixel eyedropper. 100% private.</p>
-            </div>
+        <!-- Breadcrumb Navigation -->
+        <div style="max-width: 1100px; margin: 24px auto 0; padding: 0 20px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted);">
+            <a href="/" style="color: var(--accent); text-decoration: none;"><i class="fas fa-home"></i> Home</a>
+            <span>/</span>
+            <span>Design Tools</span>
+            <span>/</span>
+            <span style="color: var(--text); font-weight: 600;">Color Palette Extractor</span>
+        </div>
 
-            <!-- Upload Dropzone -->
-            <div class="dropzone" id="paletteDropzone">
-                <input type="file" id="paletteFileInput" accept="image/*" style="display: none;">
-                <div class="dropzone-content">
-                    <i class="fas fa-palette dropzone-icon" style="color: #ec4899;"></i>
-                    <p class="dropzone-title">Drop your image here or <span class="dropzone-browse">browse</span></p>
-                    <p class="dropzone-desc">PNG, JPG, WebP, SVG, GIF — Extract beautiful palettes instantly</p>
+        <!-- Main Content -->
+        <main class="main-content" style="max-width: 1100px; margin: 32px auto 60px; padding: 0 20px;">
+            <!-- Hero Section -->
+            <section class="hero" style="text-align: center; margin-bottom: 36px;">
+                <div style="background: rgba(236, 72, 153, 0.12); color: #ec4899; display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-bottom: 12px;">
+                    <i class="fas fa-palette"></i> Smart Color Quantization
                 </div>
-            </div>
+                <h1 style="font-size: clamp(26px, 4.5vw, 42px); font-weight: 800; line-height: 1.2; margin-bottom: 12px;">
+                    Image Color Palette Extractor &amp; <span class="gradient-text">Hex Picker</span>
+                </h1>
+                <p style="color: var(--text-muted); font-size: 15px; max-width: 680px; margin: 0 auto; line-height: 1.6;">
+                    Extract dominant color schemes, copyable HEX/RGB/HSL swatches, and CSS variables from any image with live pixel eyedropper loupe. 100% private.
+                </p>
+            </section>
 
-            <!-- Results Section -->
-            <div id="paletteResultsSection" style="display: none; margin-top: 24px;">
-                <!-- Main Grid Layout -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; align-items: start;">
-                    <!-- Left: Interactive Canvas with Eyedropper -->
-                    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; text-align: center;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                            <span style="font-size: 13px; font-weight: 700; color: var(--text);"><i class="fas fa-eye-dropper"></i> Click/Hover to Pick Any Pixel</span>
-                            <span id="hoverColorBadge" style="font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border); display: inline-flex; align-items: center; gap: 6px;">
-                                <span id="hoverColorDot" style="width: 12px; height: 12px; border-radius: 50%; display: inline-block; background: #fff; border: 1px solid #ccc;"></span>
-                                <span id="hoverColorHex">#FFFFFF</span>
-                            </span>
-                        </div>
-                        <div style="position: relative; display: inline-block; max-width: 100%; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); cursor: crosshair;">
-                            <canvas id="paletteCanvas" style="max-width: 100%; max-height: 420px; height: auto; display: block;"></canvas>
-                        </div>
+            <!-- Tool Workspace Card -->
+            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 28px; box-shadow: 0 10px 40px rgba(0,0,0,0.03);">
+                
+                <!-- Large Dropzone Area -->
+                <div id="paletteDropZone" style="border: 2px dashed var(--border); border-radius: var(--radius-lg); padding: 56px 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: rgba(0,0,0,0.01);">
+                    <div style="width: 68px; height: 68px; border-radius: 50%; background: rgba(236, 72, 153, 0.15); color: #ec4899; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 16px;">
+                        <i class="fas fa-palette"></i>
                     </div>
+                    <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 8px; color: var(--text);">Drop your photo here or <span style="color: var(--accent); text-decoration: underline;">browse</span></h3>
+                    <p style="font-size: 13.5px; color: var(--text-muted); margin: 0;">Supports PNG, JPG, WebP, SVG, GIF (Instant Color Extraction)</p>
+                    <input type="file" id="paletteFileInput" accept="image/*" style="display: none;">
+                </div>
 
-                    <!-- Right: Dominant Palette Swatches & Actions -->
-                    <div style="display: flex; flex-direction: column; gap: 16px;">
-                        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                                <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--text);">Dominant Palette (Top 8 Colors)</h3>
-                                <button type="button" id="copyCssVarsBtn" class="btn btn-secondary btn-sm"><i class="fas fa-code"></i> Copy CSS Vars</button>
+                <!-- Active Results Section -->
+                <div id="paletteResultsSection" style="display: none;">
+                    <div style="display: grid; grid-template-columns: minmax(300px, 1.2fr) minmax(300px, 1.2fr); gap: 28px; align-items: start; margin-bottom: 24px;">
+                        
+                        <!-- Left: Interactive Canvas with Eyedropper -->
+                        <div style="background: rgba(0,0,0,0.02); border: 1px solid var(--border); border-radius: 12px; padding: 18px; text-align: center;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                <span style="font-size: 13px; font-weight: 700; color: var(--text);"><i class="fas fa-eye-dropper" style="color: #ec4899;"></i> Hover/Click to Sample Any Pixel</span>
+                                <span id="hoverColorBadge" style="font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); display: inline-flex; align-items: center; gap: 6px; background: var(--surface);">
+                                    <span id="hoverColorDot" style="width: 14px; height: 14px; border-radius: 50%; display: inline-block; background: #fff; border: 1px solid #ccc;"></span>
+                                    <span id="hoverColorHex">#FFFFFF</span>
+                                </span>
+                            </div>
+                            <div style="position: relative; display: inline-block; max-width: 100%; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); cursor: crosshair; box-shadow: 0 8px 24px rgba(0,0,0,0.06);">
+                                <canvas id="paletteCanvas" style="max-width: 100%; max-height: 400px; height: auto; display: block;"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Right: Dominant Palette Swatches & Actions -->
+                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                    <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--text);"><i class="fas fa-swatchbook" style="color: #ec4899;"></i> Dominant Palette (Top 8 Colors)</h3>
+                                    <button type="button" id="copyCssVarsBtn" class="btn btn-secondary btn-sm"><i class="fas fa-code"></i> Copy CSS</button>
+                                </div>
+
+                                <!-- Swatches Grid -->
+                                <div id="swatchesContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(115px, 1fr)); gap: 10px;"></div>
                             </div>
 
-                            <!-- Swatches Grid -->
-                            <div id="swatchesContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;"></div>
+                            <!-- Quick Export Bar -->
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button type="button" id="downloadPaletteImgBtn" class="btn btn-primary" style="flex: 1; padding: 12px; font-weight: 700;">
+                                    <i class="fas fa-download"></i> Download Palette Card
+                                </button>
+                                <button type="button" id="copyAllHexBtn" class="btn btn-secondary" style="padding: 12px 18px; font-weight: 600;">
+                                    <i class="fas fa-copy"></i> Copy All HEX
+                                </button>
+                                <button type="button" id="resetPaletteBtn" class="btn btn-secondary" style="padding: 12px 18px; font-weight: 600;">
+                                    <i class="fas fa-upload"></i> New Image
+                                </button>
+                            </div>
                         </div>
 
-                        <!-- Quick Export Bar -->
-                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            <button type="button" id="downloadPaletteImgBtn" class="btn btn-primary" style="flex: 1; padding: 12px; font-weight: 700;">
-                                <i class="fas fa-download"></i> Download Palette Card
-                            </button>
-                            <button type="button" id="copyAllHexBtn" class="btn btn-secondary" style="padding: 12px 18px; font-weight: 600;">
-                                <i class="fas fa-copy"></i> Copy All HEX
-                            </button>
-                            <button type="button" id="resetPaletteBtn" class="btn btn-secondary" style="padding: 12px 18px; font-weight: 600;">
-                                <i class="fas fa-rotate-left"></i> New Image
-                            </button>
+                    </div>
+
+                    <!-- Cross-Tool Recommendation Card -->
+                    <div class="next-step-card" style="text-align: left; margin-top: 28px;">
+                        <div class="next-step-info">
+                            <div class="next-step-icon"><i class="fas fa-lightbulb"></i></div>
+                            <div>
+                                <h4 class="next-step-title">Need to invert colors or apply 50+ aesthetic photo presets?</h4>
+                                <p class="next-step-desc">Save printer ink with negative invert or enhance colors with Kodak Portra filters.</p>
+                            </div>
+                        </div>
+                        <div class="next-step-actions">
+                            <a href="invert-image-colors" class="btn btn-secondary btn-sm" style="text-decoration: none;">
+                                <i class="fas fa-circle-half-stroke"></i> Invert Colors
+                            </a>
+                            <a href="photo-filters-online" class="btn btn-primary btn-sm" style="text-decoration: none;">
+                                <i class="fas fa-wand-magic-sparkles"></i> 50+ Filters
+                            </a>
                         </div>
                     </div>
                 </div>
+
             </div>
+
+            <!-- Features Highlights Grid -->
+            <section style="margin-top: 48px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px;">
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(236, 72, 153, 0.12); color: #ec4899; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 14px;">
+                        <i class="fas fa-eye-dropper"></i>
+                    </div>
+                    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--text);">Live Eyedropper Loupe</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0;">Sample any individual pixel from your photo in real time with interactive hover magnification.</p>
+                </div>
+
+                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px;">
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(16, 185, 129, 0.12); color: #10b981; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 14px;">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--text);">Ready-to-Use CSS Variables</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0;">Export your entire harmonious color palette into clean `:root` CSS variables ready to paste into web projects.</p>
+                </div>
+
+                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px;">
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(59, 130, 246, 0.12); color: #3b82f6; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 14px;">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+                    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--text);">100% Private In-Browser</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0;">Zero server uploads. Color clustering and quantization algorithms execute purely inside your client browser.</p>
+                </div>
+            </section>
+
+            <!-- FAQ Section -->
+            <section style="margin-top: 48px;">
+                <h2 style="font-size: 24px; font-weight: 800; text-align: center; margin-bottom: 24px; color: var(--text);">Frequently Asked Questions</h2>
+                <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px;">
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">How does the Image Color Palette Extractor work?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">It analyzes pixel clusters in your uploaded photo using client-side color quantization to identify the 6 to 8 most dominant, harmonious shades and provides copyable HEX, RGB, and HSL codes.</p>
+                    </details>
+
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">Can I pick an exact single pixel color from the photo?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">Yes! Hover or click anywhere on the uploaded image to use the interactive eyedropper loupe and copy the exact pixel color.</p>
+                    </details>
+
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">Can I export the extracted palette for web design?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">Yes! You can export a CSS Variables snippet (:root { --color-1: ... }), download a color card graphic PNG, or copy all HEX values in 1 click.</p>
+                    </details>
+
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">Are my images processed securely?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">Yes, 100% in-browser processing. Your images never leave your local computer or phone.</p>
+                    </details>
+                </div>
+            </section>
         </main>
 
-                <!-- Footer -->
+        <!-- Footer -->
         <footer class="footer">
             <div class="footer-top">
                 <div class="footer-brand">
@@ -301,7 +412,7 @@
             let loadedImg = null;
             let extractedColors = [];
 
-            const dropzone = document.getElementById('paletteDropzone');
+            const dropzone = document.getElementById('paletteDropZone');
             const fileInput = document.getElementById('paletteFileInput');
             const resultsSection = document.getElementById('paletteResultsSection');
             const canvas = document.getElementById('paletteCanvas');
@@ -322,11 +433,16 @@
             dropzone.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 dropzone.style.borderColor = '#ec4899';
+                dropzone.style.background = 'rgba(236, 72, 153, 0.04)';
             });
-            dropzone.addEventListener('dragleave', () => dropzone.style.borderColor = 'var(--border)');
+            dropzone.addEventListener('dragleave', () => {
+                dropzone.style.borderColor = 'var(--border)';
+                dropzone.style.background = 'rgba(0,0,0,0.01)';
+            });
             dropzone.addEventListener('drop', (e) => {
                 e.preventDefault();
                 dropzone.style.borderColor = 'var(--border)';
+                dropzone.style.background = 'rgba(0,0,0,0.01)';
                 if (e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
             });
 
@@ -374,7 +490,6 @@
                 canvas.height = loadedImg.height;
                 ctx.drawImage(loadedImg, 0, 0);
 
-                // Downscale for fast sampling
                 const sampleCanvas = document.createElement('canvas');
                 const sampleSize = 100;
                 sampleCanvas.width = sampleSize;
@@ -385,10 +500,9 @@
                 const imgData = sCtx.getImageData(0, 0, sampleSize, sampleSize).data;
                 const colorBuckets = {};
 
-                // Quantize to 5-bit color buckets
                 for (let i = 0; i < imgData.length; i += 4) {
                     const a = imgData[i + 3];
-                    if (a < 128) continue; // Skip transparent
+                    if (a < 128) continue;
 
                     const r = Math.round(imgData[i] / 16) * 16;
                     const g = Math.round(imgData[i + 1] / 16) * 16;
@@ -398,7 +512,6 @@
                     colorBuckets[key] = (colorBuckets[key] || 0) + 1;
                 }
 
-                // Sort and pick top 8 colors with minimum perceptual distance
                 const sortedKeys = Object.keys(colorBuckets).sort((a, b) => colorBuckets[b] - colorBuckets[a]);
                 extractedColors = [];
 
@@ -408,7 +521,6 @@
                     const rgb = `rgb(${r}, ${g}, ${b})`;
                     const hsl = rgbToHsl(r, g, b);
 
-                    // Check distance to avoid nearly identical colors
                     const isDistinct = extractedColors.every(c => {
                         const dist = Math.sqrt(Math.pow(c.r - r, 2) + Math.pow(c.g - g, 2) + Math.pow(c.b - b, 2));
                         return dist > 35;
@@ -488,7 +600,7 @@
                 }
             });
 
-            canvas.addEventListener('click', (e) => {
+            canvas.addEventListener('click', () => {
                 if (!loadedImg) return;
                 const hex = hoverHex.textContent;
                 navigator.clipboard.writeText(hex).then(() => {
@@ -497,7 +609,6 @@
                 });
             });
 
-            // Copy CSS Variables
             copyCssVarsBtn.addEventListener('click', () => {
                 const css = `:root {\n` + extractedColors.map((c, i) => `  --color-palette-${i + 1}: ${c.hex};`).join('\n') + `\n}`;
                 navigator.clipboard.writeText(css).then(() => {
@@ -507,7 +618,6 @@
                 });
             });
 
-            // Copy All Hex
             copyAllHexBtn.addEventListener('click', () => {
                 const allHex = extractedColors.map(c => c.hex).join(', ');
                 navigator.clipboard.writeText(allHex).then(() => {
@@ -517,7 +627,6 @@
                 });
             });
 
-            // Download Palette as Image Graphic
             downloadPaletteBtn.addEventListener('click', () => {
                 if (extractedColors.length === 0) return;
 
@@ -528,16 +637,13 @@
                 cardCanvas.height = h;
                 const cCtx = cardCanvas.getContext('2d');
 
-                // Draw background
                 cCtx.fillStyle = '#0f172a';
                 cCtx.fillRect(0, 0, w, h);
 
-                // Draw Title
                 cCtx.fillStyle = '#f8fafc';
                 cCtx.font = 'bold 24px Inter, sans-serif';
                 cCtx.fillText('Color Palette by WebToolkitBox', 40, 50);
 
-                // Draw Swatches
                 const swatchW = (w - 80) / extractedColors.length;
                 const swatchH = 260;
                 const startY = 80;
@@ -547,7 +653,6 @@
                     cCtx.fillStyle = color.hex;
                     cCtx.fillRect(x, startY, swatchW, swatchH);
 
-                    // Draw Hex label
                     cCtx.fillStyle = '#94a3b8';
                     cCtx.font = 'bold 13px Inter, monospace';
                     cCtx.fillText(color.hex, x + 6, startY + swatchH + 35);
@@ -565,7 +670,7 @@
                 fileInput.value = '';
                 loadedImg = null;
                 extractedColors = [];
-                dropzone.style.display = 'flex';
+                dropzone.style.display = 'block';
                 resultsSection.style.display = 'none';
             });
         });

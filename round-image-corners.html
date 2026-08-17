@@ -85,6 +85,22 @@
                 "@type": "Answer",
                 "text": "Yes! Use the Individual Corner checkboxes to toggle rounding on Top-Left, Top-Right, Bottom-Left, or Bottom-Right independently."
               }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I make a circular profile picture avatar?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Upload your picture and click the '⭕ Full Circle' preset button. The tool automatically centers and rounds the photo into a 50% circle radius with transparent edges."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Are my images uploaded to any server?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Never. All image processing runs 100% locally in your web browser via HTML5 Canvas. Your photos never leave your device."
+              }
             }
           ]
         }
@@ -124,86 +140,183 @@
             </div>
         </header>
 
-        <!-- Main Tool Workspace -->
-        <main class="tool-workspace">
-            <div class="tool-header">
-                <h1 class="tool-title"><i class="fas fa-shapes" style="color: #3b82f6;"></i> Round Image Corners &amp; Circle Maker</h1>
-                <p class="tool-subtitle">Add smooth rounded corners, squircles, or circle crops to any photo with live radius slider and transparent PNG export. 100% private.</p>
-            </div>
+        <!-- Breadcrumb Navigation -->
+        <div style="max-width: 1100px; margin: 24px auto 0; padding: 0 20px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted);">
+            <a href="/" style="color: var(--accent); text-decoration: none;"><i class="fas fa-home"></i> Home</a>
+            <span>/</span>
+            <span>Image Utilities</span>
+            <span>/</span>
+            <span style="color: var(--text); font-weight: 600;">Round Image Corners</span>
+        </div>
 
-            <!-- Upload Dropzone -->
-            <div class="dropzone" id="roundDropzone">
-                <input type="file" id="roundFileInput" accept="image/*" style="display: none;">
-                <div class="dropzone-content">
-                    <i class="fas fa-shapes dropzone-icon" style="color: #3b82f6;"></i>
-                    <p class="dropzone-title">Drop your image here or <span class="dropzone-browse">browse</span></p>
-                    <p class="dropzone-desc">PNG, JPG, WebP, SVG, GIF — High quality anti-aliased curves</p>
+        <!-- Main Content -->
+        <main class="main-content" style="max-width: 1100px; margin: 32px auto 60px; padding: 0 20px;">
+            <!-- Hero Section -->
+            <section class="hero" style="text-align: center; margin-bottom: 36px;">
+                <div style="background: rgba(59, 130, 246, 0.12); color: #3b82f6; display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-bottom: 12px;">
+                    <i class="fas fa-shapes"></i> Anti-Aliased Border Radius
                 </div>
-            </div>
+                <h1 style="font-size: clamp(26px, 4.5vw, 42px); font-weight: 800; line-height: 1.2; margin-bottom: 12px;">
+                    Round Image Corners &amp; <span class="gradient-text">Circle Maker</span>
+                </h1>
+                <p style="color: var(--text-muted); font-size: 15px; max-width: 680px; margin: 0 auto; line-height: 1.6;">
+                    Add smooth curved edges, modern squircles, or circular profile avatars to any photo with real-time radius slider and transparent PNG export. 100% private.
+                </p>
+            </section>
 
-            <!-- Workspace Controls & Canvas -->
-            <div id="roundWorkspace" style="display: none; margin-top: 24px;">
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; align-items: start;">
-                    <!-- Canvas Preview -->
-                    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center;">
-                        <div style="display: inline-block; max-width: 100%; border-radius: 8px; overflow: hidden; background: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"%23e2e8f0\"><rect width=\"10\" height=\"10\"/><rect x=\"10\" y=\"10\" width=\"10\" height=\"10\"/></svg>') repeat; border: 1px solid var(--border);">
-                            <canvas id="roundCanvas" style="max-width: 100%; max-height: 440px; height: auto; display: block;"></canvas>
+            <!-- Tool Workspace Card -->
+            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 28px; box-shadow: 0 10px 40px rgba(0,0,0,0.03);">
+                
+                <!-- Large Dropzone Area -->
+                <div id="roundDropZone" style="border: 2px dashed var(--border); border-radius: var(--radius-lg); padding: 56px 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: rgba(0,0,0,0.01);">
+                    <div style="width: 68px; height: 68px; border-radius: 50%; background: rgba(59, 130, 246, 0.15); color: #3b82f6; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 16px;">
+                        <i class="fas fa-shapes"></i>
+                    </div>
+                    <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 8px; color: var(--text);">Drop your photo here or <span style="color: var(--accent); text-decoration: underline;">browse</span></h3>
+                    <p style="font-size: 13.5px; color: var(--text-muted); margin: 0;">Supports PNG, JPG, WebP, SVG, GIF (Lossless High-Resolution)</p>
+                    <input type="file" id="roundFileInput" accept="image/*" style="display: none;">
+                </div>
+
+                <!-- Active Workspace (shown after upload) -->
+                <div id="roundWorkspace" style="display: none;">
+                    <div style="display: grid; grid-template-columns: minmax(300px, 1.3fr) minmax(280px, 1fr); gap: 28px; align-items: start; margin-bottom: 24px;">
+                        
+                        <!-- Left: Live Canvas Preview -->
+                        <div style="background: rgba(0,0,0,0.02); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <div style="position: relative; max-width: 100%; border-radius: 8px; overflow: hidden; background: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"%23e2e8f0\"><rect width=\"10\" height=\"10\"/><rect x=\"10\" y=\"10\" width=\"10\" height=\"10\"/></svg>') repeat; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.08);">
+                                <canvas id="roundCanvas" style="max-width: 100%; max-height: 440px; height: auto; display: block;"></canvas>
+                            </div>
+                            <span id="origDimensionsBadge" style="margin-top: 12px; font-size: 12px; font-weight: 600; color: var(--text-muted);">1920 × 1080 px • Transparent PNG</span>
+                        </div>
+
+                        <!-- Right: Controls Sidebar -->
+                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                            
+                            <!-- Radius Slider & Quick Presets -->
+                            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <label style="font-size: 13px; font-weight: 700; color: var(--text);"><i class="fas fa-circle-notch" style="color: #3b82f6;"></i> Corner Radius</label>
+                                    <span id="radiusValDisplay" style="font-size: 13px; font-weight: 700; color: #3b82f6;">40 px</span>
+                                </div>
+                                <input type="range" id="radiusSlider" min="0" max="300" value="40" style="width: 100%; accent-color: #3b82f6; cursor: pointer;">
+
+                                <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 14px;">
+                                    <button type="button" class="preset-btn" data-radius="12">12px Subtle</button>
+                                    <button type="button" class="preset-btn" data-radius="32">32px Card</button>
+                                    <button type="button" class="preset-btn" data-radius="64">64px Squircle</button>
+                                    <button type="button" class="preset-btn" data-radius="circle">⭕ Full Circle</button>
+                                </div>
+                            </div>
+
+                            <!-- Individual Corner Toggles -->
+                            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
+                                <label style="font-size: 13px; font-weight: 700; color: var(--text); display: block; margin-bottom: 12px;"><i class="fas fa-crop-simple" style="color: #3b82f6;"></i> Corners to Round</label>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 12.5px; font-weight: 600; color: var(--text);">
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="checkbox" id="cornerTL" checked style="accent-color: #3b82f6; width: 16px; height: 16px;"> Top-Left
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="checkbox" id="cornerTR" checked style="accent-color: #3b82f6; width: 16px; height: 16px;"> Top-Right
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="checkbox" id="cornerBL" checked style="accent-color: #3b82f6; width: 16px; height: 16px;"> Bottom-Left
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                        <input type="checkbox" id="cornerBR" checked style="accent-color: #3b82f6; width: 16px; height: 16px;"> Bottom-Right
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Actions Row -->
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <a id="downloadRoundBtn" href="#" download="rounded-image-hd.png" class="btn btn-primary" style="flex: 1; padding: 12px 20px; font-weight: 700; text-align: center; text-decoration: none;">
+                                    <i class="fas fa-download"></i> Download Rounded Photo (HD)
+                                </a>
+                                <button type="button" id="resetRoundBtn" class="btn btn-secondary" style="padding: 12px 18px; font-weight: 600;">
+                                    <i class="fas fa-upload"></i> New Image
+                                </button>
+                            </div>
+
                         </div>
                     </div>
 
-                    <!-- Controls Sidebar -->
-                    <div style="display: flex; flex-direction: column; gap: 16px;">
-                        <!-- Radius Slider -->
-                        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                <label style="font-size: 13px; font-weight: 700; color: var(--text);">Corner Radius</label>
-                                <span id="radiusValDisplay" style="font-size: 13px; font-weight: 700; color: #3b82f6;">40 px</span>
-                            </div>
-                            <input type="range" id="radiusSlider" min="0" max="300" value="40" style="width: 100%; accent-color: #3b82f6; cursor: pointer;">
-
-                            <!-- Quick Preset Buttons -->
-                            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 14px;">
-                                <button type="button" class="preset-btn" data-radius="12">12px Subtle</button>
-                                <button type="button" class="preset-btn" data-radius="32">32px Card</button>
-                                <button type="button" class="preset-btn" data-radius="64">64px Squircle</button>
-                                <button type="button" class="preset-btn" data-radius="circle">⭕ Full Circle</button>
+                    <!-- Cross-Tool Recommendation Card -->
+                    <div class="next-step-card" style="text-align: left; margin-top: 28px;">
+                        <div class="next-step-info">
+                            <div class="next-step-icon"><i class="fas fa-lightbulb"></i></div>
+                            <div>
+                                <h4 class="next-step-title">Need to add a colorful avatar ring or compress this file?</h4>
+                                <p class="next-step-desc">Create Instagram story borders or compress to exact KB targets.</p>
                             </div>
                         </div>
-
-                        <!-- Individual Corner Toggles -->
-                        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
-                            <label style="font-size: 13px; font-weight: 700; color: var(--text); display: block; margin-bottom: 12px;">Corners to Round</label>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 12.5px; font-weight: 600; color: var(--text);">
-                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                    <input type="checkbox" id="cornerTL" checked style="accent-color: #3b82f6;"> Top-Left
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                    <input type="checkbox" id="cornerTR" checked style="accent-color: #3b82f6;"> Top-Right
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                    <input type="checkbox" id="cornerBL" checked style="accent-color: #3b82f6;"> Bottom-Left
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                    <input type="checkbox" id="cornerBR" checked style="accent-color: #3b82f6;"> Bottom-Right
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            <a id="downloadRoundBtn" href="#" download="rounded-image.png" class="btn btn-primary" style="flex: 1; padding: 12px; font-weight: 700; text-align: center; text-decoration: none;">
-                                <i class="fas fa-download"></i> Download Rounded Image (HD)
+                        <div class="next-step-actions">
+                            <a href="profile-picture-border-maker" class="btn btn-secondary btn-sm" style="text-decoration: none;">
+                                <i class="fas fa-circle-nodes"></i> Avatar Borders
                             </a>
-                            <button type="button" id="resetRoundBtn" class="btn btn-secondary" style="padding: 12px 18px; font-weight: 600;">
-                                <i class="fas fa-rotate-left"></i> Reset
-                            </button>
+                            <a href="size-manager" class="btn btn-primary btn-sm" style="text-decoration: none;">
+                                <i class="fas fa-compress"></i> Compress Image
+                            </a>
                         </div>
                     </div>
                 </div>
+
             </div>
+
+            <!-- Features Highlights Grid -->
+            <section style="margin-top: 48px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px;">
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(59, 130, 246, 0.12); color: #3b82f6; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 14px;">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+                    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--text);">100% Client-Side Privacy</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0;">Photos never leave your device. All border radius math runs inside your browser using HTML5 Canvas.</p>
+                </div>
+
+                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px;">
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(16, 185, 129, 0.12); color: #10b981; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 14px;">
+                        <i class="fas fa-wand-magic-sparkles"></i>
+                    </div>
+                    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--text);">Crisp Anti-Aliased PNG</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0;">Export perfectly smooth curves without jagged pixels or fuzzy edges, preserving full original image resolution.</p>
+                </div>
+
+                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px;">
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(245, 158, 11, 0.12); color: #f59e0b; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 14px;">
+                        <i class="fas fa-sliders"></i>
+                    </div>
+                    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--text);">Independent Corner Control</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0;">Toggle individual corners to create modern asymmetric UI cards, chat bubble cuts, or full circular avatars.</p>
+                </div>
+            </section>
+
+            <!-- FAQ Section -->
+            <section style="margin-top: 48px;">
+                <h2 style="font-size: 24px; font-weight: 800; text-align: center; margin-bottom: 24px; color: var(--text);">Frequently Asked Questions</h2>
+                <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px;">
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">Does rounding image corners reduce photo quality?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">No. The rounding algorithm renders anti-aliased curves directly on your photo's full native resolution and exports as a crisp, lossless 32-bit PNG.</p>
+                    </details>
+
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">Can I round only specific corners (e.g. only top corners)?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">Yes! Use the Individual Corner checkboxes to toggle rounding on Top-Left, Top-Right, Bottom-Left, or Bottom-Right independently.</p>
+                    </details>
+
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">How do I make a circular profile picture avatar?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">Upload your picture and click the '⭕ Full Circle' preset button. The tool automatically centers and rounds the photo into a 50% circle radius with transparent edges.</p>
+                    </details>
+
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">Are my images uploaded to any server?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">Never. All image processing runs 100% locally in your web browser via HTML5 Canvas. Your photos never leave your device.</p>
+                    </details>
+                </div>
+            </section>
         </main>
 
-                <!-- Footer -->
+        <!-- Footer -->
         <footer class="footer">
             <div class="footer-top">
                 <div class="footer-brand">
@@ -317,13 +430,14 @@
             let currentRadius = 40;
             let isCircleMode = false;
 
-            const dropzone = document.getElementById('roundDropzone');
+            const dropzone = document.getElementById('roundDropZone');
             const fileInput = document.getElementById('roundFileInput');
             const workspace = document.getElementById('roundWorkspace');
             const canvas = document.getElementById('roundCanvas');
             const ctx = canvas.getContext('2d');
             const radiusSlider = document.getElementById('radiusSlider');
             const radiusValDisplay = document.getElementById('radiusValDisplay');
+            const origDimBadge = document.getElementById('origDimensionsBadge');
             const downloadBtn = document.getElementById('downloadRoundBtn');
             const resetBtn = document.getElementById('resetRoundBtn');
 
@@ -340,11 +454,16 @@
             dropzone.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 dropzone.style.borderColor = '#3b82f6';
+                dropzone.style.background = 'rgba(59, 130, 246, 0.04)';
             });
-            dropzone.addEventListener('dragleave', () => dropzone.style.borderColor = 'var(--border)');
+            dropzone.addEventListener('dragleave', () => {
+                dropzone.style.borderColor = 'var(--border)';
+                dropzone.style.background = 'rgba(0,0,0,0.01)';
+            });
             dropzone.addEventListener('drop', (e) => {
                 e.preventDefault();
                 dropzone.style.borderColor = 'var(--border)';
+                dropzone.style.background = 'rgba(0,0,0,0.01)';
                 if (e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
             });
 
@@ -358,6 +477,8 @@
                         radiusSlider.max = maxR;
                         currentRadius = Math.min(40, maxR);
                         radiusSlider.value = currentRadius;
+                        radiusValDisplay.textContent = `${currentRadius} px`;
+                        origDimBadge.textContent = `${img.width} × ${img.height} px • Transparent 32-bit PNG`;
                         isCircleMode = false;
 
                         dropzone.style.display = 'none';
@@ -450,7 +571,7 @@
             resetBtn.addEventListener('click', () => {
                 fileInput.value = '';
                 loadedImg = null;
-                dropzone.style.display = 'flex';
+                dropzone.style.display = 'block';
                 workspace.style.display = 'none';
             });
         });

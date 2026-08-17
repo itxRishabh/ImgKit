@@ -85,6 +85,22 @@
                 "@type": "Answer",
                 "text": "Yes! Click the 'Add Date Stamp' button to instantly inject the current date and time formatted in classic camera amber/yellow text."
               }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I format multi-line text and custom outlines?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! You can enter multiple lines of text, pick high-contrast black or white outline strokes, and add background highlight boxes."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Are my images uploaded to any server?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Never. All text rendering and canvas compositing executes 100% in your browser for total privacy."
+              }
             }
           ]
         }
@@ -124,116 +140,213 @@
             </div>
         </header>
 
-        <!-- Main Tool Workspace -->
-        <main class="tool-workspace">
-            <div class="tool-header">
-                <h1 class="tool-title"><i class="fas fa-font" style="color: #0ea5e9;"></i> Add Text &amp; Timestamp to Photo Online</h1>
-                <p class="tool-subtitle">Write custom captions, date stamps, watermarks, and subtitles with freehand draggable positioning and modern typography. 100% private.</p>
-            </div>
+        <!-- Breadcrumb Navigation -->
+        <div style="max-width: 1100px; margin: 24px auto 0; padding: 0 20px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted);">
+            <a href="/" style="color: var(--accent); text-decoration: none;"><i class="fas fa-home"></i> Home</a>
+            <span>/</span>
+            <span>Creative Tools</span>
+            <span>/</span>
+            <span style="color: var(--text); font-weight: 600;">Add Text to Photo</span>
+        </div>
 
-            <!-- Upload Dropzone -->
-            <div class="dropzone" id="textDropzone">
-                <input type="file" id="textFileInput" accept="image/*" style="display: none;">
-                <div class="dropzone-content">
-                    <i class="fas fa-font dropzone-icon" style="color: #0ea5e9;"></i>
-                    <p class="dropzone-title">Drop your image here or <span class="dropzone-browse">browse</span></p>
-                    <p class="dropzone-desc">PNG, JPG, WebP — Drag text anywhere with outlines and shadows</p>
+        <!-- Main Content -->
+        <main class="main-content" style="max-width: 1100px; margin: 32px auto 60px; padding: 0 20px;">
+            <!-- Hero Section -->
+            <section class="hero" style="text-align: center; margin-bottom: 36px;">
+                <div style="background: rgba(14, 165, 233, 0.12); color: #0ea5e9; display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-bottom: 12px;">
+                    <i class="fas fa-font"></i> Draggable Canvas Text
                 </div>
-            </div>
+                <h1 style="font-size: clamp(26px, 4.5vw, 42px); font-weight: 800; line-height: 1.2; margin-bottom: 12px;">
+                    Add Text &amp; Timestamp to <span class="gradient-text">Photo Online</span>
+                </h1>
+                <p style="color: var(--text-muted); font-size: 15px; max-width: 680px; margin: 0 auto; line-height: 1.6;">
+                    Write custom captions, watermarks, subtitles, and real-time camera timestamps with freehand draggable positioning, outline strokes, and modern fonts.
+                </p>
+            </section>
 
-            <!-- Workspace Controls & Canvas -->
-            <div id="textWorkspace" style="display: none; margin-top: 24px;">
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; align-items: start;">
-                    <!-- Canvas Preview -->
-                    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                            <span style="font-size: 12px; font-weight: 700; color: #10b981; background: rgba(16, 185, 129, 0.1); padding: 4px 10px; border-radius: 20px;">
-                                <i class="fas fa-hand-pointer"></i> Click &amp; Drag text anywhere on photo
-                            </span>
-                        </div>
-                        <div style="position: relative; display: inline-block; max-width: 100%; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.12);">
-                            <canvas id="textCanvas" style="max-width: 100%; max-height: 460px; height: auto; display: block;"></canvas>
-                        </div>
+            <!-- Tool Workspace Card -->
+            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 28px; box-shadow: 0 10px 40px rgba(0,0,0,0.03);">
+                
+                <!-- Large Dropzone Area -->
+                <div id="textDropZone" style="border: 2px dashed var(--border); border-radius: var(--radius-lg); padding: 56px 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: rgba(0,0,0,0.01);">
+                    <div style="width: 68px; height: 68px; border-radius: 50%; background: rgba(14, 165, 233, 0.15); color: #0ea5e9; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 16px;">
+                        <i class="fas fa-font"></i>
                     </div>
+                    <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 8px; color: var(--text);">Drop your photo here or <span style="color: var(--accent); text-decoration: underline;">browse</span></h3>
+                    <p style="font-size: 13.5px; color: var(--text-muted); margin: 0;">Supports PNG, JPG, WebP (Drag text anywhere with custom outlines &amp; fonts)</p>
+                    <input type="file" id="textFileInput" accept="image/*" style="display: none;">
+                </div>
 
-                    <!-- Controls Sidebar -->
-                    <div style="display: flex; flex-direction: column; gap: 16px;">
-                        <!-- Text Input & Date Quick Stamp -->
-                        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                <label style="font-size: 13px; font-weight: 700; color: var(--text);">Your Text Message</label>
-                                <button type="button" id="addDateStampBtn" class="btn btn-secondary btn-sm" style="font-size: 11px; padding: 3px 8px;">
-                                    <i class="far fa-clock" style="color: #f59e0b;"></i> Add Date Stamp
-                                </button>
+                <!-- Active Workspace -->
+                <div id="textWorkspace" style="display: none;">
+                    <div style="display: grid; grid-template-columns: minmax(300px, 1.3fr) minmax(280px, 1fr); gap: 28px; align-items: start; margin-bottom: 24px;">
+                        
+                        <!-- Left: Canvas Preview -->
+                        <div style="background: rgba(0,0,0,0.02); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 12px;">
+                                <span style="font-size: 12px; font-weight: 700; color: #10b981; background: rgba(16, 185, 129, 0.1); padding: 4px 10px; border-radius: 20px;">
+                                    <i class="fas fa-hand-pointer"></i> Drag text anywhere on photo
+                                </span>
                             </div>
-                            <textarea id="textMessageInput" rows="2" style="width: 100%; font-family: inherit; font-size: 14px; padding: 10px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); resize: vertical; box-sizing: border-box;">Your Text Here</textarea>
+                            <div style="position: relative; max-width: 100%; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.12); cursor: grab;">
+                                <canvas id="textCanvas" style="max-width: 100%; max-height: 440px; height: auto; display: block;"></canvas>
+                            </div>
                         </div>
 
-                        <!-- Typography & Size -->
-                        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 14px;">
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <!-- Right: Controls Sidebar -->
+                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                            
+                            <!-- Text Input & Date Quick Stamp -->
+                            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <label style="font-size: 13px; font-weight: 700; color: var(--text);"><i class="fas fa-pen-nib" style="color: #0ea5e9;"></i> Your Text Message</label>
+                                    <button type="button" id="addDateStampBtn" class="btn btn-secondary btn-sm" style="font-size: 11px; padding: 3px 8px;">
+                                        <i class="far fa-clock" style="color: #f59e0b;"></i> Add Date Stamp
+                                    </button>
+                                </div>
+                                <textarea id="textMessageInput" rows="2" style="width: 100%; font-family: inherit; font-size: 14px; padding: 10px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); resize: vertical; box-sizing: border-box;">Your Text Here</textarea>
+                            </div>
+
+                            <!-- Typography & Size -->
+                            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 14px;">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                    <div>
+                                        <label style="font-size: 12px; font-weight: 700; color: var(--text); display: block; margin-bottom: 4px;">Font Style</label>
+                                        <select id="fontFamilySelect" style="width: 100%; padding: 8px; font-size: 13px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text);">
+                                            <option value="Outfit, sans-serif">Outfit (Modern)</option>
+                                            <option value="Inter, sans-serif">Inter (Clean)</option>
+                                            <option value="Impact, sans-serif">Impact (Meme/Bold)</option>
+                                            <option value="'Playfair Display', serif">Playfair (Serif)</option>
+                                            <option value="'Fira Code', monospace">Monospace (Code)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 12px; font-weight: 700; color: var(--text); display: block; margin-bottom: 4px;">Text Color</label>
+                                        <input type="color" id="textColorPicker" value="#ffffff" style="width: 100%; height: 36px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; background: transparent;">
+                                    </div>
+                                </div>
+
+                                <!-- Font Size Slider -->
                                 <div>
-                                    <label style="font-size: 12px; font-weight: 700; color: var(--text); display: block; margin-bottom: 4px;">Font Style</label>
-                                    <select id="fontFamilySelect" style="width: 100%; padding: 8px; font-size: 13px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text);">
-                                        <option value="Outfit, sans-serif">Outfit (Modern)</option>
-                                        <option value="Inter, sans-serif">Inter (Clean)</option>
-                                        <option value="Impact, sans-serif">Impact (Meme/Bold)</option>
-                                        <option value="'Playfair Display', serif">Playfair (Serif)</option>
-                                        <option value="'Fira Code', monospace">Monospace (Code)</option>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <label style="font-size: 12px; font-weight: 700; color: var(--text);">Font Size</label>
+                                        <span id="fontSizeDisplay" style="font-size: 12px; font-weight: 700; color: #0ea5e9;">48 px</span>
+                                    </div>
+                                    <input type="range" id="fontSizeSlider" min="14" max="140" value="48" style="width: 100%; accent-color: #0ea5e9; cursor: pointer;">
+                                </div>
+                            </div>
+
+                            <!-- Effects & Background Highlight -->
+                            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                <div>
+                                    <label style="font-size: 12px; font-weight: 700; color: var(--text); display: block; margin-bottom: 4px;">Outline Stroke</label>
+                                    <select id="strokeSelect" style="width: 100%; padding: 8px; font-size: 12.5px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text);">
+                                        <option value="black-thick">Black Outline</option>
+                                        <option value="white-thick">White Outline</option>
+                                        <option value="none">No Outline</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label style="font-size: 12px; font-weight: 700; color: var(--text); display: block; margin-bottom: 4px;">Text Color</label>
-                                    <input type="color" id="textColorPicker" value="#ffffff" style="width: 100%; height: 36px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; background: transparent;">
+                                    <label style="font-size: 12px; font-weight: 700; color: var(--text); display: block; margin-bottom: 4px;">Background Box</label>
+                                    <select id="bgBoxSelect" style="width: 100%; padding: 8px; font-size: 12.5px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text);">
+                                        <option value="none">Transparent</option>
+                                        <option value="black-trans">Black Bar (50%)</option>
+                                        <option value="yellow-solid">Yellow Pill</option>
+                                        <option value="white-solid">White Box</option>
+                                    </select>
                                 </div>
                             </div>
 
-                            <!-- Font Size Slider -->
+                            <!-- Actions Row -->
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <a id="downloadTextImgBtn" href="#" download="captioned-photo-hd.png" class="btn btn-primary" style="flex: 1; padding: 12px 20px; font-weight: 700; text-align: center; text-decoration: none;">
+                                    <i class="fas fa-download"></i> Download Photo (HD)
+                                </a>
+                                <button type="button" id="resetTextBtn" class="btn btn-secondary" style="padding: 12px 18px; font-weight: 600;">
+                                    <i class="fas fa-upload"></i> New Image
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Cross-Tool Recommendation Card -->
+                    <div class="next-step-card" style="text-align: left; margin-top: 28px;">
+                        <div class="next-step-info">
+                            <div class="next-step-icon"><i class="fas fa-lightbulb"></i></div>
                             <div>
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                                    <label style="font-size: 12px; font-weight: 700; color: var(--text);">Font Size</label>
-                                    <span id="fontSizeDisplay" style="font-size: 12px; font-weight: 700; color: #0ea5e9;">48 px</span>
-                                </div>
-                                <input type="range" id="fontSizeSlider" min="14" max="140" value="48" style="width: 100%; accent-color: #0ea5e9; cursor: pointer;">
+                                <h4 class="next-step-title">Need to overlay logo watermarks or censor sensitive details?</h4>
+                                <p class="next-step-desc">Add PNG transparent watermarks or blur faces and credit cards.</p>
                             </div>
                         </div>
-
-                        <!-- Effects & Background Highlight -->
-                        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                            <div>
-                                <label style="font-size: 12px; font-weight: 700; color: var(--text); display: block; margin-bottom: 4px;">Outline Stroke</label>
-                                <select id="strokeSelect" style="width: 100%; padding: 8px; font-size: 12.5px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text);">
-                                    <option value="black-thick">Black Outline</option>
-                                    <option value="white-thick">White Outline</option>
-                                    <option value="none">No Outline</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label style="font-size: 12px; font-weight: 700; color: var(--text); display: block; margin-bottom: 4px;">Background Box</label>
-                                <select id="bgBoxSelect" style="width: 100%; padding: 8px; font-size: 12.5px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text);">
-                                    <option value="none">Transparent</option>
-                                    <option value="black-trans">Black Bar (50%)</option>
-                                    <option value="yellow-solid">Yellow Pill</option>
-                                    <option value="white-solid">White Box</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            <a id="downloadTextImgBtn" href="#" download="captioned-photo.png" class="btn btn-primary" style="flex: 1; padding: 12px; font-weight: 700; text-align: center; text-decoration: none;">
-                                <i class="fas fa-download"></i> Download Photo (HD)
+                        <div class="next-step-actions">
+                            <a href="overlay-images" class="btn btn-secondary btn-sm" style="text-decoration: none;">
+                                <i class="fas fa-layer-group"></i> Overlay Logo
                             </a>
-                            <button type="button" id="resetTextBtn" class="btn btn-secondary" style="padding: 12px 18px; font-weight: 600;">
-                                <i class="fas fa-rotate-left"></i> Reset
-                            </button>
+                            <a href="blur-image-privacy-censor" class="btn btn-primary btn-sm" style="text-decoration: none;">
+                                <i class="fas fa-eye-slash"></i> Privacy Blur
+                            </a>
                         </div>
                     </div>
                 </div>
+
             </div>
+
+            <!-- Features Highlights Grid -->
+            <section style="margin-top: 48px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px;">
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(14, 165, 233, 0.12); color: #0ea5e9; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 14px;">
+                        <i class="fas fa-hand-pointer"></i>
+                    </div>
+                    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--text);">Freehand Draggable</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0;">Click or touch to drag your text layer to any exact coordinate on the picture with real-time responsive positioning.</p>
+                </div>
+
+                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px;">
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(245, 158, 11, 0.12); color: #f59e0b; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 14px;">
+                        <i class="far fa-clock"></i>
+                    </div>
+                    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--text);">1-Click Timestamp</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0;">Automatically inject current camera date and timestamps for work documentation, receipts, and field photography.</p>
+                </div>
+
+                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px;">
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(16, 185, 129, 0.12); color: #10b981; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 14px;">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+                    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--text);">100% Client-Side Privacy</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0;">Photos never leave your device. All text compositing happens locally inside your browser using HTML5 Canvas.</p>
+                </div>
+            </section>
+
+            <!-- FAQ Section -->
+            <section style="margin-top: 48px;">
+                <h2 style="font-size: 24px; font-weight: 800; text-align: center; margin-bottom: 24px; color: var(--text);">Frequently Asked Questions</h2>
+                <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px;">
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">Can I drag the text anywhere on the photo?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">Yes! Click or touch the text directly on the photo canvas to drag and position it to any exact location in real time.</p>
+                    </details>
+
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">Can I add an automatic date and time stamp?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">Yes! Click the 'Add Date Stamp' button to instantly inject the current date and time formatted in classic camera amber/yellow text.</p>
+                    </details>
+
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">Can I format multi-line text and custom outlines?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">Yes! You can enter multiple lines of text, pick high-contrast black or white outline strokes, and add background highlight boxes.</p>
+                    </details>
+
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">Are my images uploaded to any server?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">Never. All text rendering and canvas compositing executes 100% in your browser for total privacy.</p>
+                    </details>
+                </div>
+            </section>
         </main>
 
-                <!-- Footer -->
+        <!-- Footer -->
         <footer class="footer">
             <div class="footer-top">
                 <div class="footer-brand">
@@ -352,7 +465,7 @@
             let initialTextX = 0;
             let initialTextY = 0;
 
-            const dropzone = document.getElementById('textDropzone');
+            const dropzone = document.getElementById('textDropZone');
             const fileInput = document.getElementById('textFileInput');
             const workspace = document.getElementById('textWorkspace');
             const canvas = document.getElementById('textCanvas');
@@ -377,11 +490,16 @@
             dropzone.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 dropzone.style.borderColor = '#0ea5e9';
+                dropzone.style.background = 'rgba(14, 165, 233, 0.04)';
             });
-            dropzone.addEventListener('dragleave', () => dropzone.style.borderColor = 'var(--border)');
+            dropzone.addEventListener('dragleave', () => {
+                dropzone.style.borderColor = 'var(--border)';
+                dropzone.style.background = 'rgba(0,0,0,0.01)';
+            });
             dropzone.addEventListener('drop', (e) => {
                 e.preventDefault();
                 dropzone.style.borderColor = 'var(--border)';
+                dropzone.style.background = 'rgba(0,0,0,0.01)';
                 if (e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
             });
 
@@ -422,7 +540,7 @@
                     String(now.getMinutes()).padStart(2, '0') + ':' +
                     String(now.getSeconds()).padStart(2, '0');
                 textInput.value = stamp;
-                colorPicker.value = '#f59e0b'; // classic timestamp amber
+                colorPicker.value = '#f59e0b';
                 strokeSelect.value = 'black-thick';
                 renderTextCanvas();
             });
@@ -441,7 +559,6 @@
                 };
             }
 
-            // Dragging Listeners
             canvas.addEventListener('mousedown', (e) => {
                 if (!loadedImg) return;
                 const coords = getCanvasCoords(e);
@@ -470,7 +587,6 @@
                 }
             });
 
-            // Touch Support
             canvas.addEventListener('touchstart', (e) => {
                 if (!loadedImg) return;
                 const coords = getCanvasCoords(e);
@@ -509,10 +625,8 @@
                 ctx.imageSmoothingEnabled = true;
                 ctx.imageSmoothingQuality = 'high';
 
-                // Step 1: Draw Base Image
                 ctx.drawImage(loadedImg, 0, 0, w, h);
 
-                // Step 2: Configure Font
                 const fontSize = parseInt(sizeSlider.value);
                 const fontFamily = fontSelect.value;
                 ctx.font = `bold ${fontSize}px ${fontFamily}`;
@@ -522,7 +636,6 @@
                 const lines = text.split('\n');
                 const lineHeight = fontSize * 1.25;
 
-                // Measure max width for background box
                 let maxLineWidth = 0;
                 lines.forEach(l => {
                     const metrics = ctx.measureText(l);
@@ -532,7 +645,6 @@
                 const boxPadding = 12;
                 const totalTextH = lines.length * lineHeight;
 
-                // Step 3: Draw Optional Background Box
                 const bgMode = bgBoxSelect.value;
                 if (bgMode !== 'none') {
                     ctx.save();
@@ -549,7 +661,6 @@
                     ctx.restore();
                 }
 
-                // Step 4: Draw Text with optional outline stroke
                 const strokeMode = strokeSelect.value;
                 const textColor = (bgMode === 'yellow-solid' || bgMode === 'white-solid') ? '#000000' : colorPicker.value;
 
@@ -576,7 +687,7 @@
             resetBtn.addEventListener('click', () => {
                 fileInput.value = '';
                 loadedImg = null;
-                dropzone.style.display = 'flex';
+                dropzone.style.display = 'block';
                 workspace.style.display = 'none';
             });
         });
