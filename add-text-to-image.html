@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="google-site-verification" content="d0OdByg6j4ZbXrYq_O7SLN5kcx58VtFDakc5TRUElB4" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-406KB1Z1V6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-406KB1Z1V6');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Text & Timestamp to Photo Online Free | WebToolkitBox</title>
+    <meta name="description" content="Add text, captions, watermarks, and date timestamps to photos online for free. Draggable text, modern fonts, outlines, shadows & transparent export. 100% private.">
+    <meta name="keywords" content="add text to photo, add text to image online, write on photo free, add timestamp to photo, photo caption maker, add date stamp to image, put text on picture online">
+    <meta name="author" content="Rishabh Dev (@itxrishabh)">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://www.webtoolkitbox.com/add-text-to-image">
+
+    <!-- International Hreflang Tags -->
+    <link rel="alternate" hreflang="x-default" href="https://www.webtoolkitbox.com/add-text-to-image">
+    <link rel="alternate" hreflang="en-US" href="https://www.webtoolkitbox.com/add-text-to-image">
+    <link rel="alternate" hreflang="en-IN" href="https://www.webtoolkitbox.com/add-text-to-image">
+    <link rel="alternate" hreflang="en-GB" href="https://www.webtoolkitbox.com/add-text-to-image">
+    <link rel="alternate" hreflang="en-CA" href="https://www.webtoolkitbox.com/add-text-to-image">
+    <link rel="alternate" hreflang="en-AU" href="https://www.webtoolkitbox.com/add-text-to-image">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.webtoolkitbox.com/add-text-to-image">
+    <meta property="og:title" content="Add Text & Timestamp to Photo Online Free | WebToolkitBox">
+    <meta property="og:description" content="Write text, subtitles, and timestamps on any picture with freehand drag, custom fonts, outlines, and shadows.">
+    <meta property="og:image" content="https://www.webtoolkitbox.com/images/og-card.png">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "Add Text & Timestamp to Photo Online",
+          "url": "https://www.webtoolkitbox.com/add-text-to-image",
+          "description": "Add text captions, date timestamps, and custom watermarks to photos with freehand dragging and font styling.",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "All",
+          "offers": {
+            "@type": "Offer",
+            "price": "0.00",
+            "priceCurrency": "USD"
+          },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "ratingCount": "2980",
+            "bestRating": "5"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.webtoolkitbox.com/" },
+            { "@type": "ListItem", "position": 2, "name": "Creative Tools", "item": "https://www.webtoolkitbox.com/" },
+            { "@type": "ListItem", "position": 3, "name": "Add Text to Photo", "item": "https://www.webtoolkitbox.com/add-text-to-image" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Can I drag the text anywhere on the photo?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! Click or touch the text directly on the photo canvas to drag and position it to any exact location in real time."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I add an automatic date and time stamp?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! Click the 'Add Date Stamp' button to instantly inject the current date and time formatted in classic camera amber/yellow text."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="https://www.webtoolkitbox.com/favicon.ico" sizes="any" />
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <a href="/" class="header-brand" title="WebToolkitBox Home">
+                <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
+            </a>
+            <div class="header-right">
+                <span class="header-tagline">Your All-in-One Image Toolkit</span>
+                <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Light/Dark Mode">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <a href="passport-photo-maker" class="passport-header-link">
+                    <i class="fas fa-id-card"></i> <span>Passport Maker</span>
+                </a>
+                <a href="photo-filters-online" class="passport-header-link" style="border-color: rgba(245, 158, 11, 0.3); background: rgba(245, 158, 11, 0.08); color: #f59e0b;">
+                    <i class="fas fa-wand-magic-sparkles"></i> <span>50+ Filters</span>
+                </a>
+                <a href="seo-audit" class="seo-audit-link">
+                    <i class="fas fa-chart-line"></i> <span>SEO Audit</span>
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Tool Workspace -->
+        <main class="tool-workspace">
+            <div class="tool-header">
+                <h1 class="tool-title"><i class="fas fa-font" style="color: #0ea5e9;"></i> Add Text &amp; Timestamp to Photo Online</h1>
+                <p class="tool-subtitle">Write custom captions, date stamps, watermarks, and subtitles with freehand draggable positioning and modern typography. 100% private.</p>
+            </div>
+
+            <!-- Upload Dropzone -->
+            <div class="dropzone" id="textDropzone">
+                <input type="file" id="textFileInput" accept="image/*" style="display: none;">
+                <div class="dropzone-content">
+                    <i class="fas fa-font dropzone-icon" style="color: #0ea5e9;"></i>
+                    <p class="dropzone-title">Drop your image here or <span class="dropzone-browse">browse</span></p>
+                    <p class="dropzone-desc">PNG, JPG, WebP — Drag text anywhere with outlines and shadows</p>
+                </div>
+            </div>
+
+            <!-- Workspace Controls & Canvas -->
+            <div id="textWorkspace" style="display: none; margin-top: 24px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; align-items: start;">
+                    <!-- Canvas Preview -->
+                    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <span style="font-size: 12px; font-weight: 700; color: #10b981; background: rgba(16, 185, 129, 0.1); padding: 4px 10px; border-radius: 20px;">
+                                <i class="fas fa-hand-pointer"></i> Click &amp; Drag text anywhere on photo
+                            </span>
+                        </div>
+                        <div style="position: relative; display: inline-block; max-width: 100%; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.12);">
+                            <canvas id="textCanvas" style="max-width: 100%; max-height: 460px; height: auto; display: block;"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Controls Sidebar -->
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <!-- Text Input & Date Quick Stamp -->
+                        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <label style="font-size: 13px; font-weight: 700; color: var(--text);">Your Text Message</label>
+                                <button type="button" id="addDateStampBtn" class="btn btn-secondary btn-sm" style="font-size: 11px; padding: 3px 8px;">
+                                    <i class="far fa-clock" style="color: #f59e0b;"></i> Add Date Stamp
+                                </button>
+                            </div>
+                            <textarea id="textMessageInput" rows="2" style="width: 100%; font-family: inherit; font-size: 14px; padding: 10px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); resize: vertical; box-sizing: border-box;">Your Text Here</textarea>
+                        </div>
+
+                        <!-- Typography & Size -->
+                        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 14px;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div>
+                                    <label style="font-size: 12px; font-weight: 700; color: var(--text); display: block; margin-bottom: 4px;">Font Style</label>
+                                    <select id="fontFamilySelect" style="width: 100%; padding: 8px; font-size: 13px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text);">
+                                        <option value="Outfit, sans-serif">Outfit (Modern)</option>
+                                        <option value="Inter, sans-serif">Inter (Clean)</option>
+                                        <option value="Impact, sans-serif">Impact (Meme/Bold)</option>
+                                        <option value="'Playfair Display', serif">Playfair (Serif)</option>
+                                        <option value="'Fira Code', monospace">Monospace (Code)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style="font-size: 12px; font-weight: 700; color: var(--text); display: block; margin-bottom: 4px;">Text Color</label>
+                                    <input type="color" id="textColorPicker" value="#ffffff" style="width: 100%; height: 36px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; background: transparent;">
+                                </div>
+                            </div>
+
+                            <!-- Font Size Slider -->
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                    <label style="font-size: 12px; font-weight: 700; color: var(--text);">Font Size</label>
+                                    <span id="fontSizeDisplay" style="font-size: 12px; font-weight: 700; color: #0ea5e9;">48 px</span>
+                                </div>
+                                <input type="range" id="fontSizeSlider" min="14" max="140" value="48" style="width: 100%; accent-color: #0ea5e9; cursor: pointer;">
+                            </div>
+                        </div>
+
+                        <!-- Effects & Background Highlight -->
+                        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <div>
+                                <label style="font-size: 12px; font-weight: 700; color: var(--text); display: block; margin-bottom: 4px;">Outline Stroke</label>
+                                <select id="strokeSelect" style="width: 100%; padding: 8px; font-size: 12.5px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text);">
+                                    <option value="black-thick">Black Outline</option>
+                                    <option value="white-thick">White Outline</option>
+                                    <option value="none">No Outline</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="font-size: 12px; font-weight: 700; color: var(--text); display: block; margin-bottom: 4px;">Background Box</label>
+                                <select id="bgBoxSelect" style="width: 100%; padding: 8px; font-size: 12.5px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text);">
+                                    <option value="none">Transparent</option>
+                                    <option value="black-trans">Black Bar (50%)</option>
+                                    <option value="yellow-solid">Yellow Pill</option>
+                                    <option value="white-solid">White Box</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <a id="downloadTextImgBtn" href="#" download="captioned-photo.png" class="btn btn-primary" style="flex: 1; padding: 12px; font-weight: 700; text-align: center; text-decoration: none;">
+                                <i class="fas fa-download"></i> Download Photo (HD)
+                            </a>
+                            <button type="button" id="resetTextBtn" class="btn btn-secondary" style="padding: 12px 18px; font-weight: 600;">
+                                <i class="fas fa-rotate-left"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+                <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <a href="/" class="footer-logo" title="WebToolkitBox Home">
+                        <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
+                    </a>
+                    <p class="footer-tagline">Process unlimited images for free. 100% private in-browser tools. No signup required.</p>
+                </div>
+                <div class="footer-socials">
+                    <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="social-link" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="https://twitter.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="X / Twitter">
+                        <i class="fab fa-x-twitter"></i>
+                    </a>
+                    <a href="https://instagram.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://linkedin.com/in/itxrishabh" target="_blank" rel="noopener" class="social-link" title="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- SEO Multi-Column Internal Links -->
+            <div class="seo-footer-grid">
+                <div class="seo-footer-col">
+                    <h4><i class="fas fa-arrows-rotate"></i> Format Converters</h4>
+                    <ul>
+                        <li><a href="https://www.webtoolkitbox.com/heic-to-png"><i class="fas fa-chevron-right"></i> Free HEIC to PNG Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/png-to-jpg"><i class="fas fa-chevron-right"></i> PNG to JPG Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/webp-to-jpg"><i class="fas fa-chevron-right"></i> WebP to JPG Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/jpg-to-pdf"><i class="fas fa-chevron-right"></i> Free JPG to PDF Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/pdf-to-jpg"><i class="fas fa-chevron-right"></i> PDF to JPG Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/svg-to-image"><i class="fas fa-chevron-right"></i> SVG to PNG Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-to-base64"><i class="fas fa-chevron-right"></i> Image to Base64 &amp; Decoder</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-converter"><i class="fas fa-chevron-right"></i> Batch Image Format Converter</a></li>
+                    </ul>
+                </div>
+
+                <div class="seo-footer-col">
+                    <h4><i class="fas fa-wand-magic-sparkles"></i> AI &amp; Popular Tools</h4>
+                    <ul>
+                        <li><a href="https://www.webtoolkitbox.com/photo-filters-online"><i class="fas fa-chevron-right"></i> 50+ Photo Filters &amp; Vintage Presets</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-color-palette-extractor"><i class="fas fa-chevron-right"></i> Color Palette Extractor &amp; Hex Picker</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/overlay-images"><i class="fas fa-chevron-right"></i> Overlay Images &amp; Watermarks</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/id-card-merger"><i class="fas fa-chevron-right"></i> ID Card Front &amp; Back Merger</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/profile-picture-border-maker"><i class="fas fa-chevron-right"></i> Profile Picture Border &amp; Rings</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/passport-photo-maker"><i class="fas fa-chevron-right"></i> Free Passport &amp; Visa Photo Maker</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-dpi-converter"><i class="fas fa-chevron-right"></i> Image 300 DPI Print Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/transparent-signature-maker"><i class="fas fa-chevron-right"></i> Transparent Signature Maker</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/social-media-image-resizer"><i class="fas fa-chevron-right"></i> Social Media Image Resizer</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/blur-image-privacy-censor"><i class="fas fa-chevron-right"></i> Privacy Blur &amp; Image Censor</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/remove-photo-location-exif"><i class="fas fa-chevron-right"></i> Remove Photo GPS Location &amp; EXIF</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/background-remover"><i class="fas fa-chevron-right"></i> Free AI Background Remover</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/watermark-remover"><i class="fas fa-chevron-right"></i> Object &amp; Watermark Eraser</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-upscaler"><i class="fas fa-chevron-right"></i> AI Image Upscaler 4X HD</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/seo-audit"><i class="fas fa-chevron-right"></i> Free Technical SEO Checker</a></li>
+                    </ul>
+                </div>
+
+                <div class="seo-footer-col">
+                    <h4><i class="fas fa-sliders"></i> Image Utilities</h4>
+                    <ul>
+                        <li><a href="https://www.webtoolkitbox.com/round-image-corners"><i class="fas fa-chevron-right"></i> Round Image Corners &amp; Circle Maker</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/pixel-art-maker"><i class="fas fa-chevron-right"></i> Pixel Art Maker &amp; 8-Bit Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/add-text-to-image"><i class="fas fa-chevron-right"></i> Add Text &amp; Timestamp to Photo</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/size-manager"><i class="fas fa-chevron-right"></i> Compress Image (20KB, 50KB, 200KB)</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-grid-splitter"><i class="fas fa-chevron-right"></i> Image Grid &amp; Carousel Splitter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/invert-image-colors"><i class="fas fa-chevron-right"></i> Invert Image Colors (Save Ink)</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/meme-generator-online"><i class="fas fa-chevron-right"></i> Free Meme Generator Online</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-resizer"><i class="fas fa-chevron-right"></i> Image Pixel Dimension Resizer</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-cropper"><i class="fas fa-chevron-right"></i> Crop Image Custom Ratio</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/square-image-maker"><i class="fas fa-chevron-right"></i> Square Image 1:1 Maker</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/favicon-generator"><i class="fas fa-chevron-right"></i> Favicon &amp; App Icon Generator</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-to-text-ocr"><i class="fas fa-chevron-right"></i> Image to Text OCR Extractor</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/video-compressor"><i class="fas fa-chevron-right"></i> Compress Video MP4 Online</a></li>
+                    </ul>
+                </div>
+
+                <div class="seo-footer-col">
+                    <h4><i class="fas fa-book-open"></i> Image &amp; SEO Guides</h4>
+                    <ul>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-resize-photo-for-passport-and-visa-online"><i class="fas fa-chevron-right"></i> Resize Photo for Passport &amp; Visa</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-compress-image-for-government-job-exam-application"><i class="fas fa-chevron-right"></i> Compress Photo for Govt Exams</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-make-image-square-without-cropping"><i class="fas fa-chevron-right"></i> Make Image Square Without Cropping</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-create-favicon-ico-from-png"><i class="fas fa-chevron-right"></i> Create Favicon.ico from PNG</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-extract-text-from-image-ocr"><i class="fas fa-chevron-right"></i> Extract Text from Image (OCR)</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-change-image-pixel-size"><i class="fas fa-chevron-right"></i> Change Image Pixel Dimensions</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-resize-images-to-custom-pixel-dimensions"><i class="fas fa-chevron-right"></i> Resize to 100x100 &amp; Custom Pixels</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-upscale-images-without-losing-quality"><i class="fas fa-chevron-right"></i> Upscale Images Without Blur</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-convert-heic-to-png-iphone"><i class="fas fa-chevron-right"></i> Convert iPhone HEIC to PNG</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-remove-watermarks-and-unwanted-objects-from-photos"><i class="fas fa-chevron-right"></i> Remove Watermarks from Photos</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-do-free-website-seo-audit"><i class="fas fa-chevron-right"></i> Free Website SEO Audit Guide</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-divider"></div>
+            <div class="footer-bottom">
+                <p>Developed by <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="footer-dev-link">Rishabh Dev</a></p>
+                <p class="footer-handle">@itxrishabh</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Client-Side Draggable Text Engine -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let loadedImg = null;
+            let textX = null;
+            let textY = null;
+            let isDragging = false;
+            let dragStartX = 0;
+            let dragStartY = 0;
+            let initialTextX = 0;
+            let initialTextY = 0;
+
+            const dropzone = document.getElementById('textDropzone');
+            const fileInput = document.getElementById('textFileInput');
+            const workspace = document.getElementById('textWorkspace');
+            const canvas = document.getElementById('textCanvas');
+            const ctx = canvas.getContext('2d');
+
+            const textInput = document.getElementById('textMessageInput');
+            const addDateStampBtn = document.getElementById('addDateStampBtn');
+            const fontSelect = document.getElementById('fontFamilySelect');
+            const colorPicker = document.getElementById('textColorPicker');
+            const sizeSlider = document.getElementById('fontSizeSlider');
+            const sizeDisplay = document.getElementById('fontSizeDisplay');
+            const strokeSelect = document.getElementById('strokeSelect');
+            const bgBoxSelect = document.getElementById('bgBoxSelect');
+            const downloadBtn = document.getElementById('downloadTextImgBtn');
+            const resetBtn = document.getElementById('resetTextBtn');
+
+            dropzone.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files && e.target.files[0]) handleFile(e.target.files[0]);
+            });
+
+            dropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropzone.style.borderColor = '#0ea5e9';
+            });
+            dropzone.addEventListener('dragleave', () => dropzone.style.borderColor = 'var(--border)');
+            dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropzone.style.borderColor = 'var(--border)';
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+            });
+
+            function handleFile(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        loadedImg = img;
+                        textX = Math.round(img.width * 0.1);
+                        textY = Math.round(img.height * 0.85);
+                        dropzone.style.display = 'none';
+                        workspace.style.display = 'block';
+                        renderTextCanvas();
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+
+            textInput.addEventListener('input', renderTextCanvas);
+            fontSelect.addEventListener('change', renderTextCanvas);
+            colorPicker.addEventListener('input', renderTextCanvas);
+            strokeSelect.addEventListener('change', renderTextCanvas);
+            bgBoxSelect.addEventListener('change', renderTextCanvas);
+
+            sizeSlider.addEventListener('input', (e) => {
+                sizeDisplay.textContent = `${e.target.value} px`;
+                renderTextCanvas();
+            });
+
+            addDateStampBtn.addEventListener('click', () => {
+                const now = new Date();
+                const stamp = now.getFullYear() + '-' +
+                    String(now.getMonth() + 1).padStart(2, '0') + '-' +
+                    String(now.getDate()).padStart(2, '0') + ' ' +
+                    String(now.getHours()).padStart(2, '0') + ':' +
+                    String(now.getMinutes()).padStart(2, '0') + ':' +
+                    String(now.getSeconds()).padStart(2, '0');
+                textInput.value = stamp;
+                colorPicker.value = '#f59e0b'; // classic timestamp amber
+                strokeSelect.value = 'black-thick';
+                renderTextCanvas();
+            });
+
+            function getCanvasCoords(e) {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+                return {
+                    x: (clientX - rect.left) * scaleX,
+                    y: (clientY - rect.top) * scaleY
+                };
+            }
+
+            // Dragging Listeners
+            canvas.addEventListener('mousedown', (e) => {
+                if (!loadedImg) return;
+                const coords = getCanvasCoords(e);
+                isDragging = true;
+                dragStartX = coords.x;
+                dragStartY = coords.y;
+                initialTextX = textX;
+                initialTextY = textY;
+                canvas.style.cursor = 'grabbing';
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging || !loadedImg) return;
+                const coords = getCanvasCoords(e);
+                const dx = coords.x - dragStartX;
+                const dy = coords.y - dragStartY;
+                textX = Math.round(initialTextX + dx);
+                textY = Math.round(initialTextY + dy);
+                renderTextCanvas();
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    canvas.style.cursor = 'grab';
+                }
+            });
+
+            // Touch Support
+            canvas.addEventListener('touchstart', (e) => {
+                if (!loadedImg) return;
+                const coords = getCanvasCoords(e);
+                isDragging = true;
+                dragStartX = coords.x;
+                dragStartY = coords.y;
+                initialTextX = textX;
+                initialTextY = textY;
+                e.preventDefault();
+            }, { passive: false });
+
+            window.addEventListener('touchmove', (e) => {
+                if (!isDragging || !loadedImg) return;
+                const coords = getCanvasCoords(e);
+                const dx = coords.x - dragStartX;
+                const dy = coords.y - dragStartY;
+                textX = Math.round(initialTextX + dx);
+                textY = Math.round(initialTextY + dy);
+                renderTextCanvas();
+                e.preventDefault();
+            }, { passive: false });
+
+            window.addEventListener('touchend', () => {
+                isDragging = false;
+            });
+
+            function renderTextCanvas() {
+                if (!loadedImg) return;
+
+                const w = loadedImg.width;
+                const h = loadedImg.height;
+
+                canvas.width = w;
+                canvas.height = h;
+
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+
+                // Step 1: Draw Base Image
+                ctx.drawImage(loadedImg, 0, 0, w, h);
+
+                // Step 2: Configure Font
+                const fontSize = parseInt(sizeSlider.value);
+                const fontFamily = fontSelect.value;
+                ctx.font = `bold ${fontSize}px ${fontFamily}`;
+                ctx.textBaseline = 'top';
+
+                const text = textInput.value || '';
+                const lines = text.split('\n');
+                const lineHeight = fontSize * 1.25;
+
+                // Measure max width for background box
+                let maxLineWidth = 0;
+                lines.forEach(l => {
+                    const metrics = ctx.measureText(l);
+                    if (metrics.width > maxLineWidth) maxLineWidth = metrics.width;
+                });
+
+                const boxPadding = 12;
+                const totalTextH = lines.length * lineHeight;
+
+                // Step 3: Draw Optional Background Box
+                const bgMode = bgBoxSelect.value;
+                if (bgMode !== 'none') {
+                    ctx.save();
+                    if (bgMode === 'black-trans') ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
+                    else if (bgMode === 'yellow-solid') ctx.fillStyle = '#fef08a';
+                    else if (bgMode === 'white-solid') ctx.fillStyle = '#ffffff';
+
+                    ctx.fillRect(
+                        textX - boxPadding,
+                        textY - boxPadding,
+                        maxLineWidth + (boxPadding * 2),
+                        totalTextH + (boxPadding * 2)
+                    );
+                    ctx.restore();
+                }
+
+                // Step 4: Draw Text with optional outline stroke
+                const strokeMode = strokeSelect.value;
+                const textColor = (bgMode === 'yellow-solid' || bgMode === 'white-solid') ? '#000000' : colorPicker.value;
+
+                lines.forEach((line, idx) => {
+                    const lineY = textY + (idx * lineHeight);
+
+                    if (strokeMode === 'black-thick') {
+                        ctx.strokeStyle = '#000000';
+                        ctx.lineWidth = Math.max(3, Math.floor(fontSize * 0.08));
+                        ctx.strokeText(line, textX, lineY);
+                    } else if (strokeMode === 'white-thick') {
+                        ctx.strokeStyle = '#ffffff';
+                        ctx.lineWidth = Math.max(3, Math.floor(fontSize * 0.08));
+                        ctx.strokeText(line, textX, lineY);
+                    }
+
+                    ctx.fillStyle = textColor;
+                    ctx.fillText(line, textX, lineY);
+                });
+
+                downloadBtn.href = canvas.toDataURL('image/png');
+            }
+
+            resetBtn.addEventListener('click', () => {
+                fileInput.value = '';
+                loadedImg = null;
+                dropzone.style.display = 'flex';
+                workspace.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

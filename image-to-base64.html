@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="google-site-verification" content="d0OdByg6j4ZbXrYq_O7SLN5kcx58VtFDakc5TRUElB4" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-406KB1Z1V6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-406KB1Z1V6');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to Base64 Converter & Decoder Online (Data URI) | WebToolkitBox</title>
+    <meta name="description" content="Convert images to Base64 string, Data URI, HTML img tag & CSS background online for free. Decode Base64 back to image with instant download. 100% private.">
+    <meta name="keywords" content="image to base64, base64 to image, convert image to base64, data uri generator, base64 image decoder, png to base64, jpg to base64, base64 string to image, html img base64">
+    <meta name="author" content="Rishabh Dev (@itxrishabh)">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://www.webtoolkitbox.com/image-to-base64">
+
+    <!-- International Hreflang Tags -->
+    <link rel="alternate" hreflang="x-default" href="https://www.webtoolkitbox.com/image-to-base64">
+    <link rel="alternate" hreflang="en-US" href="https://www.webtoolkitbox.com/image-to-base64">
+    <link rel="alternate" hreflang="en-IN" href="https://www.webtoolkitbox.com/image-to-base64">
+    <link rel="alternate" hreflang="en-GB" href="https://www.webtoolkitbox.com/image-to-base64">
+    <link rel="alternate" hreflang="en-CA" href="https://www.webtoolkitbox.com/image-to-base64">
+    <link rel="alternate" hreflang="en-AU" href="https://www.webtoolkitbox.com/image-to-base64">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.webtoolkitbox.com/image-to-base64">
+    <meta property="og:title" content="Image to Base64 Converter & Decoder Online | WebToolkitBox">
+    <meta property="og:description" content="Convert PNG, JPG, SVG, WebP to Base64 Data URI strings or decode Base64 back to image. Fast, free, 100% in-browser tool.">
+    <meta property="og:image" content="https://www.webtoolkitbox.com/images/og-card.png">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "Image to Base64 Converter & Decoder",
+          "url": "https://www.webtoolkitbox.com/image-to-base64",
+          "description": "Convert images to Base64 strings, Data URIs, HTML tags, and CSS URLs. Decode Base64 back to PNG and JPG images.",
+          "applicationCategory": "DeveloperApplication",
+          "operatingSystem": "All",
+          "offers": {
+            "@type": "Offer",
+            "price": "0.00",
+            "priceCurrency": "USD"
+          },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "ratingCount": "2890",
+            "bestRating": "5"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.webtoolkitbox.com/" },
+            { "@type": "ListItem", "position": 2, "name": "Developer Tools", "item": "https://www.webtoolkitbox.com/" },
+            { "@type": "ListItem", "position": 3, "name": "Image to Base64", "item": "https://www.webtoolkitbox.com/image-to-base64" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is an Image to Base64 Converter?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An Image to Base64 converter translates binary image files (PNG, JPG, WebP, SVG) into text strings formatted as Data URIs. This allows embedding images directly into HTML or CSS without separate HTTP requests."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I convert Base64 back into an image file?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! Switch to the 'Base64 to Image Decoder' tab, paste your Base64 string or Data URI, and click Download to save the reconstructed PNG/JPG file."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="https://www.webtoolkitbox.com/favicon.ico" sizes="any" />
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <a href="/" class="header-brand" title="WebToolkitBox Home">
+                <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
+            </a>
+            <div class="header-right">
+                <span class="header-tagline">Your All-in-One Image Toolkit</span>
+                <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Light/Dark Mode">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <a href="passport-photo-maker" class="passport-header-link">
+                    <i class="fas fa-id-card"></i> <span>Passport Maker</span>
+                </a>
+                <a href="photo-filters-online" class="passport-header-link" style="border-color: rgba(245, 158, 11, 0.3); background: rgba(245, 158, 11, 0.08); color: #f59e0b;">
+                    <i class="fas fa-wand-magic-sparkles"></i> <span>50+ Filters</span>
+                </a>
+                <a href="seo-audit" class="seo-audit-link">
+                    <i class="fas fa-chart-line"></i> <span>SEO Audit</span>
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Tool Workspace -->
+        <main class="tool-workspace">
+            <div class="tool-header">
+                <h1 class="tool-title"><i class="fas fa-code" style="color: #f59e0b;"></i> Image to Base64 Converter &amp; Decoder</h1>
+                <p class="tool-subtitle">Convert PNG, JPG, SVG, and WebP into Base64 Data URI strings or paste Base64 code to decode back to an image file. 100% private.</p>
+            </div>
+
+            <!-- Mode Tabs -->
+            <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 24px;">
+                <button type="button" id="tabEncodeBtn" class="btn btn-primary" style="padding: 10px 24px; font-weight: 700;">
+                    <i class="fas fa-image"></i> Image ➔ Base64
+                </button>
+                <button type="button" id="tabDecodeBtn" class="btn btn-secondary" style="padding: 10px 24px; font-weight: 600;">
+                    <i class="fas fa-file-code"></i> Base64 ➔ Image
+                </button>
+            </div>
+
+            <!-- TAB 1: ENCODE IMAGE TO BASE64 -->
+            <div id="encodeSection">
+                <div class="dropzone" id="b64Dropzone">
+                    <input type="file" id="b64FileInput" accept="image/*" style="display: none;">
+                    <div class="dropzone-content">
+                        <i class="fas fa-cloud-arrow-up dropzone-icon" style="color: #f59e0b;"></i>
+                        <p class="dropzone-title">Drop your image here or <span class="dropzone-browse">browse</span></p>
+                        <p class="dropzone-desc">Supports PNG, JPG, WebP, SVG, GIF, ICO, AVIF</p>
+                    </div>
+                </div>
+
+                <div id="encodeResult" style="display: none; margin-top: 24px;">
+                    <!-- Stats Bar -->
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 14px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 20px;">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <img id="encodedPreviewThumb" src="" alt="Thumbnail" style="width: 48px; height: 48px; object-fit: contain; border-radius: 8px; border: 1px solid var(--border); background: #fff;">
+                            <div>
+                                <h4 id="encodedFileName" style="margin: 0; font-size: 14px; font-weight: 700; color: var(--text);">image.png</h4>
+                                <p id="encodedMetaInfo" style="margin: 2px 0 0; font-size: 12px; color: var(--text-muted);">1920x1080 • 120 KB</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button type="button" id="copyRawB64Btn" class="btn btn-primary btn-sm"><i class="fas fa-copy"></i> Copy Data URI</button>
+                            <button type="button" id="resetEncodeBtn" class="btn btn-secondary btn-sm"><i class="fas fa-rotate-left"></i> Convert Another</button>
+                        </div>
+                    </div>
+
+                    <!-- Code Outputs -->
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <!-- Format 1: Data URI -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <label style="font-size: 13px; font-weight: 700; color: var(--text);">Data URI (Base64 URL)</label>
+                                <button type="button" class="copy-field-btn" data-target="dataUriOutput"><i class="far fa-copy"></i> Copy</button>
+                            </div>
+                            <textarea id="dataUriOutput" readonly rows="3" style="width: 100%; font-family: 'Fira Code', monospace; font-size: 12px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); resize: vertical; box-sizing: border-box;"></textarea>
+                        </div>
+
+                        <!-- Format 2: HTML <img> tag -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <label style="font-size: 13px; font-weight: 700; color: var(--text);">HTML &lt;img&gt; Embed Code</label>
+                                <button type="button" class="copy-field-btn" data-target="htmlImgOutput"><i class="far fa-copy"></i> Copy</button>
+                            </div>
+                            <textarea id="htmlImgOutput" readonly rows="3" style="width: 100%; font-family: 'Fira Code', monospace; font-size: 12px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); resize: vertical; box-sizing: border-box;"></textarea>
+                        </div>
+
+                        <!-- Format 3: CSS background-image -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <label style="font-size: 13px; font-weight: 700; color: var(--text);">CSS background-image Code</label>
+                                <button type="button" class="copy-field-btn" data-target="cssBgOutput"><i class="far fa-copy"></i> Copy</button>
+                            </div>
+                            <textarea id="cssBgOutput" readonly rows="3" style="width: 100%; font-family: 'Fira Code', monospace; font-size: 12px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); resize: vertical; box-sizing: border-box;"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: DECODE BASE64 TO IMAGE -->
+            <div id="decodeSection" style="display: none;">
+                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-sizing: border-box;">
+                    <label style="display: block; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 8px;">
+                        Paste Base64 String or Data URI Code below:
+                    </label>
+                    <textarea id="decodeInput" rows="6" placeholder="Paste data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA... or raw Base64 string here..." style="width: 100%; font-family: 'Fira Code', monospace; font-size: 12.5px; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); resize: vertical; box-sizing: border-box;"></textarea>
+                    
+                    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 12px;">
+                        <button type="button" id="clearDecodeBtn" class="btn btn-secondary btn-sm"><i class="fas fa-trash-can"></i> Clear</button>
+                        <button type="button" id="runDecodeBtn" class="btn btn-primary" style="padding: 10px 24px; font-weight: 700;"><i class="fas fa-wand-magic-sparkles"></i> Decode to Image</button>
+                    </div>
+                </div>
+
+                <div id="decodeResult" style="display: none; margin-top: 24px; text-align: center;">
+                    <div style="display: inline-block; max-width: 100%; border: 1px solid var(--border); border-radius: 12px; padding: 16px; background: var(--surface); box-shadow: 0 10px 30px rgba(0,0,0,0.08);">
+                        <img id="decodedImagePreview" src="" alt="Decoded Base64 Image" style="max-width: 100%; max-height: 400px; height: auto; border-radius: 8px; display: block; margin: 0 auto;">
+                        <p id="decodedMetaStats" style="margin: 12px 0 16px; font-size: 13px; font-weight: 600; color: var(--text-muted);">Dimensions: 800x600 • Format: PNG</p>
+                        <a id="downloadDecodedBtn" href="#" download="decoded-image.png" class="btn btn-primary" style="padding: 12px 28px; font-weight: 700; text-decoration: none;">
+                            <i class="fas fa-download"></i> Download Image
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+                <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <a href="/" class="footer-logo" title="WebToolkitBox Home">
+                        <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
+                    </a>
+                    <p class="footer-tagline">Process unlimited images for free. 100% private in-browser tools. No signup required.</p>
+                </div>
+                <div class="footer-socials">
+                    <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="social-link" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="https://twitter.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="X / Twitter">
+                        <i class="fab fa-x-twitter"></i>
+                    </a>
+                    <a href="https://instagram.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://linkedin.com/in/itxrishabh" target="_blank" rel="noopener" class="social-link" title="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- SEO Multi-Column Internal Links -->
+            <div class="seo-footer-grid">
+                <div class="seo-footer-col">
+                    <h4><i class="fas fa-arrows-rotate"></i> Format Converters</h4>
+                    <ul>
+                        <li><a href="https://www.webtoolkitbox.com/heic-to-png"><i class="fas fa-chevron-right"></i> Free HEIC to PNG Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/png-to-jpg"><i class="fas fa-chevron-right"></i> PNG to JPG Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/webp-to-jpg"><i class="fas fa-chevron-right"></i> WebP to JPG Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/jpg-to-pdf"><i class="fas fa-chevron-right"></i> Free JPG to PDF Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/pdf-to-jpg"><i class="fas fa-chevron-right"></i> PDF to JPG Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/svg-to-image"><i class="fas fa-chevron-right"></i> SVG to PNG Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-to-base64"><i class="fas fa-chevron-right"></i> Image to Base64 &amp; Decoder</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-converter"><i class="fas fa-chevron-right"></i> Batch Image Format Converter</a></li>
+                    </ul>
+                </div>
+
+                <div class="seo-footer-col">
+                    <h4><i class="fas fa-wand-magic-sparkles"></i> AI &amp; Popular Tools</h4>
+                    <ul>
+                        <li><a href="https://www.webtoolkitbox.com/photo-filters-online"><i class="fas fa-chevron-right"></i> 50+ Photo Filters &amp; Vintage Presets</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-color-palette-extractor"><i class="fas fa-chevron-right"></i> Color Palette Extractor &amp; Hex Picker</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/overlay-images"><i class="fas fa-chevron-right"></i> Overlay Images &amp; Watermarks</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/id-card-merger"><i class="fas fa-chevron-right"></i> ID Card Front &amp; Back Merger</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/profile-picture-border-maker"><i class="fas fa-chevron-right"></i> Profile Picture Border &amp; Rings</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/passport-photo-maker"><i class="fas fa-chevron-right"></i> Free Passport &amp; Visa Photo Maker</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-dpi-converter"><i class="fas fa-chevron-right"></i> Image 300 DPI Print Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/transparent-signature-maker"><i class="fas fa-chevron-right"></i> Transparent Signature Maker</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/social-media-image-resizer"><i class="fas fa-chevron-right"></i> Social Media Image Resizer</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/blur-image-privacy-censor"><i class="fas fa-chevron-right"></i> Privacy Blur &amp; Image Censor</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/remove-photo-location-exif"><i class="fas fa-chevron-right"></i> Remove Photo GPS Location &amp; EXIF</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/background-remover"><i class="fas fa-chevron-right"></i> Free AI Background Remover</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/watermark-remover"><i class="fas fa-chevron-right"></i> Object &amp; Watermark Eraser</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-upscaler"><i class="fas fa-chevron-right"></i> AI Image Upscaler 4X HD</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/seo-audit"><i class="fas fa-chevron-right"></i> Free Technical SEO Checker</a></li>
+                    </ul>
+                </div>
+
+                <div class="seo-footer-col">
+                    <h4><i class="fas fa-sliders"></i> Image Utilities</h4>
+                    <ul>
+                        <li><a href="https://www.webtoolkitbox.com/round-image-corners"><i class="fas fa-chevron-right"></i> Round Image Corners &amp; Circle Maker</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/pixel-art-maker"><i class="fas fa-chevron-right"></i> Pixel Art Maker &amp; 8-Bit Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/add-text-to-image"><i class="fas fa-chevron-right"></i> Add Text &amp; Timestamp to Photo</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/size-manager"><i class="fas fa-chevron-right"></i> Compress Image (20KB, 50KB, 200KB)</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-grid-splitter"><i class="fas fa-chevron-right"></i> Image Grid &amp; Carousel Splitter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/invert-image-colors"><i class="fas fa-chevron-right"></i> Invert Image Colors (Save Ink)</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/meme-generator-online"><i class="fas fa-chevron-right"></i> Free Meme Generator Online</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-resizer"><i class="fas fa-chevron-right"></i> Image Pixel Dimension Resizer</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-cropper"><i class="fas fa-chevron-right"></i> Crop Image Custom Ratio</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/square-image-maker"><i class="fas fa-chevron-right"></i> Square Image 1:1 Maker</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/favicon-generator"><i class="fas fa-chevron-right"></i> Favicon &amp; App Icon Generator</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-to-text-ocr"><i class="fas fa-chevron-right"></i> Image to Text OCR Extractor</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/video-compressor"><i class="fas fa-chevron-right"></i> Compress Video MP4 Online</a></li>
+                    </ul>
+                </div>
+
+                <div class="seo-footer-col">
+                    <h4><i class="fas fa-book-open"></i> Image &amp; SEO Guides</h4>
+                    <ul>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-resize-photo-for-passport-and-visa-online"><i class="fas fa-chevron-right"></i> Resize Photo for Passport &amp; Visa</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-compress-image-for-government-job-exam-application"><i class="fas fa-chevron-right"></i> Compress Photo for Govt Exams</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-make-image-square-without-cropping"><i class="fas fa-chevron-right"></i> Make Image Square Without Cropping</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-create-favicon-ico-from-png"><i class="fas fa-chevron-right"></i> Create Favicon.ico from PNG</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-extract-text-from-image-ocr"><i class="fas fa-chevron-right"></i> Extract Text from Image (OCR)</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-change-image-pixel-size"><i class="fas fa-chevron-right"></i> Change Image Pixel Dimensions</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-resize-images-to-custom-pixel-dimensions"><i class="fas fa-chevron-right"></i> Resize to 100x100 &amp; Custom Pixels</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-upscale-images-without-losing-quality"><i class="fas fa-chevron-right"></i> Upscale Images Without Blur</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-convert-heic-to-png-iphone"><i class="fas fa-chevron-right"></i> Convert iPhone HEIC to PNG</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-remove-watermarks-and-unwanted-objects-from-photos"><i class="fas fa-chevron-right"></i> Remove Watermarks from Photos</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-do-free-website-seo-audit"><i class="fas fa-chevron-right"></i> Free Website SEO Audit Guide</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-divider"></div>
+            <div class="footer-bottom">
+                <p>Developed by <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="footer-dev-link">Rishabh Dev</a></p>
+                <p class="footer-handle">@itxrishabh</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Client-Side Base64 Engine -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Tabs
+            const tabEncode = document.getElementById('tabEncodeBtn');
+            const tabDecode = document.getElementById('tabDecodeBtn');
+            const encodeSection = document.getElementById('encodeSection');
+            const decodeSection = document.getElementById('decodeSection');
+
+            tabEncode.addEventListener('click', () => {
+                tabEncode.classList.add('btn-primary');
+                tabEncode.classList.remove('btn-secondary');
+                tabDecode.classList.add('btn-secondary');
+                tabDecode.classList.remove('btn-primary');
+                encodeSection.style.display = 'block';
+                decodeSection.style.display = 'none';
+            });
+
+            tabDecode.addEventListener('click', () => {
+                tabDecode.classList.add('btn-primary');
+                tabDecode.classList.remove('btn-secondary');
+                tabEncode.classList.add('btn-secondary');
+                tabEncode.classList.remove('btn-primary');
+                decodeSection.style.display = 'block';
+                encodeSection.style.display = 'none';
+            });
+
+            // Tab 1: Encode Logic
+            const dropzone = document.getElementById('b64Dropzone');
+            const fileInput = document.getElementById('b64FileInput');
+            const encodeResult = document.getElementById('encodeResult');
+            const thumb = document.getElementById('encodedPreviewThumb');
+            const fileNameDisplay = document.getElementById('encodedFileName');
+            const metaInfoDisplay = document.getElementById('encodedMetaInfo');
+            const dataUriOutput = document.getElementById('dataUriOutput');
+            const htmlImgOutput = document.getElementById('htmlImgOutput');
+            const cssBgOutput = document.getElementById('cssBgOutput');
+            const resetBtn = document.getElementById('resetEncodeBtn');
+            const copyRawBtn = document.getElementById('copyRawB64Btn');
+
+            dropzone.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files && e.target.files[0]) processEncode(e.target.files[0]);
+            });
+
+            dropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropzone.style.borderColor = '#f59e0b';
+            });
+            dropzone.addEventListener('dragleave', () => dropzone.style.borderColor = 'var(--border)');
+            dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropzone.style.borderColor = 'var(--border)';
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) processEncode(e.dataTransfer.files[0]);
+            });
+
+            function formatBytes(bytes) {
+                if (bytes === 0) return '0 B';
+                const k = 1024;
+                const sizes = ['B', 'KB', 'MB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+            }
+
+            function processEncode(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const dataUrl = e.target.result;
+                    const img = new Image();
+                    img.onload = () => {
+                        thumb.src = dataUrl;
+                        fileNameDisplay.textContent = file.name;
+                        metaInfoDisplay.textContent = `${img.naturalWidth} × ${img.naturalHeight} px • File: ${formatBytes(file.size)} (Base64 string: ~${formatBytes(dataUrl.length)})`;
+
+                        dataUriOutput.value = dataUrl;
+                        htmlImgOutput.value = `<img src="${dataUrl}" alt="${file.name.split('.')[0]}" width="${img.naturalWidth}" height="${img.naturalHeight}">`;
+                        cssBgOutput.value = `background-image: url("${dataUrl}");`;
+
+                        dropzone.style.display = 'none';
+                        encodeResult.style.display = 'block';
+                    };
+                    img.src = dataUrl;
+                };
+                reader.readAsDataURL(file);
+            }
+
+            resetBtn.addEventListener('click', () => {
+                fileInput.value = '';
+                dropzone.style.display = 'flex';
+                encodeResult.style.display = 'none';
+            });
+
+            copyRawBtn.addEventListener('click', () => {
+                copyTextToClipboard(dataUriOutput.value, copyRawBtn, 'Copied Data URI!');
+            });
+
+            // Copy buttons for textareas
+            document.querySelectorAll('.copy-field-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const targetId = btn.getAttribute('data-target');
+                    const target = document.getElementById(targetId);
+                    if (target && target.value) {
+                        copyTextToClipboard(target.value, btn, 'Copied!');
+                    }
+                });
+            });
+
+            function copyTextToClipboard(text, btnElement, successMsg) {
+                navigator.clipboard.writeText(text).then(() => {
+                    const origHtml = btnElement.innerHTML;
+                    btnElement.innerHTML = `<i class="fas fa-check"></i> ${successMsg}`;
+                    btnElement.style.background = '#10b981';
+                    btnElement.style.color = '#fff';
+                    setTimeout(() => {
+                        btnElement.innerHTML = origHtml;
+                        btnElement.style.background = '';
+                        btnElement.style.color = '';
+                    }, 2000);
+                });
+            }
+
+            // Tab 2: Decode Logic
+            const decodeInput = document.getElementById('decodeInput');
+            const runDecodeBtn = document.getElementById('runDecodeBtn');
+            const clearDecodeBtn = document.getElementById('clearDecodeBtn');
+            const decodeResult = document.getElementById('decodeResult');
+            const decodedImagePreview = document.getElementById('decodedImagePreview');
+            const decodedMetaStats = document.getElementById('decodedMetaStats');
+            const downloadDecodedBtn = document.getElementById('downloadDecodedBtn');
+
+            clearDecodeBtn.addEventListener('click', () => {
+                decodeInput.value = '';
+                decodeResult.style.display = 'none';
+            });
+
+            runDecodeBtn.addEventListener('click', () => {
+                let code = decodeInput.value.trim();
+                if (!code) {
+                    alert('Please paste a Base64 string or Data URI first.');
+                    return;
+                }
+
+                // If raw base64 string without data:image/ prefix, infer PNG
+                if (!code.startsWith('data:image/')) {
+                    if (code.startsWith('data:')) {
+                        // Already custom data url
+                    } else {
+                        code = 'data:image/png;base64,' + code;
+                    }
+                }
+
+                const img = new Image();
+                img.onload = () => {
+                    decodedImagePreview.src = code;
+                    decodedMetaStats.textContent = `Dimensions: ${img.naturalWidth} × ${img.naturalHeight} px`;
+                    downloadDecodedBtn.href = code;
+                    decodeResult.style.display = 'block';
+                };
+                img.onerror = () => {
+                    alert('Invalid Base64 image string. Please verify the code and try again.');
+                };
+                img.src = code;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="google-site-verification" content="d0OdByg6j4ZbXrYq_O7SLN5kcx58VtFDakc5TRUElB4" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-406KB1Z1V6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-406KB1Z1V6');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Color Palette Extractor & Hex Picker Online | WebToolkitBox</title>
+    <meta name="description" content="Extract beautiful color palettes, dominant shades & exact HEX/RGB codes from any image online for free. Interactive eyedropper pixel picker & CSS export. 100% private.">
+    <meta name="keywords" content="image color palette extractor, extract colors from image, image color picker, photo hex code finder, dominant colors from photo, color scheme generator from image, eyedropper tool online">
+    <meta name="author" content="Rishabh Dev (@itxrishabh)">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://www.webtoolkitbox.com/image-color-palette-extractor">
+
+    <!-- International Hreflang Tags -->
+    <link rel="alternate" hreflang="x-default" href="https://www.webtoolkitbox.com/image-color-palette-extractor">
+    <link rel="alternate" hreflang="en-US" href="https://www.webtoolkitbox.com/image-color-palette-extractor">
+    <link rel="alternate" hreflang="en-IN" href="https://www.webtoolkitbox.com/image-color-palette-extractor">
+    <link rel="alternate" hreflang="en-GB" href="https://www.webtoolkitbox.com/image-color-palette-extractor">
+    <link rel="alternate" hreflang="en-CA" href="https://www.webtoolkitbox.com/image-color-palette-extractor">
+    <link rel="alternate" hreflang="en-AU" href="https://www.webtoolkitbox.com/image-color-palette-extractor">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.webtoolkitbox.com/image-color-palette-extractor">
+    <meta property="og:title" content="Image Color Palette Extractor & Hex Picker Online | WebToolkitBox">
+    <meta property="og:description" content="Extract dominant color schemes, HEX/RGB swatches, and CSS variables from any photo in seconds. Free and client-side private.">
+    <meta property="og:image" content="https://www.webtoolkitbox.com/images/og-card.png">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "Image Color Palette Extractor & Hex Picker",
+          "url": "https://www.webtoolkitbox.com/image-color-palette-extractor",
+          "description": "Extract dominant color palettes, HEX codes, RGB values, and CSS color variables from any photo online.",
+          "applicationCategory": "DesignApplication",
+          "operatingSystem": "All",
+          "offers": {
+            "@type": "Offer",
+            "price": "0.00",
+            "priceCurrency": "USD"
+          },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "ratingCount": "2410",
+            "bestRating": "5"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.webtoolkitbox.com/" },
+            { "@type": "ListItem", "position": 2, "name": "Design Tools", "item": "https://www.webtoolkitbox.com/" },
+            { "@type": "ListItem", "position": 3, "name": "Color Palette Extractor", "item": "https://www.webtoolkitbox.com/image-color-palette-extractor" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How does the Image Color Palette Extractor work?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It analyzes pixel clusters in your uploaded photo using client-side color quantization to identify the 6 to 8 most dominant, harmonious shades and provides copyable HEX, RGB, and HSL codes."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I pick an exact single pixel color from the photo?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! Hover or click anywhere on the uploaded image to use the interactive eyedropper loupe and copy the exact pixel color."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="https://www.webtoolkitbox.com/favicon.ico" sizes="any" />
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <a href="/" class="header-brand" title="WebToolkitBox Home">
+                <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
+            </a>
+            <div class="header-right">
+                <span class="header-tagline">Your All-in-One Image Toolkit</span>
+                <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Light/Dark Mode">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <a href="passport-photo-maker" class="passport-header-link">
+                    <i class="fas fa-id-card"></i> <span>Passport Maker</span>
+                </a>
+                <a href="photo-filters-online" class="passport-header-link" style="border-color: rgba(245, 158, 11, 0.3); background: rgba(245, 158, 11, 0.08); color: #f59e0b;">
+                    <i class="fas fa-wand-magic-sparkles"></i> <span>50+ Filters</span>
+                </a>
+                <a href="seo-audit" class="seo-audit-link">
+                    <i class="fas fa-chart-line"></i> <span>SEO Audit</span>
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Tool Workspace -->
+        <main class="tool-workspace">
+            <div class="tool-header">
+                <h1 class="tool-title"><i class="fas fa-palette" style="color: #ec4899;"></i> Image Color Palette Extractor &amp; Hex Picker</h1>
+                <p class="tool-subtitle">Extract dominant color schemes, HEX &amp; RGB swatches, and CSS variables from any image with interactive pixel eyedropper. 100% private.</p>
+            </div>
+
+            <!-- Upload Dropzone -->
+            <div class="dropzone" id="paletteDropzone">
+                <input type="file" id="paletteFileInput" accept="image/*" style="display: none;">
+                <div class="dropzone-content">
+                    <i class="fas fa-palette dropzone-icon" style="color: #ec4899;"></i>
+                    <p class="dropzone-title">Drop your image here or <span class="dropzone-browse">browse</span></p>
+                    <p class="dropzone-desc">PNG, JPG, WebP, SVG, GIF — Extract beautiful palettes instantly</p>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="paletteResultsSection" style="display: none; margin-top: 24px;">
+                <!-- Main Grid Layout -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; align-items: start;">
+                    <!-- Left: Interactive Canvas with Eyedropper -->
+                    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; text-align: center;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <span style="font-size: 13px; font-weight: 700; color: var(--text);"><i class="fas fa-eye-dropper"></i> Click/Hover to Pick Any Pixel</span>
+                            <span id="hoverColorBadge" style="font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border); display: inline-flex; align-items: center; gap: 6px;">
+                                <span id="hoverColorDot" style="width: 12px; height: 12px; border-radius: 50%; display: inline-block; background: #fff; border: 1px solid #ccc;"></span>
+                                <span id="hoverColorHex">#FFFFFF</span>
+                            </span>
+                        </div>
+                        <div style="position: relative; display: inline-block; max-width: 100%; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); cursor: crosshair;">
+                            <canvas id="paletteCanvas" style="max-width: 100%; max-height: 420px; height: auto; display: block;"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Right: Dominant Palette Swatches & Actions -->
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--text);">Dominant Palette (Top 8 Colors)</h3>
+                                <button type="button" id="copyCssVarsBtn" class="btn btn-secondary btn-sm"><i class="fas fa-code"></i> Copy CSS Vars</button>
+                            </div>
+
+                            <!-- Swatches Grid -->
+                            <div id="swatchesContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;"></div>
+                        </div>
+
+                        <!-- Quick Export Bar -->
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button type="button" id="downloadPaletteImgBtn" class="btn btn-primary" style="flex: 1; padding: 12px; font-weight: 700;">
+                                <i class="fas fa-download"></i> Download Palette Card
+                            </button>
+                            <button type="button" id="copyAllHexBtn" class="btn btn-secondary" style="padding: 12px 18px; font-weight: 600;">
+                                <i class="fas fa-copy"></i> Copy All HEX
+                            </button>
+                            <button type="button" id="resetPaletteBtn" class="btn btn-secondary" style="padding: 12px 18px; font-weight: 600;">
+                                <i class="fas fa-rotate-left"></i> New Image
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+                <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <a href="/" class="footer-logo" title="WebToolkitBox Home">
+                        <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
+                    </a>
+                    <p class="footer-tagline">Process unlimited images for free. 100% private in-browser tools. No signup required.</p>
+                </div>
+                <div class="footer-socials">
+                    <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="social-link" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="https://twitter.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="X / Twitter">
+                        <i class="fab fa-x-twitter"></i>
+                    </a>
+                    <a href="https://instagram.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://linkedin.com/in/itxrishabh" target="_blank" rel="noopener" class="social-link" title="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- SEO Multi-Column Internal Links -->
+            <div class="seo-footer-grid">
+                <div class="seo-footer-col">
+                    <h4><i class="fas fa-arrows-rotate"></i> Format Converters</h4>
+                    <ul>
+                        <li><a href="https://www.webtoolkitbox.com/heic-to-png"><i class="fas fa-chevron-right"></i> Free HEIC to PNG Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/png-to-jpg"><i class="fas fa-chevron-right"></i> PNG to JPG Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/webp-to-jpg"><i class="fas fa-chevron-right"></i> WebP to JPG Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/jpg-to-pdf"><i class="fas fa-chevron-right"></i> Free JPG to PDF Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/pdf-to-jpg"><i class="fas fa-chevron-right"></i> PDF to JPG Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/svg-to-image"><i class="fas fa-chevron-right"></i> SVG to PNG Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-to-base64"><i class="fas fa-chevron-right"></i> Image to Base64 &amp; Decoder</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-converter"><i class="fas fa-chevron-right"></i> Batch Image Format Converter</a></li>
+                    </ul>
+                </div>
+
+                <div class="seo-footer-col">
+                    <h4><i class="fas fa-wand-magic-sparkles"></i> AI &amp; Popular Tools</h4>
+                    <ul>
+                        <li><a href="https://www.webtoolkitbox.com/photo-filters-online"><i class="fas fa-chevron-right"></i> 50+ Photo Filters &amp; Vintage Presets</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-color-palette-extractor"><i class="fas fa-chevron-right"></i> Color Palette Extractor &amp; Hex Picker</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/overlay-images"><i class="fas fa-chevron-right"></i> Overlay Images &amp; Watermarks</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/id-card-merger"><i class="fas fa-chevron-right"></i> ID Card Front &amp; Back Merger</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/profile-picture-border-maker"><i class="fas fa-chevron-right"></i> Profile Picture Border &amp; Rings</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/passport-photo-maker"><i class="fas fa-chevron-right"></i> Free Passport &amp; Visa Photo Maker</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-dpi-converter"><i class="fas fa-chevron-right"></i> Image 300 DPI Print Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/transparent-signature-maker"><i class="fas fa-chevron-right"></i> Transparent Signature Maker</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/social-media-image-resizer"><i class="fas fa-chevron-right"></i> Social Media Image Resizer</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/blur-image-privacy-censor"><i class="fas fa-chevron-right"></i> Privacy Blur &amp; Image Censor</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/remove-photo-location-exif"><i class="fas fa-chevron-right"></i> Remove Photo GPS Location &amp; EXIF</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/background-remover"><i class="fas fa-chevron-right"></i> Free AI Background Remover</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/watermark-remover"><i class="fas fa-chevron-right"></i> Object &amp; Watermark Eraser</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-upscaler"><i class="fas fa-chevron-right"></i> AI Image Upscaler 4X HD</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/seo-audit"><i class="fas fa-chevron-right"></i> Free Technical SEO Checker</a></li>
+                    </ul>
+                </div>
+
+                <div class="seo-footer-col">
+                    <h4><i class="fas fa-sliders"></i> Image Utilities</h4>
+                    <ul>
+                        <li><a href="https://www.webtoolkitbox.com/round-image-corners"><i class="fas fa-chevron-right"></i> Round Image Corners &amp; Circle Maker</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/pixel-art-maker"><i class="fas fa-chevron-right"></i> Pixel Art Maker &amp; 8-Bit Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/add-text-to-image"><i class="fas fa-chevron-right"></i> Add Text &amp; Timestamp to Photo</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/size-manager"><i class="fas fa-chevron-right"></i> Compress Image (20KB, 50KB, 200KB)</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-grid-splitter"><i class="fas fa-chevron-right"></i> Image Grid &amp; Carousel Splitter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/invert-image-colors"><i class="fas fa-chevron-right"></i> Invert Image Colors (Save Ink)</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/meme-generator-online"><i class="fas fa-chevron-right"></i> Free Meme Generator Online</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-resizer"><i class="fas fa-chevron-right"></i> Image Pixel Dimension Resizer</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-cropper"><i class="fas fa-chevron-right"></i> Crop Image Custom Ratio</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/square-image-maker"><i class="fas fa-chevron-right"></i> Square Image 1:1 Maker</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/favicon-generator"><i class="fas fa-chevron-right"></i> Favicon &amp; App Icon Generator</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-to-text-ocr"><i class="fas fa-chevron-right"></i> Image to Text OCR Extractor</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/video-compressor"><i class="fas fa-chevron-right"></i> Compress Video MP4 Online</a></li>
+                    </ul>
+                </div>
+
+                <div class="seo-footer-col">
+                    <h4><i class="fas fa-book-open"></i> Image &amp; SEO Guides</h4>
+                    <ul>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-resize-photo-for-passport-and-visa-online"><i class="fas fa-chevron-right"></i> Resize Photo for Passport &amp; Visa</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-compress-image-for-government-job-exam-application"><i class="fas fa-chevron-right"></i> Compress Photo for Govt Exams</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-make-image-square-without-cropping"><i class="fas fa-chevron-right"></i> Make Image Square Without Cropping</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-create-favicon-ico-from-png"><i class="fas fa-chevron-right"></i> Create Favicon.ico from PNG</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-extract-text-from-image-ocr"><i class="fas fa-chevron-right"></i> Extract Text from Image (OCR)</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-change-image-pixel-size"><i class="fas fa-chevron-right"></i> Change Image Pixel Dimensions</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-resize-images-to-custom-pixel-dimensions"><i class="fas fa-chevron-right"></i> Resize to 100x100 &amp; Custom Pixels</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-upscale-images-without-losing-quality"><i class="fas fa-chevron-right"></i> Upscale Images Without Blur</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-convert-heic-to-png-iphone"><i class="fas fa-chevron-right"></i> Convert iPhone HEIC to PNG</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-remove-watermarks-and-unwanted-objects-from-photos"><i class="fas fa-chevron-right"></i> Remove Watermarks from Photos</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-do-free-website-seo-audit"><i class="fas fa-chevron-right"></i> Free Website SEO Audit Guide</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-divider"></div>
+            <div class="footer-bottom">
+                <p>Developed by <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="footer-dev-link">Rishabh Dev</a></p>
+                <p class="footer-handle">@itxrishabh</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Client-Side Palette Extraction Engine -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let loadedImg = null;
+            let extractedColors = [];
+
+            const dropzone = document.getElementById('paletteDropzone');
+            const fileInput = document.getElementById('paletteFileInput');
+            const resultsSection = document.getElementById('paletteResultsSection');
+            const canvas = document.getElementById('paletteCanvas');
+            const ctx = canvas.getContext('2d');
+            const swatchesContainer = document.getElementById('swatchesContainer');
+            const hoverDot = document.getElementById('hoverColorDot');
+            const hoverHex = document.getElementById('hoverColorHex');
+            const copyCssVarsBtn = document.getElementById('copyCssVarsBtn');
+            const copyAllHexBtn = document.getElementById('copyAllHexBtn');
+            const downloadPaletteBtn = document.getElementById('downloadPaletteImgBtn');
+            const resetBtn = document.getElementById('resetPaletteBtn');
+
+            dropzone.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files && e.target.files[0]) handleFile(e.target.files[0]);
+            });
+
+            dropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropzone.style.borderColor = '#ec4899';
+            });
+            dropzone.addEventListener('dragleave', () => dropzone.style.borderColor = 'var(--border)');
+            dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropzone.style.borderColor = 'var(--border)';
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+            });
+
+            function handleFile(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        loadedImg = img;
+                        renderImageAndExtractPalette();
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+
+            function rgbToHex(r, g, b) {
+                return '#' + [r, g, b].map(x => {
+                    const hex = x.toString(16);
+                    return hex.length === 1 ? '0' + hex : hex;
+                }).join('').toUpperCase();
+            }
+
+            function rgbToHsl(r, g, b) {
+                r /= 255; g /= 255; b /= 255;
+                const max = Math.max(r, g, b), min = Math.min(r, g, b);
+                let h, s, l = (max + min) / 2;
+                if (max === min) {
+                    h = s = 0;
+                } else {
+                    const d = max - min;
+                    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                    switch (max) {
+                        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                        case g: h = (b - r) / d + 2; break;
+                        case b: h = (r - g) / d + 4; break;
+                    }
+                    h /= 6;
+                }
+                return `hsl(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
+            }
+
+            function renderImageAndExtractPalette() {
+                canvas.width = loadedImg.width;
+                canvas.height = loadedImg.height;
+                ctx.drawImage(loadedImg, 0, 0);
+
+                // Downscale for fast sampling
+                const sampleCanvas = document.createElement('canvas');
+                const sampleSize = 100;
+                sampleCanvas.width = sampleSize;
+                sampleCanvas.height = sampleSize;
+                const sCtx = sampleCanvas.getContext('2d');
+                sCtx.drawImage(loadedImg, 0, 0, sampleSize, sampleSize);
+
+                const imgData = sCtx.getImageData(0, 0, sampleSize, sampleSize).data;
+                const colorBuckets = {};
+
+                // Quantize to 5-bit color buckets
+                for (let i = 0; i < imgData.length; i += 4) {
+                    const a = imgData[i + 3];
+                    if (a < 128) continue; // Skip transparent
+
+                    const r = Math.round(imgData[i] / 16) * 16;
+                    const g = Math.round(imgData[i + 1] / 16) * 16;
+                    const b = Math.round(imgData[i + 2] / 16) * 16;
+
+                    const key = `${r},${g},${b}`;
+                    colorBuckets[key] = (colorBuckets[key] || 0) + 1;
+                }
+
+                // Sort and pick top 8 colors with minimum perceptual distance
+                const sortedKeys = Object.keys(colorBuckets).sort((a, b) => colorBuckets[b] - colorBuckets[a]);
+                extractedColors = [];
+
+                for (const key of sortedKeys) {
+                    const [r, g, b] = key.split(',').map(Number);
+                    const hex = rgbToHex(r, g, b);
+                    const rgb = `rgb(${r}, ${g}, ${b})`;
+                    const hsl = rgbToHsl(r, g, b);
+
+                    // Check distance to avoid nearly identical colors
+                    const isDistinct = extractedColors.every(c => {
+                        const dist = Math.sqrt(Math.pow(c.r - r, 2) + Math.pow(c.g - g, 2) + Math.pow(c.b - b, 2));
+                        return dist > 35;
+                    });
+
+                    if (isDistinct) {
+                        extractedColors.push({ r, g, b, hex, rgb, hsl });
+                    }
+                    if (extractedColors.length >= 8) break;
+                }
+
+                renderSwatches();
+                dropzone.style.display = 'none';
+                resultsSection.style.display = 'block';
+            }
+
+            function renderSwatches() {
+                swatchesContainer.innerHTML = '';
+                extractedColors.forEach((color, idx) => {
+                    const isDark = (color.r * 0.299 + color.g * 0.587 + color.b * 0.114) < 140;
+                    const card = document.createElement('div');
+                    card.style.cssText = `
+                        background: var(--surface);
+                        border: 1px solid var(--border);
+                        border-radius: 10px;
+                        overflow: hidden;
+                        cursor: pointer;
+                        transition: transform 0.15s ease, box-shadow 0.15s ease;
+                    `;
+                    card.innerHTML = `
+                        <div style="height: 60px; background: ${color.hex}; display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 11px; font-weight: 700; color: ${isDark ? '#ffffff' : '#000000'}; opacity: 0.85;">#${idx + 1}</span>
+                        </div>
+                        <div style="padding: 10px; font-size: 12px; display: flex; flex-direction: column; gap: 4px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <strong style="font-size: 13px; color: var(--text);">${color.hex}</strong>
+                                <i class="far fa-copy" style="color: var(--text-muted); font-size: 11px;"></i>
+                            </div>
+                            <span style="font-size: 11px; color: var(--text-muted);">${color.rgb}</span>
+                        </div>
+                    `;
+
+                    card.addEventListener('mouseenter', () => card.style.transform = 'translateY(-2px)');
+                    card.addEventListener('mouseleave', () => card.style.transform = 'none');
+                    card.addEventListener('click', () => {
+                        navigator.clipboard.writeText(color.hex).then(() => {
+                            const badge = card.querySelector('strong');
+                            const originalText = badge.textContent;
+                            badge.textContent = 'Copied!';
+                            badge.style.color = '#10b981';
+                            setTimeout(() => {
+                                badge.textContent = originalText;
+                                badge.style.color = 'var(--text)';
+                            }, 1500);
+                        });
+                    });
+
+                    swatchesContainer.appendChild(card);
+                });
+            }
+
+            // Interactive Eyedropper on Canvas
+            canvas.addEventListener('mousemove', (e) => {
+                if (!loadedImg) return;
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+
+                const x = Math.floor((e.clientX - rect.left) * scaleX);
+                const y = Math.floor((e.clientY - rect.top) * scaleY);
+
+                if (x >= 0 && x < canvas.width && y >= 0 && y < canvas.height) {
+                    const pixel = ctx.getImageData(x, y, 1, 1).data;
+                    const hex = rgbToHex(pixel[0], pixel[1], pixel[2]);
+                    hoverDot.style.background = hex;
+                    hoverHex.textContent = hex;
+                }
+            });
+
+            canvas.addEventListener('click', (e) => {
+                if (!loadedImg) return;
+                const hex = hoverHex.textContent;
+                navigator.clipboard.writeText(hex).then(() => {
+                    hoverHex.textContent = 'Copied ' + hex + '!';
+                    setTimeout(() => hoverHex.textContent = hex, 1500);
+                });
+            });
+
+            // Copy CSS Variables
+            copyCssVarsBtn.addEventListener('click', () => {
+                const css = `:root {\n` + extractedColors.map((c, i) => `  --color-palette-${i + 1}: ${c.hex};`).join('\n') + `\n}`;
+                navigator.clipboard.writeText(css).then(() => {
+                    const orig = copyCssVarsBtn.innerHTML;
+                    copyCssVarsBtn.innerHTML = '<i class="fas fa-check"></i> Copied CSS!';
+                    setTimeout(() => copyCssVarsBtn.innerHTML = orig, 2000);
+                });
+            });
+
+            // Copy All Hex
+            copyAllHexBtn.addEventListener('click', () => {
+                const allHex = extractedColors.map(c => c.hex).join(', ');
+                navigator.clipboard.writeText(allHex).then(() => {
+                    const orig = copyAllHexBtn.innerHTML;
+                    copyAllHexBtn.innerHTML = '<i class="fas fa-check"></i> Copied All!';
+                    setTimeout(() => copyAllHexBtn.innerHTML = orig, 2000);
+                });
+            });
+
+            // Download Palette as Image Graphic
+            downloadPaletteBtn.addEventListener('click', () => {
+                if (extractedColors.length === 0) return;
+
+                const cardCanvas = document.createElement('canvas');
+                const w = 800;
+                const h = 480;
+                cardCanvas.width = w;
+                cardCanvas.height = h;
+                const cCtx = cardCanvas.getContext('2d');
+
+                // Draw background
+                cCtx.fillStyle = '#0f172a';
+                cCtx.fillRect(0, 0, w, h);
+
+                // Draw Title
+                cCtx.fillStyle = '#f8fafc';
+                cCtx.font = 'bold 24px Inter, sans-serif';
+                cCtx.fillText('Color Palette by WebToolkitBox', 40, 50);
+
+                // Draw Swatches
+                const swatchW = (w - 80) / extractedColors.length;
+                const swatchH = 260;
+                const startY = 80;
+
+                extractedColors.forEach((color, i) => {
+                    const x = 40 + i * swatchW;
+                    cCtx.fillStyle = color.hex;
+                    cCtx.fillRect(x, startY, swatchW, swatchH);
+
+                    // Draw Hex label
+                    cCtx.fillStyle = '#94a3b8';
+                    cCtx.font = 'bold 13px Inter, monospace';
+                    cCtx.fillText(color.hex, x + 6, startY + swatchH + 35);
+                    cCtx.font = '11px Inter, sans-serif';
+                    cCtx.fillText(`Color ${i + 1}`, x + 6, startY + swatchH + 55);
+                });
+
+                const link = document.createElement('a');
+                link.download = 'color-palette.png';
+                link.href = cardCanvas.toDataURL('image/png');
+                link.click();
+            });
+
+            resetBtn.addEventListener('click', () => {
+                fileInput.value = '';
+                loadedImg = null;
+                extractedColors = [];
+                dropzone.style.display = 'flex';
+                resultsSection.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

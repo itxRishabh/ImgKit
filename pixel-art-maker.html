@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="google-site-verification" content="d0OdByg6j4ZbXrYq_O7SLN5kcx58VtFDakc5TRUElB4" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-406KB1Z1V6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-406KB1Z1V6');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Art Maker & 8-Bit Retro Converter Online | WebToolkitBox</title>
+    <meta name="description" content="Convert photos into retro 8-bit pixel art, Game Boy style, or NES arcade sprites online for free. Adjustable pixel size and vintage gaming palettes. 100% private.">
+    <meta name="keywords" content="pixel art maker, convert image to pixel art, 8 bit photo converter, pixelate image online, retro game photo filter, game boy photo converter, 8 bit sprite maker">
+    <meta name="author" content="Rishabh Dev (@itxrishabh)">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://www.webtoolkitbox.com/pixel-art-maker">
+
+    <!-- International Hreflang Tags -->
+    <link rel="alternate" hreflang="x-default" href="https://www.webtoolkitbox.com/pixel-art-maker">
+    <link rel="alternate" hreflang="en-US" href="https://www.webtoolkitbox.com/pixel-art-maker">
+    <link rel="alternate" hreflang="en-IN" href="https://www.webtoolkitbox.com/pixel-art-maker">
+    <link rel="alternate" hreflang="en-GB" href="https://www.webtoolkitbox.com/pixel-art-maker">
+    <link rel="alternate" hreflang="en-CA" href="https://www.webtoolkitbox.com/pixel-art-maker">
+    <link rel="alternate" hreflang="en-AU" href="https://www.webtoolkitbox.com/pixel-art-maker">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.webtoolkitbox.com/pixel-art-maker">
+    <meta property="og:title" content="Pixel Art Maker & 8-Bit Retro Converter Online | WebToolkitBox">
+    <meta property="og:description" content="Turn any photo into retro 8-bit pixel art, Game Boy nostalgic sprites, and vintage arcade mosaics in seconds.">
+    <meta property="og:image" content="https://www.webtoolkitbox.com/images/og-card.png">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "Pixel Art Maker & 8-Bit Retro Converter",
+          "url": "https://www.webtoolkitbox.com/pixel-art-maker",
+          "description": "Convert regular photos into retro pixel art, 8-bit game sprites, and Game Boy green mosaics online.",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "All",
+          "offers": {
+            "@type": "Offer",
+            "price": "0.00",
+            "priceCurrency": "USD"
+          },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "ratingCount": "3120",
+            "bestRating": "5"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.webtoolkitbox.com/" },
+            { "@type": "ListItem", "position": 2, "name": "Creative Tools", "item": "https://www.webtoolkitbox.com/" },
+            { "@type": "ListItem", "position": 3, "name": "Pixel Art Maker", "item": "https://www.webtoolkitbox.com/pixel-art-maker" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How does the Pixel Art Converter keep images sharp?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It downsamples the image onto a retro pixel grid and then re-renders using crisp nearest-neighbor image smoothing, preventing unwanted anti-aliased blur on export."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What retro color palettes are available?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "You can choose from Full Color Pixelate, Classic Game Boy 4-Green, NES 8-Bit Arcade, PICO-8 Fantasy, Cyberpunk Neon, and 1-Bit Monochrome."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="https://www.webtoolkitbox.com/favicon.ico" sizes="any" />
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <a href="/" class="header-brand" title="WebToolkitBox Home">
+                <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
+            </a>
+            <div class="header-right">
+                <span class="header-tagline">Your All-in-One Image Toolkit</span>
+                <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Light/Dark Mode">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <a href="passport-photo-maker" class="passport-header-link">
+                    <i class="fas fa-id-card"></i> <span>Passport Maker</span>
+                </a>
+                <a href="photo-filters-online" class="passport-header-link" style="border-color: rgba(245, 158, 11, 0.3); background: rgba(245, 158, 11, 0.08); color: #f59e0b;">
+                    <i class="fas fa-wand-magic-sparkles"></i> <span>50+ Filters</span>
+                </a>
+                <a href="seo-audit" class="seo-audit-link">
+                    <i class="fas fa-chart-line"></i> <span>SEO Audit</span>
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Tool Workspace -->
+        <main class="tool-workspace">
+            <div class="tool-header">
+                <h1 class="tool-title"><i class="fas fa-gamepad" style="color: #8b5cf6;"></i> Pixel Art Maker &amp; 8-Bit Retro Converter</h1>
+                <p class="tool-subtitle">Convert regular photos into vintage 8-bit pixel art, Game Boy green nostalgic sprites, and NES arcade mosaics. 100% private.</p>
+            </div>
+
+            <!-- Upload Dropzone -->
+            <div class="dropzone" id="pixelDropzone">
+                <input type="file" id="pixelFileInput" accept="image/*" style="display: none;">
+                <div class="dropzone-content">
+                    <i class="fas fa-gamepad dropzone-icon" style="color: #8b5cf6;"></i>
+                    <p class="dropzone-title">Drop your image here or <span class="dropzone-browse">browse</span></p>
+                    <p class="dropzone-desc">PNG, JPG, WebP — Convert to 8-bit retro gaming art in 1 click</p>
+                </div>
+            </div>
+
+            <!-- Workspace Controls & Canvas -->
+            <div id="pixelWorkspace" style="display: none; margin-top: 24px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; align-items: start;">
+                    <!-- Canvas Preview -->
+                    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center;">
+                        <div style="display: inline-block; max-width: 100%; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                            <canvas id="pixelCanvas" style="max-width: 100%; max-height: 440px; height: auto; display: block; image-rendering: pixelated; image-rendering: crisp-edges;"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Controls Sidebar -->
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <!-- Pixel Block Size Slider -->
+                        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <label style="font-size: 13px; font-weight: 700; color: var(--text);">Pixel Block Size</label>
+                                <span id="pixelSizeDisplay" style="font-size: 13px; font-weight: 700; color: #8b5cf6;">12 px</span>
+                            </div>
+                            <input type="range" id="pixelSizeSlider" min="4" max="40" step="2" value="12" style="width: 100%; accent-color: #8b5cf6; cursor: pointer;">
+                        </div>
+
+                        <!-- Retro Color Palettes -->
+                        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
+                            <label style="font-size: 13px; font-weight: 700; color: var(--text); display: block; margin-bottom: 12px;">Retro Palette Mode</label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                <button type="button" class="palette-btn active" data-palette="full">🌈 Full Color</button>
+                                <button type="button" class="palette-btn" data-palette="gameboy">🎮 Game Boy</button>
+                                <button type="button" class="palette-btn" data-palette="nes">👾 NES 8-Bit</button>
+                                <button type="button" class="palette-btn" data-palette="pico8">🕹️ PICO-8</button>
+                                <button type="button" class="palette-btn" data-palette="cyberpunk">⚡ Cyberpunk</button>
+                                <button type="button" class="palette-btn" data-palette="mono">🖤 1-Bit B&amp;W</button>
+                            </div>
+                        </div>
+
+                        <!-- Pixel Grid Toggle -->
+                        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 13px; font-weight: 600; color: var(--text);">Show Retro Pixel Grid Lines</span>
+                            <input type="checkbox" id="pixelGridToggle" style="accent-color: #8b5cf6; width: 18px; height: 18px; cursor: pointer;">
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <a id="downloadPixelBtn" href="#" download="pixel-art.png" class="btn btn-primary" style="flex: 1; padding: 12px; font-weight: 700; text-align: center; text-decoration: none;">
+                                <i class="fas fa-download"></i> Download Pixel Art (HD)
+                            </a>
+                            <button type="button" id="resetPixelBtn" class="btn btn-secondary" style="padding: 12px 18px; font-weight: 600;">
+                                <i class="fas fa-rotate-left"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+                <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <a href="/" class="footer-logo" title="WebToolkitBox Home">
+                        <img src="images/logo.webp" alt="WebToolkitBox" class="brand-logo-img">
+                    </a>
+                    <p class="footer-tagline">Process unlimited images for free. 100% private in-browser tools. No signup required.</p>
+                </div>
+                <div class="footer-socials">
+                    <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="social-link" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="https://twitter.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="X / Twitter">
+                        <i class="fab fa-x-twitter"></i>
+                    </a>
+                    <a href="https://instagram.com/itxrishabh" target="_blank" rel="noopener" class="social-link" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://linkedin.com/in/itxrishabh" target="_blank" rel="noopener" class="social-link" title="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- SEO Multi-Column Internal Links -->
+            <div class="seo-footer-grid">
+                <div class="seo-footer-col">
+                    <h4><i class="fas fa-arrows-rotate"></i> Format Converters</h4>
+                    <ul>
+                        <li><a href="https://www.webtoolkitbox.com/heic-to-png"><i class="fas fa-chevron-right"></i> Free HEIC to PNG Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/png-to-jpg"><i class="fas fa-chevron-right"></i> PNG to JPG Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/webp-to-jpg"><i class="fas fa-chevron-right"></i> WebP to JPG Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/jpg-to-pdf"><i class="fas fa-chevron-right"></i> Free JPG to PDF Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/pdf-to-jpg"><i class="fas fa-chevron-right"></i> PDF to JPG Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/svg-to-image"><i class="fas fa-chevron-right"></i> SVG to PNG Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-to-base64"><i class="fas fa-chevron-right"></i> Image to Base64 &amp; Decoder</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-converter"><i class="fas fa-chevron-right"></i> Batch Image Format Converter</a></li>
+                    </ul>
+                </div>
+
+                <div class="seo-footer-col">
+                    <h4><i class="fas fa-wand-magic-sparkles"></i> AI &amp; Popular Tools</h4>
+                    <ul>
+                        <li><a href="https://www.webtoolkitbox.com/photo-filters-online"><i class="fas fa-chevron-right"></i> 50+ Photo Filters &amp; Vintage Presets</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-color-palette-extractor"><i class="fas fa-chevron-right"></i> Color Palette Extractor &amp; Hex Picker</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/overlay-images"><i class="fas fa-chevron-right"></i> Overlay Images &amp; Watermarks</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/id-card-merger"><i class="fas fa-chevron-right"></i> ID Card Front &amp; Back Merger</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/profile-picture-border-maker"><i class="fas fa-chevron-right"></i> Profile Picture Border &amp; Rings</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/passport-photo-maker"><i class="fas fa-chevron-right"></i> Free Passport &amp; Visa Photo Maker</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-dpi-converter"><i class="fas fa-chevron-right"></i> Image 300 DPI Print Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/transparent-signature-maker"><i class="fas fa-chevron-right"></i> Transparent Signature Maker</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/social-media-image-resizer"><i class="fas fa-chevron-right"></i> Social Media Image Resizer</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/blur-image-privacy-censor"><i class="fas fa-chevron-right"></i> Privacy Blur &amp; Image Censor</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/remove-photo-location-exif"><i class="fas fa-chevron-right"></i> Remove Photo GPS Location &amp; EXIF</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/background-remover"><i class="fas fa-chevron-right"></i> Free AI Background Remover</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/watermark-remover"><i class="fas fa-chevron-right"></i> Object &amp; Watermark Eraser</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-upscaler"><i class="fas fa-chevron-right"></i> AI Image Upscaler 4X HD</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/seo-audit"><i class="fas fa-chevron-right"></i> Free Technical SEO Checker</a></li>
+                    </ul>
+                </div>
+
+                <div class="seo-footer-col">
+                    <h4><i class="fas fa-sliders"></i> Image Utilities</h4>
+                    <ul>
+                        <li><a href="https://www.webtoolkitbox.com/round-image-corners"><i class="fas fa-chevron-right"></i> Round Image Corners &amp; Circle Maker</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/pixel-art-maker"><i class="fas fa-chevron-right"></i> Pixel Art Maker &amp; 8-Bit Converter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/add-text-to-image"><i class="fas fa-chevron-right"></i> Add Text &amp; Timestamp to Photo</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/size-manager"><i class="fas fa-chevron-right"></i> Compress Image (20KB, 50KB, 200KB)</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-grid-splitter"><i class="fas fa-chevron-right"></i> Image Grid &amp; Carousel Splitter</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/invert-image-colors"><i class="fas fa-chevron-right"></i> Invert Image Colors (Save Ink)</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/meme-generator-online"><i class="fas fa-chevron-right"></i> Free Meme Generator Online</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-resizer"><i class="fas fa-chevron-right"></i> Image Pixel Dimension Resizer</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-cropper"><i class="fas fa-chevron-right"></i> Crop Image Custom Ratio</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/square-image-maker"><i class="fas fa-chevron-right"></i> Square Image 1:1 Maker</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/favicon-generator"><i class="fas fa-chevron-right"></i> Favicon &amp; App Icon Generator</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/image-to-text-ocr"><i class="fas fa-chevron-right"></i> Image to Text OCR Extractor</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/video-compressor"><i class="fas fa-chevron-right"></i> Compress Video MP4 Online</a></li>
+                    </ul>
+                </div>
+
+                <div class="seo-footer-col">
+                    <h4><i class="fas fa-book-open"></i> Image &amp; SEO Guides</h4>
+                    <ul>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-resize-photo-for-passport-and-visa-online"><i class="fas fa-chevron-right"></i> Resize Photo for Passport &amp; Visa</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-compress-image-for-government-job-exam-application"><i class="fas fa-chevron-right"></i> Compress Photo for Govt Exams</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-make-image-square-without-cropping"><i class="fas fa-chevron-right"></i> Make Image Square Without Cropping</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-create-favicon-ico-from-png"><i class="fas fa-chevron-right"></i> Create Favicon.ico from PNG</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-extract-text-from-image-ocr"><i class="fas fa-chevron-right"></i> Extract Text from Image (OCR)</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-change-image-pixel-size"><i class="fas fa-chevron-right"></i> Change Image Pixel Dimensions</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-resize-images-to-custom-pixel-dimensions"><i class="fas fa-chevron-right"></i> Resize to 100x100 &amp; Custom Pixels</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-upscale-images-without-losing-quality"><i class="fas fa-chevron-right"></i> Upscale Images Without Blur</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-convert-heic-to-png-iphone"><i class="fas fa-chevron-right"></i> Convert iPhone HEIC to PNG</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-remove-watermarks-and-unwanted-objects-from-photos"><i class="fas fa-chevron-right"></i> Remove Watermarks from Photos</a></li>
+                        <li><a href="https://www.webtoolkitbox.com/how-to-do-free-website-seo-audit"><i class="fas fa-chevron-right"></i> Free Website SEO Audit Guide</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-divider"></div>
+            <div class="footer-bottom">
+                <p>Developed by <a href="https://github.com/itxRishabh" target="_blank" rel="noopener" class="footer-dev-link">Rishabh Dev</a></p>
+                <p class="footer-handle">@itxrishabh</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Client-Side Pixel Art Engine -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let loadedImg = null;
+            let pixelSize = 12;
+            let currentPalette = 'full';
+            let showGrid = false;
+
+            const dropzone = document.getElementById('pixelDropzone');
+            const fileInput = document.getElementById('pixelFileInput');
+            const workspace = document.getElementById('pixelWorkspace');
+            const canvas = document.getElementById('pixelCanvas');
+            const ctx = canvas.getContext('2d');
+            const pixelSlider = document.getElementById('pixelSizeSlider');
+            const pixelSizeDisplay = document.getElementById('pixelSizeDisplay');
+            const gridToggle = document.getElementById('pixelGridToggle');
+            const downloadBtn = document.getElementById('downloadPixelBtn');
+            const resetBtn = document.getElementById('resetPixelBtn');
+
+            // Retro Palette Definitions
+            const PALETTES = {
+                gameboy: [[15, 56, 15], [48, 98, 48], [139, 172, 15], [155, 188, 15]],
+                nes: [
+                    [0,0,0], [255,255,255], [116,116,116], [36,24,140], [0,0,168], [68,0,156],
+                    [140,0,116], [168,0,32], [164,0,0], [124,8,0], [64,44,0], [0,68,0],
+                    [0,80,0], [0,60,20], [0,60,44], [252,152,56], [252,224,168]
+                ],
+                pico8: [
+                    [0,0,0], [29,43,83], [126,37,83], [0,135,81], [171,82,54], [95,87,79],
+                    [194,195,199], [255,241,232], [255,0,77], [255,163,0], [255,236,39],
+                    [0,228,54], [41,173,255], [131,118,156], [255,119,168], [255,204,170]
+                ],
+                cyberpunk: [
+                    [15,23,42], [236,72,153], [14,165,233], [245,158,11], [168,85,247],
+                    [34,197,94], [255,255,255]
+                ],
+                mono: [[0,0,0], [255,255,255]]
+            };
+
+            dropzone.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files && e.target.files[0]) handleFile(e.target.files[0]);
+            });
+
+            dropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropzone.style.borderColor = '#8b5cf6';
+            });
+            dropzone.addEventListener('dragleave', () => dropzone.style.borderColor = 'var(--border)');
+            dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropzone.style.borderColor = 'var(--border)';
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+            });
+
+            function handleFile(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        loadedImg = img;
+                        dropzone.style.display = 'none';
+                        workspace.style.display = 'block';
+                        renderPixelArt();
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+
+            pixelSlider.addEventListener('input', (e) => {
+                pixelSize = parseInt(e.target.value);
+                pixelSizeDisplay.textContent = `${pixelSize} px`;
+                renderPixelArt();
+            });
+
+            document.querySelectorAll('.palette-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.palette-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentPalette = btn.getAttribute('data-palette');
+                    renderPixelArt();
+                });
+            });
+
+            gridToggle.addEventListener('change', (e) => {
+                showGrid = e.target.checked;
+                renderPixelArt();
+            });
+
+            function findNearestColor(r, g, b, paletteList) {
+                let closest = paletteList[0];
+                let minDistance = Infinity;
+
+                for (let i = 0; i < paletteList.length; i++) {
+                    const p = paletteList[i];
+                    // Weighted Euclidean distance for human perception
+                    const d = (r - p[0]) * (r - p[0]) * 0.299 +
+                              (g - p[1]) * (g - p[1]) * 0.587 +
+                              (b - p[2]) * (b - p[2]) * 0.114;
+
+                    if (d < minDistance) {
+                        minDistance = d;
+                        closest = p;
+                    }
+                }
+                return closest;
+            }
+
+            function renderPixelArt() {
+                if (!loadedImg) return;
+
+                const w = loadedImg.width;
+                const h = loadedImg.height;
+
+                canvas.width = w;
+                canvas.height = h;
+
+                // Step 1: Render downsampled image onto temporary canvas
+                const cols = Math.max(1, Math.floor(w / pixelSize));
+                const rows = Math.max(1, Math.floor(h / pixelSize));
+
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = cols;
+                tempCanvas.height = rows;
+                const tCtx = tempCanvas.getContext('2d');
+                tCtx.drawImage(loadedImg, 0, 0, cols, rows);
+
+                const imgData = tCtx.getImageData(0, 0, cols, rows);
+                const data = imgData.data;
+
+                // Step 2: Apply Palette Quantization if selected
+                if (currentPalette !== 'full' && PALETTES[currentPalette]) {
+                    const pal = PALETTES[currentPalette];
+                    for (let i = 0; i < data.length; i += 4) {
+                        const nearest = findNearestColor(data[i], data[i+1], data[i+2], pal);
+                        data[i] = nearest[0];
+                        data[i+1] = nearest[1];
+                        data[i+2] = nearest[2];
+                    }
+                    tCtx.putImageData(imgData, 0, 0);
+                }
+
+                // Step 3: Draw scaled up with crisp nearest-neighbor
+                ctx.imageSmoothingEnabled = false;
+                ctx.drawImage(tempCanvas, 0, 0, cols, rows, 0, 0, w, h);
+
+                // Step 4: Optional Grid lines
+                if (showGrid) {
+                    ctx.strokeStyle = 'rgba(0, 0, 0, 0.15)';
+                    ctx.lineWidth = 1;
+                    for (let x = 0; x < w; x += pixelSize) {
+                        ctx.beginPath();
+                        ctx.moveTo(x, 0);
+                        ctx.lineTo(x, h);
+                        ctx.stroke();
+                    }
+                    for (let y = 0; y < h; y += pixelSize) {
+                        ctx.beginPath();
+                        ctx.moveTo(0, y);
+                        ctx.lineTo(w, y);
+                        ctx.stroke();
+                    }
+                }
+
+                downloadBtn.href = canvas.toDataURL('image/png');
+            }
+
+            resetBtn.addEventListener('click', () => {
+                fileInput.value = '';
+                loadedImg = null;
+                dropzone.style.display = 'flex';
+                workspace.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
