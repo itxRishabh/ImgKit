@@ -46,6 +46,38 @@
       }
     }
     </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why can't I open HEIC photos on Windows or Android?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "HEIC is Apple's high-efficiency image container format. Windows and older Android devices do not natively support HEIC without paid codecs, requiring conversion to universal PNG or JPG."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does converting HEIC to PNG reduce photo quality?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. PNG is a 32-bit lossless image format. Converting HEIC to PNG preserves 100% of the original photo colors, sharpness, and metadata without compression artifacts."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I stop my iPhone from taking HEIC photos?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Go to iPhone Settings > Camera > Formats and select 'Most Compatible'. Your iPhone will then capture all photos directly as standard JPEG files."
+          }
+        }
+      ]
+    }
+    </script>
 
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -159,6 +191,26 @@
                     </a>
                 </div>
             </article>
+        
+            <!-- FAQ Section -->
+            <section style="margin-top: 48px;">
+                <h2 style="font-size: 24px; font-weight: 800; text-align: center; margin-bottom: 24px; color: var(--text);">Frequently Asked Questions</h2>
+                <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px;">
+                    
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">Why can't I open HEIC photos on Windows or Android?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">HEIC is Apple's high-efficiency image container format. Windows and older Android devices do not natively support HEIC without paid codecs, requiring conversion to universal PNG or JPG.</p>
+                    </details>
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">Does converting HEIC to PNG reduce photo quality?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">No. PNG is a 32-bit lossless image format. Converting HEIC to PNG preserves 100% of the original photo colors, sharpness, and metadata without compression artifacts.</p>
+                    </details>
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">How do I stop my iPhone from taking HEIC photos?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">Go to iPhone Settings > Camera > Formats and select 'Most Compatible'. Your iPhone will then capture all photos directly as standard JPEG files.</p>
+                    </details>
+                </div>
+            </section>
         </main>
 
         <aside class="article-sidebar">
