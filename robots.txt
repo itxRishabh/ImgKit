@@ -8,6 +8,8 @@ Disallow: /test_temp/
 Disallow: /seo-update-charts/
 Disallow: /new.html
 Disallow: /new
+Disallow: /promo
+Disallow: /promo.html
 
 # Sitemap
 Sitemap: https://www.webtoolkitbox.com/sitemap.xml

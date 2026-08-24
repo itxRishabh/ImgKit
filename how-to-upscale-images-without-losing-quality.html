@@ -47,6 +47,38 @@
     }
     </script>
 
+        <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How does Lanczos3 upscaling differ from standard resizing?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Standard bilinear resizing creates blurry, muddy pixels when enlarging. Lanczos3 sinc-windowed mathematical interpolation sharpens edges and reconstructs micro-details cleanly."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I upscale old low-resolution photos for printing?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes! Upscaling 2X or 4X increases the pixel dimension count, allowing you to print photos at 300 DPI without pixelation."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is there any file size or image limit?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. You can upscale unlimited photos for free with zero watermarks directly in your browser."
+          }
+        }
+      ]
+    }
+    </script>
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -164,7 +196,26 @@
                         <i class="fas fa-expand-alt"></i> Upscale Photo Now
                     </a>
                 </div>
-            </article>
+            
+            <!-- FAQ Section -->
+            <section style="margin-top: 48px;">
+                <h2 style="font-size: 24px; font-weight: 800; text-align: center; margin-bottom: 24px; color: var(--text);">Frequently Asked Questions</h2>
+                <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px;">
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">How does Lanczos3 upscaling differ from standard resizing?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">Standard bilinear resizing creates blurry, muddy pixels when enlarging. Lanczos3 sinc-windowed mathematical interpolation sharpens edges and reconstructs micro-details cleanly.</p>
+                    </details>
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">Can I upscale old low-resolution photos for printing?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">Yes! Upscaling 2X or 4X increases the pixel dimension count, allowing you to print photos at 300 DPI without pixelation.</p>
+                    </details>
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">Is there any file size or image limit?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">No. You can upscale unlimited photos for free with zero watermarks directly in your browser.</p>
+                    </details>
+                </div>
+            </section>
+        </article>
         </main>
 
         <aside class="article-sidebar">
