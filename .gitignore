@@ -30,3 +30,5 @@ node_modules/
 # Test files
 test_temp/
 .vercel
+seo-update-charts/
+*.zip
