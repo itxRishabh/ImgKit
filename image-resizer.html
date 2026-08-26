@@ -94,6 +94,14 @@
         },
         {
           "@type": "Question",
+          "name": "Can I resize photos in bulk to one custom size?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes! Click the 'Bulk Batch' tab, drag and drop multiple photos or entire folders, set your target Width and Height, and click 'Resize All Images in Bulk'. You can download all converted photos in a single ZIP package."
+          }
+        },
+        {
+          "@type": "Question",
           "name": "Can I resize photos for US and Indian passport/exam applications?",
           "acceptedAnswer": {
             "@type": "Answer",
@@ -124,9 +132,54 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="style.css">
+    <!-- JSZip for Bulk Image ZIP Downloads -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
 
-    <!-- Custom inline styles for controls layout -->
+    <!-- Custom inline styles for controls & bulk layout -->
     <style>
+        .mode-toggle-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 4px;
+            margin-bottom: 20px;
+            gap: 4px;
+        }
+        .mode-tab-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
+            font-size: 13.5px;
+            font-weight: 700;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        .mode-tab-btn:hover {
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .mode-tab-btn.active {
+            background: var(--surface);
+            color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border: 1px solid var(--border);
+        }
+        .bulk-badge {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+            font-size: 10.5px;
+            padding: 2px 7px;
+            border-radius: 12px;
+            font-weight: 700;
+        }
         .pixel-inputs-row {
             display: flex;
             align-items: center;
@@ -180,6 +233,103 @@
             border-color: var(--primary);
             background: rgba(250, 204, 21, 0.1);
         }
+
+        /* Bulk Queue Cards Grid */
+        .bulk-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 14px;
+            margin-top: 18px;
+            max-height: 480px;
+            overflow-y: auto;
+            padding: 4px;
+        }
+        .bulk-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+            transition: transform 0.15s ease, border-color 0.15s ease;
+        }
+        .bulk-card:hover {
+            border-color: var(--border-active);
+            transform: translateY(-2px);
+        }
+        .bulk-card-thumb-wrap {
+            width: 100%;
+            height: 120px;
+            border-radius: var(--radius-sm);
+            background: rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        .bulk-card-thumb {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .bulk-card-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .bulk-card-name {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .bulk-card-meta {
+            font-size: 11px;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+        }
+        .bulk-card-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 4px;
+        }
+        .bulk-card-delete {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            transition: all 0.2s;
+        }
+        .bulk-card-delete:hover {
+            background: #ef4444;
+            color: #fff;
+        }
+        .bulk-stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: rgba(245, 158, 11, 0.08);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
+        }
     </style>
 </head>
 <body>
@@ -223,6 +373,16 @@
                 <div class="solaris-workspace">
                     <!-- Left Sidebar Controls -->
                     <div class="solaris-controls-panel">
+                        <!-- Mode Tabs (Single vs Bulk) -->
+                        <div class="mode-toggle-tabs">
+                            <button type="button" class="mode-tab-btn active" id="singleModeTab">
+                                <i class="fas fa-image"></i> Single Image
+                            </button>
+                            <button type="button" class="mode-tab-btn" id="bulkModeTab">
+                                <i class="fas fa-layer-group"></i> Bulk Batch <span class="bulk-badge">NEW</span>
+                            </button>
+                        </div>
+
                         <h3 class="settings-title">
                             <i class="fas fa-sliders"></i>
                             Dimension Settings
@@ -284,6 +444,9 @@
                             <button class="btn btn-primary" id="processResizeBtn" style="width: 100%; padding: 12px; font-weight: 700;">
                                 <i class="fas fa-arrows-alt"></i> Apply Resize
                             </button>
+                            <button class="btn btn-primary" id="processBulkResizeBtn" style="display: none; width: 100%; padding: 12px; font-weight: 700; background: linear-gradient(135deg, #f59e0b, #d97706); border: none;">
+                                <i class="fas fa-layer-group"></i> Resize All Images in Bulk
+                            </button>
                         </div>
                     </div>
 
@@ -292,36 +455,43 @@
                         <div class="solaris-viewport-bar">
                             <div class="solaris-viewport-status">
                                 <div class="solaris-status-dot"></div>
-                                <span id="statusText">System Ready • Drop your photo to resize</span>
+                                <span id="statusText">System Ready • Drop your photo(s) to resize</span>
                             </div>
-                            <div>
-                                <button class="btn btn-outline btn-sm" onclick="document.getElementById('resizerFileInput').click()">
-                                    <i class="fas fa-upload"></i> Choose Photo
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-outline btn-sm" id="choosePhotosBtn" onclick="document.getElementById('resizerFileInput').click()">
+                                    <i class="fas fa-upload"></i> Choose Photo(s)
                                 </button>
-                                <input type="file" id="resizerFileInput" accept="image/*" style="display: none;">
+                                <button class="btn btn-secondary btn-sm" id="chooseFolderBtn" style="display: none;" onclick="document.getElementById('resizerFolderInput').click()">
+                                    <i class="fas fa-folder-open"></i> Upload Folder
+                                </button>
+                                <input type="file" id="resizerFileInput" accept="image/*" multiple style="display: none;">
+                                <input type="file" id="resizerFolderInput" webkitdirectory directory multiple style="display: none;">
                             </div>
                         </div>
 
                         <div class="solaris-canvas-wrapper" id="resizerDropZone">
                             <!-- Dropzone Placeholder -->
-                            <div id="dropZonePlaceholder" style="text-align: center; padding: 60px 40px;">
+                            <div id="dropZonePlaceholder" style="text-align: center; padding: 60px 40px; cursor: pointer;">
                                 <div class="upload-icon" style="background: rgba(250, 204, 21, 0.2); width: 64px; height: 64px; margin: 0 auto 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #735c00;">
                                     <i class="fas fa-cloud-upload-alt"></i>
                                 </div>
-                                <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 6px;">Drag and drop photo here</h3>
-                                <p style="font-size: 14px; color: var(--text-muted); max-width: 320px; margin: 0 auto;">Resize instantly to exact pixel dimensions client-side.</p>
+                                <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 6px;" id="dropzoneTitleText">Drag and drop photo(s) here</h3>
+                                <p style="font-size: 14px; color: var(--text-muted); max-width: 360px; margin: 0 auto;" id="dropzoneSubText">Resize single photos or add 100+ bulk images to convert to one custom size.</p>
                             </div>
 
-                            <!-- Image Preview & Canvas result Container -->
+                            <!-- Single Image Preview & Canvas result Container -->
                             <div id="resizerResultContainer" style="display: none; width: 100%; text-align: center; padding: 20px 0;">
                                 <div style="margin-bottom: 16px; position: relative; display: inline-block; max-width: 100%;">
                                     <canvas id="resizerCanvas" style="max-width: 100%; max-height: 400px; height: auto; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: 0 8px 24px rgba(0,0,0,0.08); background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%); background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px;"></canvas>
                                 </div>
 
-                                <div style="margin-top: 12px; display: flex; justify-content: center; gap: 12px;">
+                                <div style="margin-top: 12px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
                                     <a id="downloadResizedBtn" href="#" download="resized-image.png" class="btn btn-primary" style="padding: 10px 24px; font-weight: 700; text-decoration: none;">
                                         <i class="fas fa-download"></i> Download Image
                                     </a>
+                                    <button type="button" class="btn btn-secondary" id="resetSingleBtn" style="padding: 10px 18px; font-weight: 600;">
+                                        <i class="fas fa-arrows-rotate"></i> New Image
+                                    </button>
                                 </div>
 
                                 <!-- Analytics Diagnostics Card -->
@@ -348,30 +518,55 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <!-- Cross-Tool Recommendation Funnel -->
-                                <div class="next-step-card" style="text-align: left;">
-                                    <div class="next-step-info">
-                                        <div class="next-step-icon"><i class="fas fa-lightbulb"></i></div>
-                                        <div>
-                                            <h4 class="next-step-title">Need exact KB file compression or format conversion?</h4>
-                                            <p class="next-step-desc">Compress to exact 50KB/200KB limits or convert format to WebP / JPG in 1 click.</p>
-                                        </div>
+                            <!-- Bulk Batch Workspace Container -->
+                            <div id="bulkWorkspaceContainer" style="display: none; width: 100%; text-align: left; padding: 14px 0;">
+                                <div class="bulk-stats-header">
+                                    <div>
+                                        <strong style="font-size: 14px; color: var(--text); display: flex; align-items: center; gap: 6px;">
+                                            <i class="fas fa-images" style="color: #f59e0b;"></i> <span id="bulkCountLabel">0 Images in Queue</span>
+                                        </strong>
+                                        <span style="font-size: 12px; color: var(--text-muted);" id="bulkTargetDimLabel">Target Size: 600 × 600 px</span>
                                     </div>
-                                    <div class="next-step-actions">
-                                        <a href="size-manager" class="btn btn-secondary btn-sm" style="text-decoration: none;">
-                                            <i class="fas fa-weight-hanging"></i> Compress to 50KB / 200KB
-                                        </a>
-                                        <a href="image-converter" class="btn btn-primary btn-sm" style="text-decoration: none;">
-                                            <i class="fas fa-shuffle"></i> Image Converter
-                                        </a>
+                                    <div style="display: flex; gap: 8px;">
+                                        <button type="button" class="btn btn-secondary btn-sm" id="addMoreBulkBtn" onclick="document.getElementById('resizerFileInput').click()">
+                                            <i class="fas fa-plus"></i> Add More
+                                        </button>
+                                        <button type="button" class="btn btn-secondary btn-sm" id="clearBulkBtn" style="color: #ef4444;">
+                                            <i class="fas fa-trash"></i> Clear All
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-sm" id="downloadAllZipBtn" style="display: none; background: #10b981; border: none; font-weight: 700;">
+                                            <i class="fas fa-file-zipper"></i> Download All (ZIP)
+                                        </button>
                                     </div>
                                 </div>
+
+                                <!-- Bulk Image Cards Grid -->
+                                <div class="bulk-cards-grid" id="bulkCardsGrid"></div>
+                            </div>
+                        <!-- Cross-Tool Recommendation Funnel -->
+                        <div class="next-step-card" style="text-align: left; margin-top: 24px;">
+                            <div class="next-step-info">
+                                <div class="next-step-icon"><i class="fas fa-lightbulb"></i></div>
+                                <div>
+                                    <h4 class="next-step-title">Need exact KB file compression or format conversion?</h4>
+                                    <p class="next-step-desc">Compress to exact 50KB/200KB limits or convert format to WebP / JPG in 1 click.</p>
+                                </div>
+                            </div>
+                            <div class="next-step-actions">
+                                <a href="size-manager" class="btn btn-secondary btn-sm" style="text-decoration: none;">
+                                    <i class="fas fa-weight-hanging"></i> Compress to 50KB / 200KB
+                                </a>
+                                <a href="image-converter" class="btn btn-primary btn-sm" style="text-decoration: none;">
+                                    <i class="fas fa-shuffle"></i> Image Converter
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
-            
+            </main>
+
             <!-- FAQ Section -->
             <section style="margin-top: 48px;">
                 <h2 style="font-size: 24px; font-weight: 800; text-align: center; margin-bottom: 24px; color: var(--text);">Frequently Asked Questions</h2>
@@ -380,6 +575,10 @@
                     <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
                         <summary style="font-weight: 700; font-size: 15px; color: var(--text);">How do I resize an image to 100x100 pixels?</summary>
                         <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">Upload your photo, type '100' in Width and '100' in Height, choose your resize strategy (Fit, Stretch, or Fill), and click Apply Resize to download your 100x100 image instantly.</p>
+                    </details>
+                    <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
+                        <summary style="font-weight: 700; font-size: 15px; color: var(--text);">Can I resize photos in bulk to one custom size?</summary>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin: 12px 0 0; line-height: 1.6;">Yes! Click the "Bulk Batch" tab, drag and drop multiple photos or entire folders, set your target Width and Height, and click "Resize All Images in Bulk". You can download all converted photos in a single ZIP package.</p>
                     </details>
                     <details style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; cursor: pointer;">
                         <summary style="font-weight: 700; font-size: 15px; color: var(--text);">Can I resize photos for US and Indian passport/exam applications?</summary>
@@ -391,7 +590,6 @@
                     </details>
                 </div>
             </section>
-        </main>
         </div>
 
                         <!-- Footer -->
@@ -506,22 +704,93 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const fileInput = document.getElementById('resizerFileInput');
+            const folderInput = document.getElementById('resizerFolderInput');
             const dropZone = document.getElementById('resizerDropZone');
             const placeholder = document.getElementById('dropZonePlaceholder');
             const resultContainer = document.getElementById('resizerResultContainer');
+            const bulkContainer = document.getElementById('bulkWorkspaceContainer');
             const processBtn = document.getElementById('processResizeBtn');
+            const processBulkBtn = document.getElementById('processBulkResizeBtn');
             const canvas = document.getElementById('resizerCanvas');
             const downloadBtn = document.getElementById('downloadResizedBtn');
+            const resetSingleBtn = document.getElementById('resetSingleBtn');
             const statusText = document.getElementById('statusText');
+
+            const singleModeTab = document.getElementById('singleModeTab');
+            const bulkModeTab = document.getElementById('bulkModeTab');
+            const choosePhotosBtn = document.getElementById('choosePhotosBtn');
+            const chooseFolderBtn = document.getElementById('chooseFolderBtn');
+            const dropzoneTitleText = document.getElementById('dropzoneTitleText');
+            const dropzoneSubText = document.getElementById('dropzoneSubText');
+
+            const bulkCardsGrid = document.getElementById('bulkCardsGrid');
+            const bulkCountLabel = document.getElementById('bulkCountLabel');
+            const bulkTargetDimLabel = document.getElementById('bulkTargetDimLabel');
+            const clearBulkBtn = document.getElementById('clearBulkBtn');
+            const downloadAllZipBtn = document.getElementById('downloadAllZipBtn');
 
             const widthInput = document.getElementById('resizeWidthInput');
             const heightInput = document.getElementById('resizeHeightInput');
             const lockAspectBtn = document.getElementById('lockAspectBtn');
             const strategySelect = document.getElementById('resizeStrategySelect');
 
+            let currentMode = 'single'; // 'single' | 'bulk'
             let sourceImg = null;
             let originalAspect = 1.0;
             let isLocked = true;
+
+            // Bulk Queue: array of { id, file, name, size, origW, origH, imgObj, resizedBlob, resizedDataUrl }
+            let bulkQueue = [];
+
+            // Mode Tab Switchers
+            singleModeTab.addEventListener('click', () => switchMode('single'));
+            bulkModeTab.addEventListener('click', () => switchMode('bulk'));
+
+            function switchMode(mode) {
+                currentMode = mode;
+                if (mode === 'single') {
+                    singleModeTab.classList.add('active');
+                    bulkModeTab.classList.remove('active');
+                    processBtn.style.display = 'block';
+                    processBulkBtn.style.display = 'none';
+                    chooseFolderBtn.style.display = 'none';
+                    choosePhotosBtn.innerHTML = '<i class="fas fa-upload"></i> Choose Photo';
+                    dropzoneTitleText.textContent = 'Drag and drop photo here';
+                    dropzoneSubText.textContent = 'Resize single photo to exact pixel dimensions client-side.';
+                    
+                    if (bulkContainer) bulkContainer.style.display = 'none';
+                    if (sourceImg) {
+                        placeholder.style.display = 'none';
+                        resultContainer.style.display = 'block';
+                        statusText.textContent = `Single Mode • Ready (${sourceImg.width}×${sourceImg.height}px)`;
+                    } else {
+                        placeholder.style.display = 'block';
+                        resultContainer.style.display = 'none';
+                        statusText.textContent = 'System Ready • Drop your photo to resize';
+                    }
+                } else {
+                    bulkModeTab.classList.add('active');
+                    singleModeTab.classList.remove('active');
+                    processBtn.style.display = 'none';
+                    processBulkBtn.style.display = 'block';
+                    chooseFolderBtn.style.display = 'inline-flex';
+                    choosePhotosBtn.innerHTML = '<i class="fas fa-images"></i> Add Image(s)';
+                    dropzoneTitleText.textContent = 'Drag and drop multiple photos here';
+                    dropzoneSubText.textContent = 'Upload multiple images or entire folders to resize all to custom dimensions.';
+                    
+                    if (resultContainer) resultContainer.style.display = 'none';
+                    if (bulkQueue.length > 0) {
+                        placeholder.style.display = 'none';
+                        bulkContainer.style.display = 'block';
+                        statusText.textContent = `Bulk Mode • ${bulkQueue.length} image(s) in batch queue`;
+                    } else {
+                        placeholder.style.display = 'block';
+                        bulkContainer.style.display = 'none';
+                        statusText.textContent = 'Bulk Mode • Add multiple images to convert all together';
+                    }
+                }
+                updateBulkLabels();
+            }
 
             // Lock / Unlock toggle
             lockAspectBtn.addEventListener('click', (e) => {
@@ -530,7 +799,6 @@
                 if (isLocked) {
                     lockAspectBtn.classList.add('active');
                     lockAspectBtn.querySelector('i').className = 'fas fa-lock';
-                    // Synchronize height based on width
                     if (sourceImg) {
                         heightInput.value = Math.round(parseInt(widthInput.value) / originalAspect);
                     }
@@ -538,6 +806,7 @@
                     lockAspectBtn.classList.remove('active');
                     lockAspectBtn.querySelector('i').className = 'fas fa-lock-open';
                 }
+                updateBulkLabels();
             });
 
             // 1-Click Preset Chip Click Listeners
@@ -556,13 +825,14 @@
                     heightInput.value = h;
                     if (strategySelect) strategySelect.value = strat;
                     
-                    // Unlock aspect ratio for exact custom presets
                     isLocked = false;
                     lockAspectBtn.classList.remove('active');
                     lockAspectBtn.querySelector('i').className = 'fas fa-lock-open';
 
-                    if (sourceImg) {
-                        renderResizedImage();
+                    updateBulkLabels();
+
+                    if (currentMode === 'single' && sourceImg) {
+                        applyResize();
                     }
                 });
             });
@@ -573,6 +843,7 @@
                     const w = parseInt(widthInput.value) || 0;
                     heightInput.value = Math.round(w / originalAspect);
                 }
+                updateBulkLabels();
             });
 
             heightInput.addEventListener('input', () => {
@@ -580,7 +851,18 @@
                     const h = parseInt(heightInput.value) || 0;
                     widthInput.value = Math.round(h * originalAspect);
                 }
+                updateBulkLabels();
             });
+
+            strategySelect.addEventListener('change', updateBulkLabels);
+
+            function updateBulkLabels() {
+                const targetW = parseInt(widthInput.value) || 600;
+                const targetH = parseInt(heightInput.value) || 600;
+                if (bulkTargetDimLabel) {
+                    bulkTargetDimLabel.textContent = `Target Size: ${targetW} × ${targetH} px (${strategySelect.value})`;
+                }
+            }
 
             // Output Format toggles
             const formatBtns = document.querySelectorAll('#resizerFormatToggle .toggle-btn');
@@ -594,8 +876,25 @@
                 });
             });
 
-            function handleLoadedFile(file) {
-                if (!file) return;
+            // File Loading Router
+            function handleIncomingFiles(fileList) {
+                if (!fileList || fileList.length === 0) return;
+                const files = Array.from(fileList).filter(f => f.type.startsWith('image/') || f.name.match(/\.(jpg|jpeg|png|webp|gif|bmp|heic|svg)$/i));
+                if (files.length === 0) return;
+
+                if (files.length > 1 && currentMode === 'single') {
+                    // Auto switch to bulk mode if user dragged multiple images
+                    switchMode('bulk');
+                }
+
+                if (currentMode === 'single') {
+                    loadSingleFile(files[0]);
+                } else {
+                    loadBulkFiles(files);
+                }
+            }
+
+            function loadSingleFile(file) {
                 const reader = new FileReader();
                 reader.onload = (event) => {
                     sourceImg = new Image();
@@ -607,9 +906,7 @@
                         if (placeholder) placeholder.style.display = 'none';
                         if (resultContainer) resultContainer.style.display = 'block';
 
-                        statusText.textContent = `Photo Loaded (${sourceImg.width} x ${sourceImg.height}px) • Adjust pixels & apply`;
-                        
-                        // Process initial preview
+                        statusText.textContent = `Photo Loaded (${sourceImg.width} x ${sourceImg.height}px) • Ready to resize`;
                         applyResize();
                     };
                     sourceImg.src = event.target.result;
@@ -617,17 +914,257 @@
                 reader.readAsDataURL(file);
             }
 
-            if (typeof ImgKitUploadEngine !== 'undefined') {
-                ImgKitUploadEngine.bind({
-                    container: dropZone,
-                    fileInput: fileInput,
-                    onFiles: (files) => handleLoadedFile(files[0])
+            function loadBulkFiles(files) {
+                placeholder.style.display = 'none';
+                bulkContainer.style.display = 'block';
+                downloadAllZipBtn.style.display = 'none'; // reset until converted
+
+                files.forEach(file => {
+                    const item = {
+                        id: 'img_' + Math.random().toString(36).substr(2, 9),
+                        file: file,
+                        name: file.name,
+                        size: (file.size / 1024).toFixed(1) + ' KB',
+                        origW: 0,
+                        origH: 0,
+                        imgObj: null,
+                        resizedBlob: null,
+                        resizedDataUrl: null,
+                        status: 'pending' // 'pending' | 'done'
+                    };
+                    bulkQueue.push(item);
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            item.imgObj = img;
+                            item.origW = img.width;
+                            item.origH = img.height;
+                            renderBulkCard(item);
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
                 });
-            } else {
-                if (dropZone) dropZone.addEventListener('click', () => fileInput.click());
-                if (fileInput) fileInput.addEventListener('change', (e) => handleLoadedFile(e.target.files[0]));
+
+                bulkCountLabel.textContent = `${bulkQueue.length} Images in Queue`;
+                statusText.textContent = `Bulk Mode • ${bulkQueue.length} image(s) loaded. Set dimensions & click "Resize All"`;
             }
 
+            function renderBulkCard(item) {
+                let card = document.getElementById(item.id);
+                if (!card) {
+                    card = document.createElement('div');
+                    card.className = 'bulk-card';
+                    card.id = item.id;
+                    bulkCardsGrid.appendChild(card);
+                }
+
+                const thumbSrc = item.resizedDataUrl || (item.imgObj ? item.imgObj.src : '');
+                const targetW = parseInt(widthInput.value) || 600;
+                const targetH = parseInt(heightInput.value) || 600;
+
+                card.innerHTML = `
+                    <button class="bulk-card-delete" title="Remove"><i class="fas fa-times"></i></button>
+                    <div class="bulk-card-thumb-wrap">
+                        <img src="${thumbSrc}" class="bulk-card-thumb" alt="${item.name}">
+                    </div>
+                    <div class="bulk-card-info">
+                        <div class="bulk-card-name" title="${item.name}">${item.name}</div>
+                        <div class="bulk-card-meta">
+                            <span>Orig: ${item.origW}×${item.origH}px</span>
+                            <span>${item.size}</span>
+                        </div>
+                        ${item.status === 'done' ? `
+                            <div style="font-size: 11px; color: #10b981; font-weight: 700; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+                                <i class="fas fa-check-circle"></i> Resized: ${targetW}×${targetH}px
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="bulk-card-actions">
+                        ${item.status === 'done' ? `
+                            <a href="${item.resizedDataUrl}" download="resized_${item.name}" class="btn btn-primary btn-sm" style="flex: 1; padding: 6px; font-size: 11px; text-decoration: none; text-align: center;">
+                                <i class="fas fa-download"></i> Download
+                            </a>
+                        ` : `
+                            <span style="font-size: 11px; color: var(--text-muted); font-style: italic; padding: 4px 0;">Ready to resize</span>
+                        `}
+                    </div>
+                `;
+
+                card.querySelector('.bulk-card-delete').addEventListener('click', () => {
+                    bulkQueue = bulkQueue.filter(x => x.id !== item.id);
+                    card.remove();
+                    bulkCountLabel.textContent = `${bulkQueue.length} Images in Queue`;
+                    if (bulkQueue.length === 0) {
+                        bulkContainer.style.display = 'none';
+                        placeholder.style.display = 'block';
+                        statusText.textContent = 'Bulk Mode • Add multiple images to convert all together';
+                    }
+                });
+            }
+
+            function resizeSingleImageObj(img, targetW, targetH, strategy, mime) {
+                const offCanvas = document.createElement('canvas');
+                offCanvas.width = targetW;
+                offCanvas.height = targetH;
+                const offCtx = offCanvas.getContext('2d');
+                offCtx.imageSmoothingEnabled = true;
+                offCtx.imageSmoothingQuality = 'high';
+                offCtx.clearRect(0, 0, targetW, targetH);
+
+                if (strategy === 'stretch') {
+                    offCtx.drawImage(img, 0, 0, targetW, targetH);
+                } else if (strategy === 'contain') {
+                    const aspect = img.width / img.height;
+                    let drawW = targetW;
+                    let drawH = targetW / aspect;
+                    if (drawH > targetH) {
+                        drawH = targetH;
+                        drawW = targetH * aspect;
+                    }
+                    const x = (targetW - drawW) / 2;
+                    const y = (targetH - drawH) / 2;
+                    offCtx.drawImage(img, x, y, drawW, drawH);
+                } else if (strategy === 'cover') {
+                    const aspect = img.width / img.height;
+                    let drawW = targetW;
+                    let drawH = targetW / aspect;
+                    if (drawH < targetH) {
+                        drawH = targetH;
+                        drawW = targetH * aspect;
+                    }
+                    const x = (targetW - drawW) / 2;
+                    const y = (targetH - drawH) / 2;
+                    offCtx.drawImage(img, x, y, drawW, drawH);
+                }
+
+                return offCanvas.toDataURL(mime, 0.95);
+            }
+
+            // Bulk Process Button
+            processBulkBtn.addEventListener('click', async () => {
+                if (bulkQueue.length === 0) {
+                    alert('Please add at least one image to bulk resize.');
+                    return;
+                }
+
+                const targetW = parseInt(widthInput.value) || 600;
+                const targetH = parseInt(heightInput.value) || 600;
+                const strategy = strategySelect.value;
+                const mime = selectedFormat === 'jpeg' ? 'image/jpeg' : (selectedFormat === 'webp' ? 'image/webp' : 'image/png');
+
+                processBulkBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Resizing All...';
+                processBulkBtn.disabled = true;
+
+                for (let item of bulkQueue) {
+                    if (!item.imgObj) continue;
+                    const dataUrl = resizeSingleImageObj(item.imgObj, targetW, targetH, strategy, mime);
+                    item.resizedDataUrl = dataUrl;
+                    item.status = 'done';
+                    renderBulkCard(item);
+                }
+
+                processBulkBtn.innerHTML = '<i class="fas fa-check-double"></i> All Resized Successfully!';
+                processBulkBtn.style.background = '#10b981';
+                setTimeout(() => {
+                    processBulkBtn.innerHTML = '<i class="fas fa-layer-group"></i> Resize All Images in Bulk';
+                    processBulkBtn.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+                    processBulkBtn.disabled = false;
+                }, 2500);
+
+                downloadAllZipBtn.style.display = 'inline-flex';
+                statusText.textContent = `All ${bulkQueue.length} images successfully resized to ${targetW}×${targetH}px!`;
+            });
+
+            // Download All in ZIP
+            downloadAllZipBtn.addEventListener('click', async () => {
+                if (typeof JSZip === 'undefined') {
+                    alert('ZIP library is loading, please try again in a moment.');
+                    return;
+                }
+                const zip = new JSZip();
+                const targetW = parseInt(widthInput.value) || 600;
+                const targetH = parseInt(heightInput.value) || 600;
+                const ext = selectedFormat === 'jpeg' ? 'jpg' : selectedFormat;
+
+                downloadAllZipBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating ZIP...';
+                downloadAllZipBtn.disabled = true;
+
+                bulkQueue.forEach((item, idx) => {
+                    if (item.resizedDataUrl) {
+                        const base64Data = item.resizedDataUrl.split(',')[1];
+                        const baseName = item.name.substring(0, item.name.lastIndexOf('.')) || item.name;
+                        const filename = `${baseName}_${targetW}x${targetH}.${ext}`;
+                        zip.file(filename, base64Data, { base64: true });
+                    }
+                });
+
+                const zipBlob = await zip.generateAsync({ type: 'blob' });
+                const zipUrl = URL.createObjectURL(zipBlob);
+                const a = document.createElement('a');
+                a.href = zipUrl;
+                a.download = `resized_bulk_${targetW}x${targetH}_(${bulkQueue.length}_images).zip`;
+                a.click();
+                URL.revokeObjectURL(zipUrl);
+
+                downloadAllZipBtn.innerHTML = '<i class="fas fa-file-zipper"></i> Download All (ZIP)';
+                downloadAllZipBtn.disabled = false;
+            });
+
+            clearBulkBtn.addEventListener('click', () => {
+                bulkQueue = [];
+                bulkCardsGrid.innerHTML = '';
+                bulkContainer.style.display = 'none';
+                placeholder.style.display = 'block';
+                downloadAllZipBtn.style.display = 'none';
+                statusText.textContent = 'Bulk Mode • Batch queue cleared';
+            });
+
+            // Single Reset Button
+            resetSingleBtn.addEventListener('click', () => {
+                sourceImg = null;
+                resultContainer.style.display = 'none';
+                placeholder.style.display = 'block';
+                fileInput.value = '';
+                statusText.textContent = 'System Ready • Drop your photo to resize';
+            });
+
+            // Universal Dropzone & File Input Listeners
+            dropZone.addEventListener('click', (e) => {
+                if (e.target.closest('button') || e.target.closest('a') || e.target.closest('input')) return;
+                if (!sourceImg && bulkQueue.length === 0) {
+                    fileInput.click();
+                }
+            });
+
+            fileInput.addEventListener('change', (e) => handleIncomingFiles(e.target.files));
+            if (folderInput) {
+                folderInput.addEventListener('change', (e) => handleIncomingFiles(e.target.files));
+            }
+
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.style.borderColor = 'var(--primary)';
+                dropZone.style.background = 'rgba(250, 204, 21, 0.05)';
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.style.borderColor = 'var(--border)';
+                dropZone.style.background = 'transparent';
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.style.borderColor = 'var(--border)';
+                dropZone.style.background = 'transparent';
+                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    handleIncomingFiles(e.dataTransfer.files);
+                }
+            });
+
+            // Single Apply Resize
             function applyResize() {
                 if (!sourceImg) return;
 
@@ -638,6 +1175,8 @@
                 canvas.width = targetW;
                 canvas.height = targetH;
                 const ctx = canvas.getContext('2d');
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
                 ctx.clearRect(0, 0, targetW, targetH);
 
                 if (strategy === 'stretch') {
@@ -678,7 +1217,7 @@
                 document.getElementById('mpText').textContent = `${((targetW * targetH) / 1000000).toFixed(3)} MP`;
                 document.getElementById('aspectRatioText').textContent = `${(targetW / targetH).toFixed(2)}:1`;
 
-                statusText.textContent = `Image Resized to ${targetW} x ${targetH}px`;
+                statusText.textContent = `Single Image Resized to ${targetW} x ${targetH}px`;
             }
 
             processBtn.addEventListener('click', (e) => {
